@@ -102,3 +102,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+librosa_playground.py
+*.doc
+*.docx
+*.txt
+
+.firebase
+*package-lock.json

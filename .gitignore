@@ -107,6 +107,8 @@ librosa_playground.py
 *.doc
 *.docx
 *.txt
+*.pdf
+*.xlsx
 
 .firebase
 *package-lock.json

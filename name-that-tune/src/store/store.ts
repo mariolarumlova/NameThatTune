@@ -1,10 +1,10 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { setStore, getStore } from '@/config/utils';
+import Vue from "vue";
+import Vuex from "vuex";
+import { setStore, getStore } from "@/config/utils";
 
 Vue.use(Vuex);
 
-const user = getStore('user');
+const user = getStore("user");
 
 export default new Vuex.Store({
   state: {
@@ -12,16 +12,14 @@ export default new Vuex.Store({
   },
   mutations: {
     setLoginUser(state, user) {
-      state.loginUser = user
-      setStore('user', user)
+      state.loginUser = user;
+      setStore("user", user);
     }
   },
-  actions: {
-
-  },
+  actions: {},
   getters: {
     getLoginUserInfo(state) {
-      return state.loginUser
+      return state.loginUser;
     }
   }
-})
+});

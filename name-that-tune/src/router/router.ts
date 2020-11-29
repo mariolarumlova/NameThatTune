@@ -10,35 +10,35 @@ Vue.use(Router);
 const baseRoutes = [
   {
     path: "/",
-    redirect: "/login",
+    redirect: "/login"
   },
   {
     path: "/home",
     name: "Home",
-    component: Home,
+    component: Home
   },
   {
     path: "/login",
     name: "Login",
-    component: Login,
+    component: Login
   },
   {
     path: "/signup",
     name: "SignUp",
-    component: SignUp,
+    component: SignUp
   },
   {
     path: "*",
     name: "PageNotFound",
-    component: PageNotFound,
-  },
+    component: PageNotFound
+  }
 ];
 
 const router = new Router({
   mode: "history",
   linkExactActiveClass: "active",
   base: process.env.BASE_URL,
-  routes: baseRoutes,
+  routes: baseRoutes
 });
 
 router.beforeEach((to, from, next) => {

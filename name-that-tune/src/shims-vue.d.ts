@@ -3,26 +3,26 @@ declare module "*.vue" {
   export default Vue;
 }
 
-declare module '@/components/*' {
-  import Vue from 'vue';
+declare module "@/components/*" {
+  import Vue from "vue";
   // noinspection JSDuplicatedDeclaration
   export default Vue;
 }
 
-declare module '@/config/*' {
-  import Vue from 'vue';
+declare module "@/config/*" {
+  import Vue from "vue";
   // noinspection JSDuplicatedDeclaration
   export default Vue;
 }
 
-declare module '@/store/*' {
-  import Vue from 'vue';
+declare module "@/store/*" {
+  import Vue from "vue";
   // noinspection JSDuplicatedDeclaration
   export default Vue;
 }
 
-declare module '@/views/*' {
-  import Vue from 'vue';
+declare module "@/views/*" {
+  import Vue from "vue";
   // noinspection JSDuplicatedDeclaration
   export default Vue;
 }

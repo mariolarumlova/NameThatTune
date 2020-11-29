@@ -7,8 +7,8 @@
         <div>
           <div v-if="this.$store.state.loginUser.loginType == 'google'">
             Google Access Token -
-            {{ this.$store.state.loginUser.google.Zi.access_token }}
-            <p>Welcome {{ this.$store.state.loginUser.google.w3.ig }} !</p>
+            {{ this.$store.state.loginUser.google.xc.access_token }}
+            <p>Welcome {{ this.$store.state.loginUser.google.wt.Ad }} !</p>
           </div>
         </div>
       </div>

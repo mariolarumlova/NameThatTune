@@ -9,6 +9,13 @@
     >
     <router-link to="/login" class="tablinks">Sign In</router-link>
     <router-link to="/signup" class="tablinks">Sign Up</router-link>
+    <a
+      href="#"
+      v-if="this.$store.state.loginUser"
+      @click.prevent="openSettings"
+      class="tablinks"
+      >Settings</a
+    >
   </div>
 </template>
 
@@ -22,6 +29,9 @@ export default {
     logout() {
       removeItem("user");
       router.push("/login");
+    },
+    openSettings() {
+      router.push("/settings");
     }
   }
 };

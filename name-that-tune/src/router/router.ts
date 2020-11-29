@@ -3,7 +3,11 @@ import Router from "vue-router";
 import Home from "@/views/Home";
 import Login from "@/views/Login";
 import SignUp from "@/views/SignUp";
+import ChooseGameMode from "@/views/ChooseGameMode";
 import PageNotFound from "@/components/PageNotFound";
+import Tournament from "@/components/Tournament";
+import Training from "@/components/Training";
+import Settings from "@/components/Settings";
 
 Vue.use(Router);
 
@@ -26,6 +30,26 @@ const baseRoutes = [
     path: "/signup",
     name: "SignUp",
     component: SignUp
+  },
+  {
+    path: "/choosemode",
+    name: "ChooseGameMode",
+    component: ChooseGameMode
+  },
+  {
+    path: "/tournament",
+    name: "Tournament",
+    component: Tournament
+  },
+  {
+    path: "/training",
+    name: "Training",
+    component: Training
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings
   },
   {
     path: "*",

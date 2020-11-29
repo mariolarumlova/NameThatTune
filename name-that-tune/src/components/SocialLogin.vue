@@ -38,6 +38,8 @@
 </template>
 
 <script>
+/* eslint-disable*/
+
 import router from "@/router/router";
 
 export default {
@@ -51,8 +53,7 @@ export default {
        * @type {Object}
        */
       googleSignInParams: {
-        /* eslint-disable */
-        client_id: "633325488746-sn9qq8n380lf97b2cnpe42vh6jb4emn2.apps.googleusercontent.com"
+        client_id: process.env.VUE_APP_CLIENT_ID
       }
     };
   },
@@ -60,7 +61,6 @@ export default {
     onSignInSuccess(googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users
-      /* eslint-disable */
       console.log(JSON.stringify(googleUser));
       const userInfo = {
         loginType: "google",
@@ -70,7 +70,6 @@ export default {
       router.push("/home");
     },
     onSignInError(error) {
-      /* eslint-disable */
       console.log("OH NOES", error);
     }
   }

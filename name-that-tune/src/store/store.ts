@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 import { setStore, getStore } from '@/config/utils';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-const user = getStore('user')
+const user = getStore('user');
 
 export default new Vuex.Store({
   state: {

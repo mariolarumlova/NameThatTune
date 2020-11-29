@@ -1,7 +1,11 @@
 <template>
   <div class="signup-buttons">
-    <div id="fb-root"></div>
-    <a href="#" class="google-signup" @click.prevent="loginWithGoogle">
+    <g-signin-button
+      class="google-signup"
+      :params="googleSignInParams"
+      @success="onSignInSuccess"
+      @error="onSignInError"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="18"
@@ -9,7 +13,6 @@
         viewBox="0 0 18 18"
         aria-hidden="true"
       >
-        <title>Google</title>
         <g fill="none" fill-rule="evenodd">
           <path
             fill="#4285F4"
@@ -30,7 +33,7 @@
         </g>
       </svg>
       Google
-    </a>
+    </g-signin-button>
   </div>
 </template>
 
@@ -39,26 +42,36 @@ import router from "@/router/router";
 
 export default {
   name: "login_signup_social",
+  data() {
+    return {
+      /**
+       * The Auth2 parameters, as seen on
+       * https://developers.google.com/identity/sign-in/web/reference#gapiauth2initparams.
+       * As the very least, a valid client_id must present.
+       * @type {Object}
+       */
+      googleSignInParams: {
+        /* eslint-disable */
+        client_id: "633325488746-sn9qq8n380lf97b2cnpe42vh6jb4emn2.apps.googleusercontent.com"
+      }
+    };
+  },
   methods: {
-    loginWithGoogle() {
-      this.$gAuth
-        .signIn()
-        .then(GoogleUser => {
-          // on success do something
-          // console.log("GoogleUser", GoogleUser);
-          // console.log("getId", GoogleUser.getId());
-          // console.log("getBasicProfile", GoogleUser.getBasicProfile());
-          // console.log("getAuthResponse", GoogleUser.getAuthResponse());
-          const userInfo = {
-            loginType: "google",
-            google: GoogleUser
-          };
-          this.$store.commit("setLoginUser", userInfo);
-          router.push("/home");
-        })
-        .catch(error => {
-          // console.log("error", error);
-        });
+    onSignInSuccess(googleUser) {
+      // `googleUser` is the GoogleUser object that represents the just-signed-in user.
+      // See https://developers.google.com/identity/sign-in/web/reference#users
+      /* eslint-disable */
+      console.log(JSON.stringify(googleUser));
+      const userInfo = {
+        loginType: "google",
+        google: googleUser
+      };
+      this.$store.commit("setLoginUser", userInfo);
+      router.push("/home");
+    },
+    onSignInError(error) {
+      /* eslint-disable */
+      console.log("OH NOES", error);
     }
   }
 };

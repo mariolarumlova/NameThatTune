@@ -5,7 +5,7 @@
       <div class="loginsuccess-container">
         <h2 class="heading">Choose playlist</h2>
         <div>
-          <p>Placeholder</p>
+          <YoutubePlaylistChooser />
         </div>
       </div>
     </div>
@@ -14,11 +14,13 @@
 
 <script>
 import HomeMenu from "@/components/Menu";
+import YoutubePlaylistChooser from "@/components/YTPlaylistChooser";
 
 export default {
   name: "chooseplaylist",
   components: {
-    HomeMenu
+    HomeMenu,
+    YoutubePlaylistChooser
   }
 };
 </script>

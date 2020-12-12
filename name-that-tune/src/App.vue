@@ -1,21 +1,10 @@
 <template>
-  <div id="app">
-    <BaseContainer />
-  </div>
+  <v-app>
+    <router-view />
+  </v-app>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import BaseContainer from "./components/BaseContainer.vue";
-
-export default Vue.extend({
-  name: "App",
-
-  components: {
-    BaseContainer
-  },
-
-  data: () => ({
-    //
-  })
-});
+export default {
+  name: "vue_signup"
+};
 </script>

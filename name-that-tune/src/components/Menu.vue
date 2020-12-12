@@ -1,9 +1,8 @@
 <template>
   <v-app-bar app color="white" flat>
-    <v-avatar
-      :color="$vuetify.breakpoint.smAndDown ? 'grey darken-1' : 'black'"
-      size="32"
-    ></v-avatar>
+    <v-avatar size="60" tile>
+      <img src="../../public/img/icons/logo.png" />
+    </v-avatar>
 
     <v-tabs centered class="ml-n9" color="grey darken-1">
       <v-tab v-for="link in links" :to="link.url" :key="link.label">
@@ -48,12 +47,12 @@ export default {
       clientName: this.$store.state.loginUser.google.wt.Ad,
       items: [
         { title: "Settings", action: () => this.openSettings() },
-        { title: "Log out", action: () => this.logout() }
+        { title: "Log out", action: () => this.logout() },
       ],
       links: [
         { label: "Sign in", url: "/login" },
-        { label: "Sign up", url: "/signup" }
-      ]
+        { label: "Sign up", url: "/signup" },
+      ],
     };
   },
   name: "signup_header",
@@ -64,7 +63,7 @@ export default {
     },
     openSettings() {
       router.push("/settings");
-    }
-  }
+    },
+  },
 };
 </script>

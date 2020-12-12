@@ -1,5 +1,8 @@
 <template>
   <div class="main-container">
+    <v-avatar size="120" tile>
+      <img src="../../public/img/icons/logo.png" />
+    </v-avatar>
     <form>
       <div class="box-container">
         <h2 class="heading">Sign In</h2>

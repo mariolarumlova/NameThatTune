@@ -4,6 +4,7 @@ import Home from "@/views/Home";
 import Login from "@/views/Login";
 import SignUp from "@/views/SignUp";
 import ChooseGameMode from "@/views/ChooseGameMode";
+import ChoosePlaylist from "@/views/ChoosePlaylist";
 import PageNotFound from "@/components/PageNotFound";
 import Tournament from "@/components/Tournament";
 import Training from "@/components/Training";
@@ -35,6 +36,11 @@ const baseRoutes = [
     path: "/choosemode",
     name: "ChooseGameMode",
     component: ChooseGameMode
+  },
+  {
+    path: "/chooseplaylist",
+    name: "ChoosePlaylist",
+    component: ChoosePlaylist
   },
   {
     path: "/tournament",

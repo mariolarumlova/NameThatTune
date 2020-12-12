@@ -67,7 +67,7 @@ export default {
         google: googleUser
       };
       this.$store.commit("setLoginUser", userInfo);
-      router.push("/choosemode");
+      router.push("/chooseplaylist");
     },
     onSignInError(error) {
       console.log("OH NOES", error);

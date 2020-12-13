@@ -47,12 +47,12 @@ export default {
       clientName: this.$store.state.loginUser.google.wt.Ad,
       items: [
         { title: "Settings", action: () => this.openSettings() },
-        { title: "Log out", action: () => this.logout() },
+        { title: "Log out", action: () => this.logout() }
       ],
       links: [
         { label: "Sign in", url: "/login" },
-        { label: "Sign up", url: "/signup" },
-      ],
+        { label: "Sign up", url: "/signup" }
+      ]
     };
   },
   name: "signup_header",
@@ -63,7 +63,7 @@ export default {
     },
     openSettings() {
       router.push("/settings");
-    },
-  },
+    }
+  }
 };
 </script>

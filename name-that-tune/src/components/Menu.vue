@@ -57,7 +57,6 @@ export default {
       ]
     };
   },
-  name: "signup_header",
   methods: {
     logout() {
       removeItem("user");

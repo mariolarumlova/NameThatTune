@@ -45,7 +45,6 @@
 import router from "@/router/router";
 
 export default {
-  name: "login_signup_social",
   data() {
     return {
       /**

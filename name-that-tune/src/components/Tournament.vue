@@ -1,44 +1,39 @@
 <template>
-  <v-main app>
-    <HomeMenu />
-    <v-container fill-height fluid>
-      <v-row align="center" justify="space-around">
-        <v-col align="center" justify="space-around">
-          <div class="text-h4 pa-4">
-            Tournament mode
-          </div>
-          <div class="text-body-1 pa-4">
-            Hello! You are in a tournament mode. This page is not fully
-            implemented yet.
-            <br />
-            <div class="halfwidth-wrapper">
+  <v-container fill-height fluid>
+    <v-row align="center" justify="space-around">
+      <v-col align="center" justify="space-around">
+        <div class="text-h4 pa-4">
+          Tournament mode
+        </div>
+        <div class="text-body-1 pa-4">
+          Hello! You are in a tournament mode. This page is not fully
+          implemented yet.
+          <br />
+          <div class="halfwidth-wrapper">
+            <v-select
+              :items="pieces"
+              label="Choose the piece"
+              solo
+              v-model="selected"
+            ></v-select>
+            Selected: {{ selected }}
+            <div v-if="selected.multipart">
               <v-select
-                :items="pieces"
-                label="Choose the piece"
+                :items="selected.parts"
+                label="Choose the part"
                 solo
-                v-model="selected"
+                v-model="selectedPart"
               ></v-select>
-              Selected: {{ selected }}
-              <div v-if="selected.multipart">
-                <v-select
-                  :items="selected.parts"
-                  label="Choose the part"
-                  solo
-                  v-model="selectedPart"
-                ></v-select>
-                Selected: {{ selectedPart }}
-              </div>
+              Selected: {{ selectedPart }}
             </div>
           </div>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-main>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import HomeMenu from "@/components/Menu";
-
 export default {
   data() {
     return {
@@ -70,10 +65,6 @@ export default {
       selected: "",
       selectedPart: ""
     };
-  },
-  name: "tournament",
-  components: {
-    HomeMenu
   }
 };
 </script>

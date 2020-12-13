@@ -9,9 +9,9 @@
             <img :src="clientImageUrl" />
           </v-avatar>
           <div class="halfwidth-wrapper text-body-1 pa-4">
+            <br />Random start of a piece
             <v-switch
               v-model="pickedRandomStart"
-              label="Random start of a piece"
               color="orange darken-3"
               hide-details
             ></v-switch>
@@ -39,13 +39,13 @@
               <v-radio label="0 p." value="0" color="orange darken-3"></v-radio>
             </v-radio-group>
 
+            <br />Limited answer time
             <v-switch
               v-model="checked"
-              label="Limited answer time"
               color="orange darken-3"
               hide-details
             ></v-switch>
-            <div v-if="checked">
+            <div v-if="checked" class="pa-4">
               <v-text-field
                 v-model="timeLimit"
                 label="Time (in sec)"

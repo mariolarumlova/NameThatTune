@@ -1,97 +1,74 @@
 <template>
-  <div>
-    <HomeMenu />
-    <div class="main-container">
-      <div class="loginsuccess-container">
-        <h2 class="heading">Settings</h2>
-        <div class="center">
+  <v-container fill-height fluid>
+    <v-row align="center" justify-content="center">
+      <v-col align="center" justify-content="center">
+        <div class="text-h4 pa-4">{{ clientName }} - account settings</div>
+        <v-avatar size="120" tile>
           <img :src="clientImageUrl" />
-          <p>{{ clientName }}</p>
-          <p>First login date:</p>
-          <p>Number of playlists:</p>
-
-          <p>Random start of a piece</p>
-          <input
-            type="radio"
-            id="randomStartYes"
-            value="Yes"
+        </v-avatar>
+        <div class="halfwidth-wrapper text-body-1 pa-4">
+          <br />Random start of a piece
+          <v-switch
             v-model="pickedRandomStart"
-          />
-          <label for="randomStartYes">Yes</label>
-          <input
-            type="radio"
-            id="randomStartNo"
-            value="No"
-            v-model="pickedRandomStart"
-          />
-          <label for="randomStartNo">No</label>
-          <span>Picked: {{ pickedRandomStart }}</span>
+            color="orange darken-3"
+            hide-details
+          ></v-switch>
+          <br />Correct answers
+          <v-radio-group v-model="pickedAnswer" row mandatory>
+            <v-radio
+              label="After each piece"
+              value="After each piece"
+              color="orange darken-3"
+            ></v-radio>
+            <v-radio
+              label="At the end of the tournament"
+              value="At the end of the tournament"
+              color="orange darken-3"
+            ></v-radio>
+          </v-radio-group>
 
-          <p>Correct answers</p>
-          <input
-            type="radio"
-            id="answerEach"
-            value="After each piece"
-            v-model="pickedAnswer"
-          />
-          <label for="answerEach">After each piece</label>
-          <input
-            type="radio"
-            id="answerEnd"
-            value="At the end of the tournament"
-            v-model="pickedAnswer"
-          />
-          <label for="answerEnd">At the end of the tournament</label>
-          <span>Picked: {{ pickedAnswer }}</span>
+          <br />Correct piece, incorrect part score
+          <v-radio-group v-model="pickedScoring" row mandatory>
+            <v-radio
+              label="0.5 p."
+              value="0.5"
+              color="orange darken-3"
+            ></v-radio>
+            <v-radio label="0 p." value="0" color="orange darken-3"></v-radio>
+          </v-radio-group>
 
-          <p>Correct piece, incorrect part score</p>
-          <input
-            type="radio"
-            id="halfScore"
-            value="0.5 p."
-            v-model="pickedScoring"
-          />
-          <label for="halfScore">0.5 p.</label>
-          <input
-            type="radio"
-            id="noScore"
-            value="0 p."
-            v-model="pickedScoring"
-          />
-          <label for="noScore">0 p.</label>
-          <span>Picked: {{ pickedScoring }}</span>
-
-          <p>Limited answer time</p>
-          <br />
-          <input type="checkbox" id="checkbox" v-model="checked" />
-          <p v-if="checked">
-            <input v-model="timeLimit" placeholder="30" /> sec.
-          </p>
-          <p>{{ checked }} {{ timeLimit }}</p>
+          <br />Limited answer time
+          <v-switch
+            v-model="checked"
+            color="orange darken-3"
+            hide-details
+          ></v-switch>
+          <div v-if="checked" class="pa-4">
+            <v-text-field
+              v-model="timeLimit"
+              label="Time (in sec)"
+              placeholder="30"
+              outlined
+            ></v-text-field>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import HomeMenu from "@/components/Menu";
-
 export default {
   data() {
     return {
       clientImageUrl: this.$store.state.loginUser.google.wt.SJ,
       clientName: this.$store.state.loginUser.google.wt.Ad,
-      pickedRandomStart: "No",
+      pickedRandomStart: false,
       pickedAnswer: "After each piece",
       pickedScoring: "0.5 p.",
       checked: false,
-      timeLimit: 0
+      timeLimit: ""
     };
-  },
-  name: "settings",
-  components: {
-    HomeMenu
   }
 };
 </script>

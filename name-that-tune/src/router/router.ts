@@ -1,14 +1,11 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "@/views/Home";
-import Login from "@/views/Login";
-import SignUp from "@/views/SignUp";
-import ChooseGameMode from "@/views/ChooseGameMode";
-import ChoosePlaylist from "@/views/ChoosePlaylist";
-import PageNotFound from "@/components/PageNotFound";
-import Tournament from "@/components/Tournament";
-import Training from "@/components/Training";
-import Settings from "@/components/Settings";
+import Login from "@/views/LoginPage";
+import ChooseGameMode from "@/views/HomePage";
+import PageNotFound from "@/views/PageNotFound";
+import Tournament from "@/views/TournamentPage";
+import Training from "@/views/TrainingPage";
+import Settings from "@/views/SettingsPage";
 
 Vue.use(Router);
 
@@ -18,29 +15,14 @@ const baseRoutes = [
     redirect: "/login"
   },
   {
-    path: "/home",
-    name: "Home",
-    component: Home
-  },
-  {
     path: "/login",
-    name: "Login",
+    name: "Log in",
     component: Login
   },
   {
-    path: "/signup",
-    name: "SignUp",
-    component: SignUp
-  },
-  {
     path: "/choosemode",
-    name: "ChooseGameMode",
+    name: "Choose game mode",
     component: ChooseGameMode
-  },
-  {
-    path: "/chooseplaylist",
-    name: "ChoosePlaylist",
-    component: ChoosePlaylist
   },
   {
     path: "/tournament",

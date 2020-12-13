@@ -1,30 +1,62 @@
 <template>
-  <div class="tab">
-    <a
-      href="#"
-      v-if="this.$store.state.loginUser"
-      @click.prevent="logout"
-      class="tablinks"
-      >Logout</a
-    >
-    <router-link to="/login" class="tablinks">Sign In</router-link>
-    <router-link to="/signup" class="tablinks">Sign Up</router-link>
-    <a
-      href="#"
-      v-if="this.$store.state.loginUser"
-      @click.prevent="openSettings"
-      class="tablinks"
-      >Settings</a
-    >
-  </div>
+  <v-app-bar app color="white" flat>
+    <v-avatar size="60" tile>
+      <img src="../../public/img/icons/logo.png" />
+    </v-avatar>
+
+    <v-tabs centered class="ml-n9" color="grey darken-1" v-model="activeTab">
+      <v-tab v-for="tab in tabs" :to="tab.url" :key="tab.index">
+        {{ tab.label }}
+      </v-tab>
+    </v-tabs>
+
+    <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-avatar
+          class="hidden-sm-and-down"
+          color="grey darken-1 shrink"
+          size="60"
+          v-bind="attrs"
+          v-on="on"
+        >
+          <img :src="clientImageUrl" />
+        </v-avatar>
+      </template>
+      <v-list v-if="this.$store.state.loginUser">
+        <v-list-item
+          v-for="(item, index) in items"
+          :to="item.url"
+          :key="index"
+          @click.prevent="item.action"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </v-app-bar>
 </template>
 
-<script lang="ts">
+<script>
 import router from "@/router/router";
 import { removeItem } from "@/config/utils";
 
 export default {
-  name: "signup_header",
+  data() {
+    return {
+      activeTab: 0,
+      clientImageUrl: this.$store.state.loginUser.google.wt.SJ,
+      clientName: this.$store.state.loginUser.google.wt.Ad,
+      items: [
+        { title: "Settings", action: () => this.openSettings() },
+        { title: "Log out", action: () => this.logout() }
+      ],
+      tabs: [
+        { index: 0, label: "Home", url: "/choosemode" },
+        { index: 1, label: "Training", url: "/training" },
+        { index: 2, label: "Tournament", url: "/tournament" }
+      ]
+    };
+  },
   methods: {
     logout() {
       removeItem("user");

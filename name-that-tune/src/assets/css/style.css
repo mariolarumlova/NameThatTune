@@ -53,8 +53,6 @@ body {
     margin: 0 auto;
     width: 400px;
     box-shadow: beige;
-    border: 1px solid #ccc;
-    border-radius: 5px;
     background: #fff;
 }
 .heading {
@@ -158,6 +156,9 @@ body {
     top: 50%;
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
+}
+.halfwidth-wrapper {
+    width: 30%
 }
 .footer, .footer a {
     text-align: center;

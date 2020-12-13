@@ -21,7 +21,7 @@ import SocialLogin from "@/components/SocialLogin";
 export default {
   name: "login",
   components: {
-    SocialLogin,
-  },
+    SocialLogin
+  }
 };
 </script>

@@ -5,7 +5,7 @@
     </v-app-bar>
     <v-main app>
       404 Page Not found
-      <v-button to="/login">Go back to login page</v-button>
+      <v-btn to="/login">Go back to login page</v-btn>
     </v-main>
   </div>
 </template>

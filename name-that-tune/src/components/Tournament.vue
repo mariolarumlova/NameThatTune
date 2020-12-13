@@ -1,40 +1,50 @@
 <template>
-  <v-container fill-height fluid>
-    <v-row align="center" justify="space-around">
-      <v-col align="center" justify="space-around">
-        <div class="text-h4 pa-4">
-          Tournament mode
-        </div>
-        <div class="text-body-1 pa-4">
-          Hello! You are in a tournament mode. This page is not fully
-          implemented yet.
-          <br />
-          <div class="halfwidth-wrapper">
-            <v-select
-              :items="pieces"
-              label="Choose the piece"
-              solo
-              v-model="selected"
-            ></v-select>
-            Selected: {{ selected }}
-            <div v-if="selected.multipart">
+  <div>
+    <v-container v-if="playlist" fill-height fluid>
+      <v-row align="center" justify="space-around">
+        <v-col align="center" justify="space-around">
+          <div class="text-h4 pa-4">
+            Tournament mode
+          </div>
+          <div class="text-body-1 pa-4">
+            Hello! You are in a tournament mode. This page is not fully
+            implemented yet.
+            <br />
+            <div class="halfwidth-wrapper">
               <v-select
-                :items="selected.parts"
-                label="Choose the part"
+                :items="pieces"
+                label="Choose the piece"
                 solo
-                v-model="selectedPart"
+                v-model="selected"
               ></v-select>
-              Selected: {{ selectedPart }}
+              Selected: {{ selected }}
+              <div v-if="selected.multipart">
+                <v-select
+                  :items="selected.parts"
+                  label="Choose the part"
+                  solo
+                  v-model="selectedPart"
+                ></v-select>
+                Selected: {{ selectedPart }}
+              </div>
             </div>
           </div>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-col>
+      </v-row>
+    </v-container>
+    <PlaylistChooser v-else @playlistChosen="playlist = $event" />
+  </div>
 </template>
 
 <script>
+import PlaylistChooser from "@/components/YTPlaylistChooser";
 export default {
+  props: {
+    playlist: String
+  },
+  components: {
+    PlaylistChooser
+  },
   data() {
     return {
       pieces: [

@@ -9,16 +9,12 @@
             <img :src="clientImageUrl" />
           </v-avatar>
           <div class="halfwidth-wrapper text-body-1 pa-4">
-            First login date:
-            <br />
-            Number of playlists: <br />
             <v-switch
               v-model="pickedRandomStart"
               label="Random start of a piece"
               color="orange darken-3"
               hide-details
             ></v-switch>
-            <br />Picked: {{ pickedRandomStart }}<br />
             <br />Correct answers
             <v-radio-group v-model="pickedAnswer" row mandatory>
               <v-radio
@@ -32,7 +28,6 @@
                 color="orange darken-3"
               ></v-radio>
             </v-radio-group>
-            <br />Picked: {{ pickedAnswer }}
 
             <br />Correct piece, incorrect part score
             <v-radio-group v-model="pickedScoring" row mandatory>
@@ -43,7 +38,6 @@
               ></v-radio>
               <v-radio label="0 p." value="0" color="orange darken-3"></v-radio>
             </v-radio-group>
-            Picked: {{ pickedScoring }}
 
             <v-switch
               v-model="checked"
@@ -58,7 +52,6 @@
                 placeholder="30"
                 outlined
               ></v-text-field>
-              {{ timeLimit }}
             </div>
           </div>
         </v-col>

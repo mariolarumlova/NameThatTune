@@ -1,35 +1,39 @@
 <template>
-  <div>
+  <v-main app>
     <HomeMenu />
-    <div class="main-container">
-      <div class="loginsuccess-container">
-        <h2 class="heading">Tournament mode</h2>
-        <div>
-          <p>Hello! You are in tournament mode</p>
-          <select v-model="selected">
-            <option
-              v-for="piece in pieces"
-              v-bind:key="piece.id"
-              v-bind:value="piece"
-            >
-              {{ piece.text }}
-            </option>
-          </select>
-          <span>Selected: {{ selected }}</span>
-
-          <div v-if="selected.multipart">
-            <select v-model="selectedPart">
-              <option disabled value="">Choose the part</option>
-              <option>A</option>
-              <option>B</option>
-              <option>C</option>
-            </select>
-            <span>Selected: {{ selectedPart }}</span>
+    <v-container fill-height fluid>
+      <v-row align="center" justify="space-around">
+        <v-col align="center" justify="space-around">
+          <div class="text-h4 pa-4">
+            Tournament mode
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
+          <div class="text-body-1 pa-4">
+            Hello! You are in a tournament mode. This page is not fully
+            implemented yet.
+            <br />
+            <div class="halfwidth-wrapper">
+              <v-select
+                :items="pieces"
+                label="Choose the piece"
+                solo
+                v-model="selected"
+              ></v-select>
+              Selected: {{ selected }}
+              <div v-if="selected.multipart">
+                <v-select
+                  :items="selected.parts"
+                  label="Choose the part"
+                  solo
+                  v-model="selectedPart"
+                ></v-select>
+                Selected: {{ selectedPart }}
+              </div>
+            </div>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
@@ -39,18 +43,29 @@ export default {
   data() {
     return {
       pieces: [
-        { id: "1", text: "Fryderyk Chopin - Waltz b-minor" },
+        { text: "Fryderyk Chopin - Waltz b-minor", value: { id: 1 } },
         {
-          id: "2",
           text: "Ludwig van Beethoven - The 5th Symphony",
-          multipart: true
+          value: {
+            id: "2",
+            multipart: true,
+            parts: ["I", "II", "III"]
+          }
         },
         {
-          id: "3",
           text: "Modest Musorgski - Pictures from the Exhibition",
-          multipart: true
+          value: {
+            id: "3",
+            multipart: true,
+            parts: ["Bydlo", "The old castle", "Promenade"]
+          }
         },
-        { id: "4", text: "Pedro Iturralde - Pequena Czarda" }
+        {
+          text: "Pedro Iturralde - Pequena Czarda",
+          value: {
+            id: "4"
+          }
+        }
       ],
       selected: "",
       selectedPart: ""

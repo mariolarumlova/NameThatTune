@@ -4,9 +4,9 @@
       <img src="../../public/img/icons/logo.png" />
     </v-avatar>
 
-    <v-tabs centered class="ml-n9" color="grey darken-1">
-      <v-tab v-for="link in links" :to="link.url" :key="link.label">
-        {{ link.label }}
+    <v-tabs centered class="ml-n9" color="grey darken-1" v-model="activeTab">
+      <v-tab v-for="tab in tabs" :to="tab.url" :key="tab.index">
+        {{ tab.label }}
       </v-tab>
     </v-tabs>
 
@@ -43,15 +43,17 @@ import { removeItem } from "@/config/utils";
 export default {
   data() {
     return {
+      activeTab: 0,
       clientImageUrl: this.$store.state.loginUser.google.wt.SJ,
       clientName: this.$store.state.loginUser.google.wt.Ad,
       items: [
         { title: "Settings", action: () => this.openSettings() },
         { title: "Log out", action: () => this.logout() }
       ],
-      links: [
-        { label: "Sign in", url: "/login" },
-        { label: "Sign up", url: "/signup" }
+      tabs: [
+        { index: 0, label: "Home", url: "/choosemode" },
+        { index: 1, label: "Training", url: "/training" },
+        { index: 2, label: "Tournament", url: "/tournament" }
       ]
     };
   },

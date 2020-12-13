@@ -1,5 +1,5 @@
 <template>
-  <v-main app class="flex-direction: column justify-center">
+  <v-main app>
     <v-container fill-height fluid>
       <v-row align="center" justify="center">
         <v-card class="justify center">

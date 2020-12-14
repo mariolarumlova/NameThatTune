@@ -5,6 +5,14 @@ import * as history from "connect-history-api-fallback";
 const app = express();
 const staticFileMiddleware = express.static(path.join(__dirname + "/dist"));
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 app.use(staticFileMiddleware);
 app.use(
   history({

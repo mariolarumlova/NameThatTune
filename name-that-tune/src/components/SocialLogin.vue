@@ -43,6 +43,7 @@
 /* eslint-disable*/
 
 import router from "@/router/router";
+import listPlaylist from "@/middleware/listPlaylist";
 
 export default {
   data() {
@@ -63,6 +64,14 @@ export default {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users
       console.log(JSON.stringify(googleUser));
+      listPlaylist({accessToken: googleUser.xc.access_token, apiKey: process.env.VUE_APP_YOUTUBE_API_KEY, store: this.$store});
+
+      // Example 1: Use method-specific function
+      // var request = gapi.client.youtube.channels.list({'part': 'snippet', 'mine': 'true'});
+      // request.execute(function(response) {
+      //   console.log(response);
+      // });
+
       const userInfo = {
         loginType: "google",
         google: googleUser,

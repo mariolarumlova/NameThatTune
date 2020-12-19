@@ -3,7 +3,7 @@
     <v-btn
       color="orange darken-2"
       class="ma-2 white--text"
-      @click.prevent="logInViaGoogle()"
+      @click.prevent="logInViaGoogle"
     >
       Sign in with Google
       <v-icon left color="orange darken-2">mdi-google</v-icon>
@@ -15,7 +15,7 @@
 /* eslint-disable*/
 
 import router from "@/router/router";
-import { getGoogleAuthObject } from "@/middleware/googleApiConnector";
+import getGoogleAuthObject from "@/middleware/googleApiConnector";
 
 export default {
   methods: {

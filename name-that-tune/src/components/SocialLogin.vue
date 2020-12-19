@@ -27,36 +27,23 @@ import router from "@/router/router";
 
 export default {
   methods: {
-    authenticate() {
-      gapi.load("client:auth2", function() {
-        gapi.auth2.init({ client_id: process.env.VUE_APP_CLIENT_ID });
-        return gapi.auth2
-          .getAuthInstance()
-          .signIn({ scope: "https://www.googleapis.com/auth/youtube.readonly" })
-          .then(
-            function(googleUser) {
-              console.log("Sign-in successful");
-              console.log(googleUser);
-              // this.loadClient();
-              gapi.client.setApiKey(process.env.VUE_APP_YOUTUBE_API_KEY);
-              return gapi.client
-                .load(
-                  "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"
-                )
-                .then(
-                  function() {
-                    console.log("GAPI client loaded for API");
-                  },
-                  function(err) {
-                    console.error("Error loading GAPI client for API", err);
-                  }
-                );
-            },
-            function(err) {
-              console.error("Error signing in", err);
-            }
-          );
-      });
+    async authenticate() {
+      await gapi.load("client:auth2");
+      await gapi.auth2.init({ client_id: process.env.VUE_APP_CLIENT_ID });
+      const googleUser = await gapi.auth2
+        .getAuthInstance()
+        .signIn({
+          scope: "https://www.googleapis.com/auth/youtube.readonly",
+        });
+      console.log("Sign-in successful");
+      console.log(googleUser);
+      this.loadClient();
+      const userInfo = {
+          loginType: "google",
+          google: googleUser,
+        };
+      this.$store.commit("setLoginUser", userInfo);
+      router.push("/choosemode");
     },
     loadClient() {
       gapi.client.setApiKey(process.env.VUE_APP_YOUTUBE_API_KEY);
@@ -90,19 +77,19 @@ export default {
         );
     },
 
-    async logInViaGoogle() {
-      try {
-        // const googleAuthObject = await getGoogleAuthObject();
-        const userInfo = {
-          loginType: "google",
-          google: googleUser,
-        };
-        this.$store.commit("setLoginUser", userInfo);
-        router.push("/choosemode");
-      } catch (err) {
-        console.error(err);
-      }
-    },
+    // async logInViaGoogle() {
+    //   try {
+    //     // const googleAuthObject = await getGoogleAuthObject();
+    //     const userInfo = {
+    //       loginType: "google",
+    //       google: googleUser,
+    //     };
+    //     this.$store.commit("setLoginUser", userInfo);
+    //     router.push("/choosemode");
+    //   } catch (err) {
+    //     console.error(err);
+    //   }
+    // },
   },
 };
 </script>

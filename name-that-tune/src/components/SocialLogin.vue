@@ -60,19 +60,12 @@ export default {
       router.push("/choosemode");
     },
 
-    logInViaGoogle: function() {
-      this.authenticate()
-      .then((googleUser) => {
-        console.log(googleUser);
-        this.storeClientInfo(googleUser);
-        return this.loadClient();
-      })
-      .then(data => {
-        return this.goToMainPage();
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    logInViaGoogle: async function() {
+      const googleUser = await this.authenticate();
+      console.log(googleUser);
+      await this.storeClientInfo(googleUser);
+      await this.loadClient();
+      await this.goToMainPage();
     },
     
     storeClientInfo: function(googleUser) {

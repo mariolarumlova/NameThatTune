@@ -19,12 +19,20 @@
                 placeholder="Add multiple lines"
               ></v-textarea>
             </div>
+            <v-btn class="ma-8" @click.prevent="clearPiece()">Save</v-btn>
+            <v-btn class="ma-8" @click.prevent="clearPiece()"
+              >Back to playlist</v-btn
+            >
           </div>
-          <PieceChooser
-            v-else
-            :playlistItems="playlistItems"
-            @pieceChosen="piece = $event"
-          />
+          <div v-else>
+            <PieceChooser
+              :playlistItems="playlistItems"
+              @pieceChosen="piece = $event"
+            />
+            <v-btn class="ma-8" @click.prevent="clearPlaylist()"
+              >Back to playlists</v-btn
+            >
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -50,6 +58,14 @@ export default {
     return {
       message: ""
     };
+  },
+  methods: {
+    clearPiece: function() {
+      this.piece = null;
+    },
+    clearPlaylist: function() {
+      this.playlistItems = null;
+    }
   }
 };
 </script>

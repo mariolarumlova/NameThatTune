@@ -15,7 +15,7 @@
           <v-list-item
             v-for="(item, i) in items"
             :key="i"
-            @click.prevent="setPlaylist(item)"
+            @click.prevent="setPlaylistItems(item)"
           >
             <v-list-item-avatar>
               <v-img :src="item.avatar.url"></v-img>
@@ -46,8 +46,9 @@ export default {
     this.loading = false;
   },
   methods: {
-    setPlaylist(selectedItem) {
-      this.$emit("playlistChosen", selectedItem.id);
+    async setPlaylistItems(selectedPlaylist) {
+      const playlistItems = await this.getPlaylistItems(selectedPlaylist.id);
+      this.$emit("playlistChosen", playlistItems);
     },
     getPlaylists: function() {
       return new Promise((resolve, reject) => {
@@ -65,6 +66,32 @@ export default {
                   id: playlist.id,
                   title: playlist.snippet.title,
                   avatar: playlist.snippet.thumbnails.default
+                };
+              });
+              resolve(items);
+            },
+            function(err) {
+              console.error("Execute error", err);
+              resolve([]);
+            }
+          );
+      });
+    },
+    getPlaylistItems: function(playlistId) {
+      return new Promise((resolve, reject) => {
+        gapi.client.youtube.playlistItems
+          .list({
+            part: ["id,status,snippet,contentDetails"],
+            playlistId: playlistId
+          })
+          .then(
+            function(response) {
+              console.log("Response", response);
+              const items = response.result.items.map(piece => {
+                return {
+                  id: piece.id,
+                  title: piece.snippet.title,
+                  avatar: piece.snippet.thumbnails.default
                 };
               });
               resolve(items);

@@ -6,16 +6,8 @@
           <div class="text-h4 pa-4">
             Training mode
           </div>
-          <div class="text-body-1 pa-4">
-            Hello! You are in a training mode. This page is not fully
-            implemented yet.
-            <br />
-            <MusicPlayer v-if="piece" :videoDetails="piece" />
-            <PieceChooser
-              v-else
-              :playlistItems="playlistItems"
-              @pieceChosen="piece = $event"
-            />
+          <div v-if="piece" class="text-body-1 pa-4">
+            <MusicPlayer :videoDetails="piece" />
             Notes:
             <br />
             {{ message }}
@@ -28,6 +20,11 @@
               ></v-textarea>
             </div>
           </div>
+          <PieceChooser
+            v-else
+            :playlistItems="playlistItems"
+            @pieceChosen="piece = $event"
+          />
         </v-col>
       </v-row>
     </v-container>

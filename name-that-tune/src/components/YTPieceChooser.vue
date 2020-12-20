@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height fluid>
     <v-progress-circular v-if="loading"></v-progress-circular>
-    <v-card v-else class="mx-auto" max-width="300" tile>
+    <v-card v-else class="mx-auto" tile>
       <v-list rounded>
         <v-subheader>Choose piece:</v-subheader>
         <v-list-item-group v-model="selectedItem" color="primary">

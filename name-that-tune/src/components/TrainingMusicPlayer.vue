@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height fluid>
-    <v-card class="mx-auto" max-width="300" tile>
+    <v-card class="mx-auto" tile>
       <v-progress-circular v-if="loading"></v-progress-circular>
       {{ videoDetails }}
       <!-- add player here -->

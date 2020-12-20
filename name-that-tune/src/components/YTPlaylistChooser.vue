@@ -7,7 +7,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-card class="mx-auto" max-width="300" tile>
+    <v-card class="mx-auto" tile>
       <v-progress-circular v-if="loading"></v-progress-circular>
       <v-list v-else rounded>
         <v-subheader>My playlists:</v-subheader>

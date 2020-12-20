@@ -7,10 +7,6 @@ import "@/assets/css/style.css";
 import "./registerServiceWorker";
 import vuetify from "./plugins/vuetify";
 
-/* eslint-disable */
-const GSignInButton = require('vue-google-signin-button');
-
-Vue.use(GSignInButton);
 Vue.config.productionTip = false;
 
 new Vue({
@@ -18,4 +14,4 @@ new Vue({
   store,
   vuetify,
   render: h => h(App)
-}).$mount('#app');
+}).$mount("#app");

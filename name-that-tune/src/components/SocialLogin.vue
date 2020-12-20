@@ -5,8 +5,8 @@
       class="ma-2 white--text"
       @click.prevent="logInViaGoogle()"
     >
+      <v-icon left color="white">mdi-google</v-icon>
       Sign in with Google
-      <v-icon left color="orange darken-2">mdi-google</v-icon>
     </v-btn>
   </div>
 </template>
@@ -17,7 +17,7 @@
 import router from "@/router/router";
 export default {
   methods: {
-    authenticate: function() {
+    authenticate: function(scopes) {
       return new Promise(async (resolve, reject) => {
         gapi.load("client:auth2", function() {
           gapi.auth2.init({ client_id: process.env.VUE_APP_CLIENT_ID });
@@ -25,7 +25,7 @@ export default {
           gapi.auth2
             .getAuthInstance()
             .signIn({
-              scope: "https://www.googleapis.com/auth/youtube.readonly",
+              scopes: scopes,
             })
             .then((data) => {
               console.log("Sign-in successful");
@@ -61,7 +61,7 @@ export default {
     },
 
     logInViaGoogle: async function() {
-      const googleUser = await this.authenticate();
+      const googleUser = await this.authenticate(["https://www.googleapis.com/auth/youtube.readonly"]);
       await this.storeClientInfo(googleUser);
       await this.loadClient("youtube", "v3");
       await this.goToMainPage();

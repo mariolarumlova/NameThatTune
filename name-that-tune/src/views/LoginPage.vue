@@ -6,9 +6,6 @@
           <v-avatar size="120" tile>
             <v-img src="../../public/img/icons/logo.png" />
           </v-avatar>
-          <div class="text-h4 pa-6">
-            Sign in with Google
-          </div>
           <SocialLogin />
         </v-card>
       </v-row>

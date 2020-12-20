@@ -1,15 +1,13 @@
 <template>
   <div>
-    <v-container v-if="playlist" fill-height fluid>
+    <v-container v-if="playlistItems" fill-height fluid>
       <v-row align="center" justify="space-around">
         <v-col align="center" justify="space-around">
           <div class="text-h4 pa-4">
             Training mode
           </div>
-          <div class="text-body-1 pa-4">
-            Hello! You are in a training mode. This page is not fully
-            implemented yet.
-            <br />
+          <div v-if="piece" class="text-body-1 pa-4">
+            <MusicPlayer :videoDetails="piece" />
             Notes:
             <br />
             {{ message }}
@@ -21,27 +19,53 @@
                 placeholder="Add multiple lines"
               ></v-textarea>
             </div>
+            <v-btn class="ma-8" @click.prevent="clearPiece()">Save</v-btn>
+            <v-btn class="ma-8" @click.prevent="clearPiece()"
+              >Back to playlist</v-btn
+            >
+          </div>
+          <div v-else>
+            <PieceChooser
+              :playlistItems="playlistItems"
+              @pieceChosen="piece = $event"
+            />
+            <v-btn class="ma-8" @click.prevent="clearPlaylist()"
+              >Back to playlists</v-btn
+            >
           </div>
         </v-col>
       </v-row>
     </v-container>
-    <PlaylistChooser v-else @playlistChosen="playlist = $event" />
+    <PlaylistChooser v-else @playlistChosen="playlistItems = $event" />
   </div>
 </template>
 
 <script>
 import PlaylistChooser from "@/components/YTPlaylistChooser";
+import MusicPlayer from "@/components/TrainingMusicPlayer";
+import PieceChooser from "@/components/YTPieceChooser";
 export default {
   props: {
-    playlist: String
+    playlistItems: Array,
+    piece: Object
   },
   components: {
-    PlaylistChooser
+    MusicPlayer,
+    PlaylistChooser,
+    PieceChooser
   },
   data() {
     return {
       message: ""
     };
+  },
+  methods: {
+    clearPiece: function() {
+      this.piece = null;
+    },
+    clearPlaylist: function() {
+      this.playlistItems = null;
+    }
   }
 };
 </script>

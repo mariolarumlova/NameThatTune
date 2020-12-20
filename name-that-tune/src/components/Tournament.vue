@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container v-if="playlist" fill-height fluid>
+    <v-container v-if="playlistItems" fill-height fluid>
       <v-row align="center" justify="space-around">
         <v-col align="center" justify="space-around">
           <div class="text-h4 pa-4">
@@ -10,6 +10,8 @@
             Hello! You are in a tournament mode. This page is not fully
             implemented yet.
             <br />
+            <MusicPlayer :playlistItems="playlistItems" />
+
             <div class="halfwidth-wrapper">
               <v-select
                 :items="pieces"
@@ -32,17 +34,20 @@
         </v-col>
       </v-row>
     </v-container>
-    <PlaylistChooser v-else @playlistChosen="playlist = $event" />
+    <PlaylistChooser v-else @playlistChosen="playlistItems = $event" />
   </div>
 </template>
 
 <script>
 import PlaylistChooser from "@/components/YTPlaylistChooser";
+import MusicPlayer from "@/components/TournamentMusicPlayer";
 export default {
   props: {
-    playlist: String
+    playlistItems: Array,
+    piece: Object
   },
   components: {
+    MusicPlayer,
     PlaylistChooser
   },
   data() {

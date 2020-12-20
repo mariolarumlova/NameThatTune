@@ -38,11 +38,11 @@ export default {
         });
       });
     },
-    loadClient: function() {
+    loadClient: function(apiName, apiVersion) {
       return new Promise(async (resolve, reject) => {
         gapi.client.setApiKey(process.env.VUE_APP_YOUTUBE_API_KEY);
         return gapi.client
-          .load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
+          .load(`https://www.googleapis.com/discovery/v1/apis/${apiName}/${apiVersion}/rest`)
           .then(
             function() {
               console.log("GAPI client loaded for API");
@@ -62,9 +62,8 @@ export default {
 
     logInViaGoogle: async function() {
       const googleUser = await this.authenticate();
-      console.log(googleUser);
       await this.storeClientInfo(googleUser);
-      await this.loadClient();
+      await this.loadClient("youtube", "v3");
       await this.goToMainPage();
     },
     

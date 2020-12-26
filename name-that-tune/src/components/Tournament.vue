@@ -6,18 +6,17 @@
           <div class="text-h4 pa-4">
             Tournament mode
           </div>
-          <div class="text-body-1 pa-4">
-            Hello! You are in a tournament mode. This page is not fully
-            implemented yet.
-            <br />
+          <div v-if="!tournamentComplete" class="text-body-1 pa-4">
             <MusicPlayer
+              :key="index"
               customStyle="display: none"
-              :videoDetails="playlistItems[0]"
+              :videoDetails="currentPiece"
             />
             <v-btn @click.prevent="checkPiece()">Check</v-btn>
             <br />
-            Result: {{ result }}
-            <br />
+            Result: {{ result }} <br />
+            Index: {{ index }} <br />
+            Tournament complete: {{ tournamentComplete }} <br />
 
             <div class="halfwidth-wrapper">
               <v-select
@@ -37,6 +36,9 @@
               </div>
             </div>
           </div>
+          <div v-else class="text-body-1 pa-4">
+            Tournament complete. Your score is {{ correctAnswersNo }} out of {{ playlistItems.length }}
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -49,7 +51,6 @@ import PlaylistChooser from "@/components/YTPlaylistChooser";
 import MusicPlayer from "@/components/MusicPlayer";
 export default {
   props: {
-    playlistItems: Array,
     piece: Object
   },
   components: {
@@ -58,10 +59,18 @@ export default {
   },
   methods: {
     checkPiece: function() {
-      this.result = this.selected.title === this.playlistItems[0].title;
+      this.result = this.selected.title === this.currentPiece.title;
+      this.correctAnswersNo = this.result
+        ? this.correctAnswersNo + 1
+        : this.correctAnswersNo;
+      this.index += 1;
+      if (this.index < this.playlistItems.length) {
+        this.currentPiece = this.playlistItems[this.index];
+      } else {
+        this.tournamentComplete = true;
+      }
     },
     setPlaylist: function(event) {
-      this.playlistItems = event;
       this.pieces =
         event && event.length
           ? event.map(item => {
@@ -71,14 +80,36 @@ export default {
               };
             })
           : [];
+      this.playlistItems = this.shuffle(event);
+      this.index = 0;
+      this.currentPiece = this.playlistItems[this.index];
+      this.tournamentComplete = false;
+      this.correctAnswersNo = 0;
+    },
+    shuffle: function(inputArray) {
+      const array = JSON.parse(JSON.stringify(inputArray));
+      let m = array.length;
+      let t, i;
+      while (m) {
+        i = Math.floor(Math.random() * m--);
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+      }
+      return array;
     }
   },
   data() {
     return {
       pieces: [],
+      playlistItems: null,
       selected: "",
       selectedPart: "",
-      result: ""
+      result: "",
+      index: 0,
+      currentPiece: {},
+      tournamentComplete: false,
+      correctAnswersNo: 0
     };
   }
 };

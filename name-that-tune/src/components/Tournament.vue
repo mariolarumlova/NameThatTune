@@ -11,7 +11,7 @@
             implemented yet.
             <br />
             <MusicPlayer
-              style="display: none"
+              customStyle="display: none"
               :videoDetails="playlistItems[0]"
             />
             <v-btn @click.prevent="checkPiece()">Check</v-btn>
@@ -41,7 +41,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <PlaylistChooser v-else @playlistChosen="playlistItems = $event" />
+    <PlaylistChooser v-else @playlistChosen="setPlaylist($event)" />
   </div>
 </template>
 
@@ -60,35 +60,23 @@ export default {
   methods: {
     checkPiece: function() {
       this.result = this.selected.title === this.playlistItems[0].title;
+    },
+    setPlaylist: function(event) {
+      this.playlistItems = event;
+      this.pieces =
+        event && event.length
+          ? event.map(item => {
+              return {
+                text: item.title,
+                value: item
+              };
+            })
+          : [];
     }
   },
   data() {
     return {
-      pieces: [
-        { text: "Fryderyk Chopin - Waltz b-minor", value: { id: 1 } },
-        {
-          text: "Ludwig van Beethoven - The 5th Symphony",
-          value: {
-            id: "2",
-            multipart: true,
-            parts: ["I", "II", "III"]
-          }
-        },
-        {
-          text: "Modest Musorgski - Pictures from the Exhibition",
-          value: {
-            id: "3",
-            multipart: true,
-            parts: ["Bydlo", "The old castle", "Promenade"]
-          }
-        },
-        {
-          text: "Pedro Iturralde - Pequena Czarda",
-          value: {
-            id: "4"
-          }
-        }
-      ],
+      pieces: [],
       selected: "",
       selectedPart: "",
       result: ""

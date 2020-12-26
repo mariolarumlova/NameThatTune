@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height fluid>
-    <div class="mx-auto text-h4 pa-4" :style="style">
+    <div class="mx-auto text-h4 pa-4" :style="customStyle">
       <v-progress-circular v-if="loading"></v-progress-circular>
       {{ videoDetails.title }}
       <br />
@@ -22,7 +22,7 @@
 export default {
   props: {
     videoDetails: Object,
-    style: String
+    customStyle: String
   },
   data() {
     return {

@@ -7,7 +7,7 @@
             Training mode
           </div>
           <div v-if="piece" class="text-body-1 pa-4">
-            <MusicPlayer style="display: none" :videoDetails="piece" />
+            <MusicPlayer :videoDetails="piece" />
             Notes:
             <br />
             {{ message }}
@@ -42,7 +42,7 @@
 
 <script>
 import PlaylistChooser from "@/components/YTPlaylistChooser";
-import MusicPlayer from "@/components/TrainingMusicPlayer";
+import MusicPlayer from "@/components/MusicPlayer";
 import PieceChooser from "@/components/YTPieceChooser";
 export default {
   props: {

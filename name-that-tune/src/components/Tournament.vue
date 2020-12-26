@@ -10,7 +10,10 @@
             Hello! You are in a tournament mode. This page is not fully
             implemented yet.
             <br />
-            <MusicPlayer :playlistItems="playlistItems" />
+            <MusicPlayer
+              style="display: none"
+              :videoDetails="playlistItems[0]"
+            />
 
             <div class="halfwidth-wrapper">
               <v-select
@@ -40,7 +43,7 @@
 
 <script>
 import PlaylistChooser from "@/components/YTPlaylistChooser";
-import MusicPlayer from "@/components/TournamentMusicPlayer";
+import MusicPlayer from "@/components/MusicPlayer";
 export default {
   props: {
     playlistItems: Array,

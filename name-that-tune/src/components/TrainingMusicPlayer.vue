@@ -1,10 +1,19 @@
 <template>
   <v-container fill-height fluid>
-    <v-card class="mx-auto" tile>
+    <div class="mx-auto text-h4 pa-4">
       <v-progress-circular v-if="loading"></v-progress-circular>
-      {{ videoDetails }}
-      <!-- add player here -->
-    </v-card>
+      {{ videoDetails.title }}
+      <br />
+      <iframe
+        allow="autoplay"
+        id="ytplayer"
+        type="text/html"
+        width="640"
+        height="360"
+        :src="videoUrl"
+        frameborder="0"
+      />
+    </div>
   </v-container>
 </template>
 
@@ -16,7 +25,8 @@ export default {
   },
   data() {
     return {
-      loading: false
+      loading: false,
+      videoUrl: `http://www.youtube.com/embed/${this.videoDetails.id}?autoplay=1&rel=0&start=10`
     };
   }
 };

@@ -55,7 +55,6 @@ export default {
         gapi.client.youtube.playlists
           .list({
             part: ["snippet,contentDetails"],
-            maxResults: 25,
             mine: true
           })
           .then(
@@ -89,7 +88,7 @@ export default {
               console.log("Response", response);
               const items = response.result.items.map(piece => {
                 return {
-                  id: piece.id,
+                  id: piece.contentDetails.videoId,
                   title: piece.snippet.title,
                   avatar: piece.snippet.thumbnails.default
                 };

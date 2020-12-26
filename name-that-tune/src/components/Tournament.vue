@@ -26,7 +26,6 @@
                 solo
                 v-model="selected"
               ></v-select>
-              Selected: {{ selected }}
               <div v-if="selected.multipart">
                 <v-select
                   :items="selected.parts"

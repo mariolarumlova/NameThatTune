@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       loading: false,
-      videoUrl: `http://www.youtube.com/embed/${this.videoDetails.id}?autoplay=1&rel=0&start=10`
+      videoUrl: `http://www.youtube.com/embed/${this.videoDetails.id}?autoplay=1&rel=0&start=10&disablekb=1`
     };
   }
 };

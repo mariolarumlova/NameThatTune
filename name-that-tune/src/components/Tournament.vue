@@ -14,6 +14,10 @@
               style="display: none"
               :videoDetails="playlistItems[0]"
             />
+            <v-btn @click.prevent="checkPiece()">Check</v-btn>
+            <br />
+            Result: {{ result }}
+            <br />
 
             <div class="halfwidth-wrapper">
               <v-select
@@ -53,6 +57,11 @@ export default {
     MusicPlayer,
     PlaylistChooser
   },
+  methods: {
+    checkPiece: function() {
+      this.result = this.selected.title === this.playlistItems[0].title;
+    }
+  },
   data() {
     return {
       pieces: [
@@ -81,7 +90,8 @@ export default {
         }
       ],
       selected: "",
-      selectedPart: ""
+      selectedPart: "",
+      result: ""
     };
   }
 };

@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height fluid>
-    <div class="mx-auto text-h4 pa-4">
+    <div class="mx-auto text-h4 pa-4" :style="style">
       <v-progress-circular v-if="loading"></v-progress-circular>
       {{ videoDetails.title }}
       <br />
@@ -21,7 +21,8 @@
 /* eslint-disable no-undef */
 export default {
   props: {
-    videoDetails: Object
+    videoDetails: Object,
+    style: String
   },
   data() {
     return {

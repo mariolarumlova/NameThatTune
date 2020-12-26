@@ -7,7 +7,7 @@
             Training mode
           </div>
           <div v-if="piece" class="text-body-1 pa-4">
-            <MusicPlayer :videoDetails="piece" />
+            <MusicPlayer style="display: none" :videoDetails="piece" />
             Notes:
             <br />
             {{ message }}

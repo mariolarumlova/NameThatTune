@@ -1,4 +1,35 @@
 import { parse, toSeconds } from "iso8601-duration";
+
+const getVideosWithDurations = (gapi, videos) => {
+  const videoIds = videos.map(video => video.id).join(",");
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async (resolve, reject) => {
+    gapi.client.youtube.videos
+      .list({
+        part: ["contentDetails,snippet"],
+        id: videoIds
+      })
+      .then(
+        function(response) {
+          console.log("Response - videos", response);
+          const items = response.result.items.map(piece => {
+            const duration = toSeconds(parse(piece.contentDetails.duration));
+            return {
+              id: piece.id,
+              title: piece.snippet.title,
+              avatar: piece.snippet.thumbnails.default,
+              duration: duration
+            };
+          });
+          resolve(items);
+        },
+        function(err) {
+          console.error("Execute error", err);
+          resolve([]);
+        }
+      );
+  });
+};
 const getPlaylists = gapi => {
   return new Promise((resolve, reject) => {
     gapi.client.youtube.playlists
@@ -16,9 +47,6 @@ const getPlaylists = gapi => {
               avatar: playlist.snippet.thumbnails.default
             };
           });
-          // if (this.gameMode === "tournament") {
-          //   items = await this.getVideosWithDurations(items);
-          // }
           resolve(items);
         },
         function(err) {
@@ -29,7 +57,7 @@ const getPlaylists = gapi => {
   });
 };
 
-const getPlaylistItems = (gapi, playlistId) => {
+const getPlaylistItems = (gapi, playlistId, gameMode) => {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     gapi.client.youtube.playlistItems
@@ -38,44 +66,18 @@ const getPlaylistItems = (gapi, playlistId) => {
         playlistId: playlistId
       })
       .then(
-        function(response) {
+        async function(response) {
           console.log("Response - playlist items", response);
-          const items = response.result.items.map(piece => {
+          let items = response.result.items.map(piece => {
             return {
               id: piece.contentDetails.videoId,
               title: piece.snippet.title,
               avatar: piece.snippet.thumbnails.default
             };
           });
-          resolve(items);
-        },
-        function(err) {
-          console.error("Execute error", err);
-          resolve([]);
-        }
-      );
-  });
-};
-const getVideosWithDurations = (gapi, videos) => {
-  const videoIds = videos.map(video => video.id).join(",");
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async (resolve, reject) => {
-    gapi.client.youtube.playlistItems
-      .list({
-        part: ["contentDetails,snippet"],
-        id: videoIds
-      })
-      .then(
-        function(response) {
-          console.log("Response - videos", response);
-          const items = response.result.items.map(piece => {
-            return {
-              id: piece.id,
-              title: piece.snippet.title,
-              avatar: piece.snippet.thumbnails.default,
-              duration: piece.contentDetails.duration
-            };
-          });
+          if (gameMode === "tournament") {
+            items = await getVideosWithDurations(gapi, items);
+          }
           resolve(items);
         },
         function(err) {
@@ -86,4 +88,4 @@ const getVideosWithDurations = (gapi, videos) => {
   });
 };
 
-export { getPlaylists, getPlaylistItems, getVideosWithDurations };
+export { getPlaylists, getPlaylistItems };

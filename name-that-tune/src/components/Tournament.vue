@@ -39,12 +39,17 @@
             </div>
           </div>
           <div v-else class="text-body-1 pa-4">
-            Tournament complete. Your score is {{ correctAnswersNo }} out of {{ playlistItems.length }}
+            Tournament complete. Your score is {{ correctAnswersNo }} out of
+            {{ playlistItems.length }}
           </div>
         </v-col>
       </v-row>
     </v-container>
-    <PlaylistChooser v-else @playlistChosen="setPlaylist($event)" />
+    <PlaylistChooser
+      v-else
+      @playlistChosen="setPlaylist($event)"
+      gameMode="tournament"
+    />
   </div>
 </template>
 

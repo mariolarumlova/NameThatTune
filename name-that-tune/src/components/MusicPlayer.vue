@@ -23,8 +23,8 @@ export default {
   props: {
     videoDetails: Object,
     customStyle: String,
-    startTimeSec: Number,
-    playTimeSec: Number
+    startTimeSec: String,
+    playTimeSec: String
   },
   data() {
     return {

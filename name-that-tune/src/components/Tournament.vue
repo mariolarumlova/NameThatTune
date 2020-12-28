@@ -6,11 +6,19 @@
           <div class="text-h4 pa-4">
             Tournament mode
           </div>
-          <div class="text-body-1 pa-4">
-            Hello! You are in a tournament mode. This page is not fully
-            implemented yet.
+          <div v-if="!tournamentComplete" class="text-body-1 pa-4">
+            <MusicPlayer
+              :key="index"
+              customStyle="display: none"
+              :videoDetails="currentPiece"
+              randomStartTime="true"
+              playTimeSec="60"
+            />
+            <v-btn @click.prevent="checkPiece()">Check</v-btn>
             <br />
-            <MusicPlayer :playlistItems="playlistItems" />
+            Result: {{ result }} <br />
+            Index: {{ index }} <br />
+            Tournament complete: {{ tournamentComplete }} <br />
 
             <div class="halfwidth-wrapper">
               <v-select
@@ -19,7 +27,6 @@
                 solo
                 v-model="selected"
               ></v-select>
-              Selected: {{ selected }}
               <div v-if="selected.multipart">
                 <v-select
                   :items="selected.parts"
@@ -31,54 +38,85 @@
               </div>
             </div>
           </div>
+          <div v-else class="text-body-1 pa-4">
+            Tournament complete. Your score is {{ correctAnswersNo }} out of
+            {{ playlistItems.length }}
+          </div>
         </v-col>
       </v-row>
     </v-container>
-    <PlaylistChooser v-else @playlistChosen="playlistItems = $event" />
+    <PlaylistChooser
+      v-else
+      @playlistChosen="setPlaylist($event)"
+      gameMode="tournament"
+    />
   </div>
 </template>
 
 <script>
 import PlaylistChooser from "@/components/YTPlaylistChooser";
-import MusicPlayer from "@/components/TournamentMusicPlayer";
+import MusicPlayer from "@/components/MusicPlayer";
 export default {
   props: {
-    playlistItems: Array,
     piece: Object
   },
   components: {
     MusicPlayer,
     PlaylistChooser
   },
+  methods: {
+    checkPiece: function() {
+      this.result = this.selected.title === this.currentPiece.title;
+      this.correctAnswersNo = this.result
+        ? this.correctAnswersNo + 1
+        : this.correctAnswersNo;
+      this.index += 1;
+      if (this.index < this.playlistItems.length) {
+        this.currentPiece = this.playlistItems[this.index];
+      } else {
+        this.tournamentComplete = true;
+      }
+    },
+    setPlaylist: function(event) {
+      this.pieces =
+        event && event.length
+          ? event.map(item => {
+              return {
+                text: item.title,
+                value: item
+              };
+            })
+          : [];
+      this.playlistItems = this.shuffle(event);
+      this.index = 0;
+      this.currentPiece = this.playlistItems[this.index];
+      this.tournamentComplete = false;
+      this.correctAnswersNo = 0;
+    },
+    shuffle: function(inputArray) {
+      const array = JSON.parse(JSON.stringify(inputArray));
+      let m = array.length;
+      let t, i;
+      while (m) {
+        i = Math.floor(Math.random() * m--);
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+      }
+      return array;
+    }
+  },
   data() {
     return {
-      pieces: [
-        { text: "Fryderyk Chopin - Waltz b-minor", value: { id: 1 } },
-        {
-          text: "Ludwig van Beethoven - The 5th Symphony",
-          value: {
-            id: "2",
-            multipart: true,
-            parts: ["I", "II", "III"]
-          }
-        },
-        {
-          text: "Modest Musorgski - Pictures from the Exhibition",
-          value: {
-            id: "3",
-            multipart: true,
-            parts: ["Bydlo", "The old castle", "Promenade"]
-          }
-        },
-        {
-          text: "Pedro Iturralde - Pequena Czarda",
-          value: {
-            id: "4"
-          }
-        }
-      ],
+      pieces: [],
+      playlistItems: null,
       selected: "",
-      selectedPart: ""
+      selectedPart: "",
+      result: "",
+      index: 0,
+      currentPiece: {},
+      tournamentComplete: false,
+      correctAnswersNo: 0
     };
   }
 };

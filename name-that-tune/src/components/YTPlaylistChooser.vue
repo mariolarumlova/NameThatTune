@@ -32,7 +32,11 @@
 
 <script>
 /* eslint-disable no-undef */
+import { getPlaylists, getPlaylistItems } from "@/repositories/youtube";
 export default {
+  props: {
+    gameMode: String
+  },
   data() {
     return {
       loading: false,
@@ -51,57 +55,10 @@ export default {
       this.$emit("playlistChosen", playlistItems);
     },
     getPlaylists: function() {
-      return new Promise((resolve, reject) => {
-        gapi.client.youtube.playlists
-          .list({
-            part: ["snippet,contentDetails"],
-            maxResults: 25,
-            mine: true
-          })
-          .then(
-            function(response) {
-              console.log("Response", response);
-              const items = response.result.items.map(playlist => {
-                return {
-                  id: playlist.id,
-                  title: playlist.snippet.title,
-                  avatar: playlist.snippet.thumbnails.default
-                };
-              });
-              resolve(items);
-            },
-            function(err) {
-              console.error("Execute error", err);
-              resolve([]);
-            }
-          );
-      });
+      return getPlaylists(gapi);
     },
     getPlaylistItems: function(playlistId) {
-      return new Promise((resolve, reject) => {
-        gapi.client.youtube.playlistItems
-          .list({
-            part: ["id,status,snippet,contentDetails"],
-            playlistId: playlistId
-          })
-          .then(
-            function(response) {
-              console.log("Response", response);
-              const items = response.result.items.map(piece => {
-                return {
-                  id: piece.id,
-                  title: piece.snippet.title,
-                  avatar: piece.snippet.thumbnails.default
-                };
-              });
-              resolve(items);
-            },
-            function(err) {
-              console.error("Execute error", err);
-              resolve([]);
-            }
-          );
-      });
+      return getPlaylistItems(gapi, playlistId, this.gameMode);
     }
   }
 };

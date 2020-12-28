@@ -42,7 +42,7 @@
 
 <script>
 import PlaylistChooser from "@/components/YTPlaylistChooser";
-import MusicPlayer from "@/components/TrainingMusicPlayer";
+import MusicPlayer from "@/components/MusicPlayer";
 import PieceChooser from "@/components/YTPieceChooser";
 export default {
   props: {

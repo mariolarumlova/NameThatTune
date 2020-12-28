@@ -23,7 +23,7 @@ export default {
   props: {
     videoDetails: Object,
     customStyle: String,
-    startTimeSec: String,
+    randomStartTime: String,
     playTimeSec: String
   },
   data() {
@@ -34,10 +34,25 @@ export default {
   methods: {
     getVideoUrl: function() {
       let url = `http://www.youtube.com/embed/${this.videoDetails.id}?autoplay=1&rel=0&disablekb=1`;
-      url += this.startTimeSec ? `&start=${this.startTimeSec}` : "";
-      const endTime = parseInt(this.startTimeSec) + parseInt(this.playTimeSec);
-      url += endTime ? `&end=${endTime}` : "";
+      if (this.randomStartTime === "true") {
+        const startTimeSec = this.getStartTimeSec(
+          this.videoDetails.duration,
+          this.playTimeSec
+        );
+        url += startTimeSec ? `&start=${startTimeSec}` : "";
+        const endTime = parseInt(startTimeSec) + parseInt(this.playTimeSec);
+        url += endTime ? `&end=${endTime}` : "";
+      }
+      console.log(url);
       return url;
+    },
+    getStartTimeSec: function(trackDuration, answerTime) {
+      const maxStartTime = trackDuration - answerTime;
+      return this.getRandomIntInclusive(maxStartTime > 0 ? maxStartTime : 0);
+    },
+    getRandomIntInclusive: function(max) {
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max + 1));
     }
   }
 };

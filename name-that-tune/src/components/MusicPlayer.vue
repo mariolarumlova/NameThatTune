@@ -10,7 +10,7 @@
         type="text/html"
         width="640"
         height="360"
-        :src="videoUrl"
+        :src="getVideoUrl()"
         frameborder="0"
       />
     </div>
@@ -22,13 +22,23 @@
 export default {
   props: {
     videoDetails: Object,
-    customStyle: String
+    customStyle: String,
+    startTimeSec: Number,
+    playTimeSec: Number
   },
   data() {
     return {
-      loading: false,
-      videoUrl: `http://www.youtube.com/embed/${this.videoDetails.id}?autoplay=1&rel=0&start=10&disablekb=1`
+      loading: false
     };
+  },
+  methods: {
+    getVideoUrl: function() {
+      let url = `http://www.youtube.com/embed/${this.videoDetails.id}?autoplay=1&rel=0&disablekb=1`;
+      url += this.startTimeSec ? `&start=${this.startTimeSec}` : "";
+      const endTime = parseInt(this.startTimeSec) + parseInt(this.playTimeSec);
+      url += endTime ? `&end=${endTime}` : "";
+      return url;
+    }
   }
 };
 </script>

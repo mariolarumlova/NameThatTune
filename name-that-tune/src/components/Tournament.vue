@@ -11,6 +11,8 @@
               :key="index"
               customStyle="display: none"
               :videoDetails="currentPiece"
+              startTimeSec="10"
+              playTimeSec="60"
             />
             <v-btn @click.prevent="checkPiece()">Check</v-btn>
             <br />

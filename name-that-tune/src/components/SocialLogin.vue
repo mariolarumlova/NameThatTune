@@ -42,8 +42,8 @@ export default {
 
     logInViaGoogle: async function() {
       const result = await this.signIn();
-      await this.storeClientInfo(result.user);
       const googleUser = await this.authenticate(["https://www.googleapis.com/auth/youtube.readonly"]);
+      await this.storeClientInfo(result.user);
       await this.loadClient("youtube", "v3");
       await this.goToMainPage();
     },

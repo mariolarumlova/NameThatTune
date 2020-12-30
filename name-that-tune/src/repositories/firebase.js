@@ -43,8 +43,8 @@ const signOut = () => {
   });
 };
 
-export const db = app.database();
+const db = app.database();
 
-export const usersRef = db.ref("users");
+const usersRef = db.ref("users");
 
-export { signIn, signOut };
+export { signIn, signOut, db, usersRef };

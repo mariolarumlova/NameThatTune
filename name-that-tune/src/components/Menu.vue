@@ -45,8 +45,12 @@ export default {
   data() {
     return {
       activeTab: 0,
-      clientImageUrl: this.$store.state.loginUser.google.photoURL || this.$store.state.loginUser.google.wt.SJ,
-      clientName: this.$store.state.loginUser.google.displayName ||this.$store.state.loginUser.google.wt.Ad,
+      clientImageUrl:
+        this.$store.state.loginUser.google.photoURL ||
+        this.$store.state.loginUser.google.wt.SJ,
+      clientName:
+        this.$store.state.loginUser.google.displayName ||
+        this.$store.state.loginUser.google.wt.Ad,
       items: [
         { title: "Settings", action: () => this.openSettings() },
         { title: "Log out", action: () => this.logout() }

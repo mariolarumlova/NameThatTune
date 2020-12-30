@@ -3,7 +3,8 @@
     <v-row align="center" justify="space-around">
       <v-col align="center" justify="space-around">
         <div class="text-h4 pa-4">
-          Hello, {{ clientName }}! Choose game mode
+          Hello, {{ clientName }}! Choose game mode <br />
+          {{ myUsers }}
         </div>
         <v-btn class="ma-8" elevation="2" outlined large to="training"
           >Training</v-btn
@@ -17,11 +18,27 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { usersRef } from "@/repositories/firebase";
 export default {
+  firebase: {
+    users: usersRef
+  },
   data() {
     return {
-      clientName: this.$store.state.loginUser.google.displayName || this.$store.state.loginUser.google.wt.Ad
+      clientName:
+        this.$store.state.loginUser.google.displayName ||
+        this.$store.state.loginUser.google.wt.Ad
     };
+  },
+  computed: {
+    ...mapGetters(["session"]),
+    myUsers() {
+      return this.$store.state.users.users;
+    }
+  },
+  created: function() {
+    this.$store.dispatch("initStore");
   }
 };
 </script>

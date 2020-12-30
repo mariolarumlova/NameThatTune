@@ -1,29 +1,30 @@
-import axios from "axios";
+import { usersRef } from "@/repositories/firebase.js";
 
 const state = {
-  products: {},
+  users: {},
   session: false
 };
 
 const getters = {
-  products: (state: { products: any; }) => state.products,
+  users: (state: { users: any; }) => state.users,
   session: (state: { session: any; }) => state.session
 };
 
 const actions = {
   initStore: ({commit} : { commit: any}) => {
-    axios.get("static/products.json").then(response => {
-      console.log(response.data.products);
-      commit("SET_STORE", response.data.products);
+    usersRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+      commit("SET_STORE", data);
     });
   }
 };
 
 const mutations = {
-  SET_STORE(state: { products: any; }, products: any) {
-    state.products = products;
+  SET_STORE(state, users) {
+    state.users = users;
   },
-  SET_SESSION(state: { session: any; }, session: any) {
+  SET_SESSION(state, session) {
     state.session = session;
   }
 };

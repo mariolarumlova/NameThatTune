@@ -20,7 +20,7 @@
 export default {
   data() {
     return {
-      clientName: this.$store.state.loginUser.google.wt.Ad
+      clientName: this.$store.state.loginUser.google.displayName || this.$store.state.loginUser.google.wt.Ad
     };
   }
 };

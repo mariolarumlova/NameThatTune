@@ -7,6 +7,11 @@ import "@/assets/css/style.css";
 import "./registerServiceWorker";
 import vuetify from "./plugins/vuetify";
 
+import firebase from "firebase";
+import "@/repositories/firebase";
+import { firestorePlugin }  from "vuefire";
+
+Vue.use(firestorePlugin);
 Vue.config.productionTip = false;
 
 new Vue({

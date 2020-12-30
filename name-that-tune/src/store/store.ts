@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { setStore, getStore } from "@/config/utils";
+import users from "@/store/modules/users";
 
 Vue.use(Vuex);
 
@@ -21,5 +22,8 @@ export default new Vuex.Store({
     getLoginUserInfo(state) {
       return state.loginUser;
     }
+  },
+  modules: {
+    users
   }
 });

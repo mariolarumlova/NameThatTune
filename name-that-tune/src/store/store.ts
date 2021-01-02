@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { setStore, getStore } from "@/config/utils";
 import users from "@/store/modules/users";
+import settings from "@/store/modules/settings";
 
 Vue.use(Vuex);
 
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     session: (state: { session: any; }) => state.session
   },
   modules: {
-    users
+    users,
+    settings
   }
 });

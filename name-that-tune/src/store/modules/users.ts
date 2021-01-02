@@ -9,16 +9,16 @@ const getters = {
 };
 
 const actions = {
-  initStore: ({commit} : { commit: any}) => {
+  loadUsers: ({commit} : { commit: any}) => {
     usersRef.on('value', (snapshot) => {
       const data = snapshot.val();
-      commit("SET_STORE", data);
+      commit("SET_USERS", data);
     });
   }
 };
 
 const mutations = {
-  SET_STORE(state, records) {
+  SET_USERS(state, records) {
     state.records = records;
   },
 };

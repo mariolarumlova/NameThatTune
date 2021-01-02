@@ -9,26 +9,26 @@
         <div class="halfwidth-wrapper text-body-1 pa-4">
           <br />Random start of a piece
           <v-switch
-            v-model="pickedRandomStart"
+            v-model="randomStart"
             color="orange darken-3"
             hide-details
           ></v-switch>
           <br />Correct answers
-          <v-radio-group v-model="pickedAnswer" row mandatory>
+          <v-radio-group v-model="correctAnswer" row mandatory>
             <v-radio
               label="After each piece"
-              value="After each piece"
+              value="eachPiece"
               color="orange darken-3"
             ></v-radio>
             <v-radio
               label="At the end of the tournament"
-              value="At the end of the tournament"
+              value="tournamentSummary"
               color="orange darken-3"
             ></v-radio>
           </v-radio-group>
 
           <br />Correct piece, incorrect part score
-          <v-radio-group v-model="pickedScoring" row mandatory>
+          <v-radio-group v-model="badPartScoring" row mandatory>
             <v-radio
               label="0.5 p."
               value="0.5"
@@ -39,11 +39,11 @@
 
           <br />Limited answer time
           <v-switch
-            v-model="checked"
+            v-model="limitedAnswerTime"
             color="orange darken-3"
             hide-details
           ></v-switch>
-          <div v-if="checked" class="pa-4">
+          <div v-if="limitedAnswerTime" class="pa-4">
             <v-text-field
               v-model="timeLimit"
               label="Time (in sec)"
@@ -62,13 +62,35 @@ export default {
   data() {
     return {
       clientImageUrl: this.$store.state.session.user.photoURL,
-      clientName: this.$store.state.session.user.displayName,
-      pickedRandomStart: false,
-      pickedAnswer: "After each piece",
-      pickedScoring: "0.5 p.",
-      checked: false,
-      timeLimit: ""
+      clientName: this.$store.state.session.user.displayName
     };
+  },
+  computed: {
+    randomStart() {
+      const settings = this.$store.state.settings.customSettings;
+      return settings ? settings.randomStart : false;
+    },
+    correctAnswer() {
+      const settings = this.$store.state.settings.customSettings;
+      return settings ? settings.correctAnswer : "eachPiece";
+    },
+    badPartScoring() {
+      const settings = this.$store.state.settings.customSettings;
+      return settings ? settings.badPartScoring : "0.5";
+    },
+    limitedAnswerTime() {
+      const settings = this.$store.state.settings.customSettings;
+      return settings ? settings.limitedAnswerTime : true;
+    },
+    timeLimit() {
+      const settings = this.$store.state.settings.customSettings;
+      return settings ? settings.timeLimit : "";
+    }
+  },
+  created: function() {
+    if (!this.$store.state.settings) {
+      this.$store.dispatch("loadSettings");
+    }
   }
 };
 </script>

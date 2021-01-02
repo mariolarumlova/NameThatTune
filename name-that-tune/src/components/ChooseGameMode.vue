@@ -4,7 +4,7 @@
       <v-col align="center" justify="space-around">
         <div class="text-h4 pa-4">
           Hello, {{ clientName }}! Choose game mode <br />
-          {{ myUsers }}
+          {{ users }}
 
           {{ clientUid }}
         </div>
@@ -21,11 +21,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { usersRef } from "@/repositories/firebase";
 export default {
-  firebase: {
-    users: usersRef
-  },
   data() {
     return {
       clientName: this.$store.state.session.user.displayName,
@@ -34,12 +30,12 @@ export default {
   },
   computed: {
     ...mapGetters(["session"]),
-    myUsers() {
+    users() {
       return this.$store.state.users.records;
     }
   },
   created: function() {
-    this.$store.dispatch("initStore");
+    this.$store.dispatch("loadUsers");
   }
 };
 </script>

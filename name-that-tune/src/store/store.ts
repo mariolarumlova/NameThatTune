@@ -5,23 +5,22 @@ import users from "@/store/modules/users";
 
 Vue.use(Vuex);
 
+const session = getStore("session");
 const user = getStore("user");
 
 export default new Vuex.Store({
   state: {
-    loginUser: user
+    session: session
   },
   mutations: {
-    setLoginUser(state, user) {
-      state.loginUser = user;
-      setStore("user", user);
+    SET_SESSION(state, session) {
+      setStore("session", session);
+      state.session = session;
     }
   },
   actions: {},
   getters: {
-    getLoginUserInfo(state) {
-      return state.loginUser;
-    }
+    session: (state: { session: any; }) => state.session
   },
   modules: {
     users

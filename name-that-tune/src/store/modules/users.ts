@@ -1,32 +1,26 @@
 import { usersRef } from "@/repositories/firebase.js";
 
 const state = {
-  users: {},
-  session: false
+  records: []
 };
 
 const getters = {
-  users: (state: { users: any; }) => state.users,
-  session: (state: { session: any; }) => state.session
+  users: (state: any) => state.records,
 };
 
 const actions = {
   initStore: ({commit} : { commit: any}) => {
     usersRef.on('value', (snapshot) => {
       const data = snapshot.val();
-      console.log(data);
       commit("SET_STORE", data);
     });
   }
 };
 
 const mutations = {
-  SET_STORE(state, users) {
-    state.users = users;
+  SET_STORE(state, records) {
+    state.records = records;
   },
-  SET_SESSION(state, session) {
-    state.session = session;
-  }
 };
 
 export default {

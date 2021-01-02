@@ -5,6 +5,8 @@
         <div class="text-h4 pa-4">
           Hello, {{ clientName }}! Choose game mode <br />
           {{ myUsers }}
+
+          {{ clientUid }}
         </div>
         <v-btn class="ma-8" elevation="2" outlined large to="training"
           >Training</v-btn
@@ -26,15 +28,14 @@ export default {
   },
   data() {
     return {
-      clientName:
-        this.$store.state.loginUser.google.displayName ||
-        this.$store.state.loginUser.google.wt.Ad
+      clientName: this.$store.state.session.user.displayName,
+      clientUid: this.$store.state.session.user.uid
     };
   },
   computed: {
     ...mapGetters(["session"]),
     myUsers() {
-      return this.$store.state.users.users;
+      return this.$store.state.users.records;
     }
   },
   created: function() {

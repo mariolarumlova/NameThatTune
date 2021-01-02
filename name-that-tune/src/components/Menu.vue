@@ -22,7 +22,7 @@
           <img :src="clientImageUrl" />
         </v-avatar>
       </template>
-      <v-list v-if="this.$store.state.loginUser">
+      <v-list v-if="this.$store.state.session">
         <v-list-item
           v-for="(item, index) in items"
           :to="item.url"
@@ -45,12 +45,8 @@ export default {
   data() {
     return {
       activeTab: 0,
-      clientImageUrl:
-        this.$store.state.loginUser.google.photoURL ||
-        this.$store.state.loginUser.google.wt.SJ,
-      clientName:
-        this.$store.state.loginUser.google.displayName ||
-        this.$store.state.loginUser.google.wt.Ad,
+      clientImageUrl: this.$store.state.session.user.photoURL,
+      clientName: this.$store.state.session.user.displayName,
       items: [
         { title: "Settings", action: () => this.openSettings() },
         { title: "Log out", action: () => this.logout() }
@@ -64,7 +60,7 @@ export default {
   },
   methods: {
     logout() {
-      if (this.$store.state.loginUser.google.displayName) {
+      if (this.$store.state.session.user) {
         signOut();
       }
       removeItem("user");

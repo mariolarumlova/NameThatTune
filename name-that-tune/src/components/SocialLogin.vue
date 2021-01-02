@@ -43,17 +43,9 @@ export default {
     logInViaGoogle: async function() {
       const result = await this.signIn();
       const googleUser = await this.authenticate(["https://www.googleapis.com/auth/youtube.readonly"]);
-      await this.storeClientInfo(result.user);
+      this.$store.commit("SET_SESSION", result);
       await this.loadClient("youtube", "v3");
       await this.goToMainPage();
-    },
-    
-    storeClientInfo: function(googleUser) {
-      const userInfo = {
-          loginType: "google",
-          google: googleUser,
-        };
-      this.$store.commit("setLoginUser", userInfo);
     }
   },
   computed: {

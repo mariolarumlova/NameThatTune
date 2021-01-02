@@ -10,12 +10,17 @@
           <br />Random start of a piece
           <v-switch
             :value="randomStart"
-            @input="newRandomStart = $event.target.value"
+            @change="newRandomStart = $event === true"
             color="orange darken-3"
             hide-details
           ></v-switch>
           <br />Correct answers
-          <v-radio-group :value="correctAnswer" @input="newCorrectAnswer = $event.target.value" row mandatory>
+          <v-radio-group
+            :value="correctAnswer"
+            @change="newCorrectAnswer = $event"
+            row
+            mandatory
+          >
             <v-radio
               label="After each piece"
               value="eachPiece"
@@ -29,7 +34,12 @@
           </v-radio-group>
 
           <br />Correct piece, incorrect part score
-          <v-radio-group :value="badPartScoring" @input="newBadPartScoring = $event.target.value" row mandatory>
+          <v-radio-group
+            :value="badPartScoring"
+            @change="newBadPartScoring = $event"
+            row
+            mandatory
+          >
             <v-radio
               label="0.5 p."
               value="0.5"
@@ -41,14 +51,21 @@
           <br />Limited answer time
           <v-switch
             :value="limitedAnswerTime"
-            @input="newLimitedAnswerTime = $event.target.value"
+            @change="newLimitedAnswerTime = $event === true"
             color="orange darken-3"
             hide-details
           ></v-switch>
-          <div v-if="limitedAnswerTime" class="pa-4">
+          <div
+            v-if="
+              newLimitedAnswerTime !== undefined
+                ? newLimitedAnswerTime
+                : limitedAnswerTime
+            "
+            class="pa-4"
+          >
             <v-text-field
               :value="timeLimit"
-              @input="newTimeLimit = $event.target.value"
+              @input="newTimeLimit = $event"
               label="Time (in sec)"
               placeholder="30"
               outlined
@@ -84,10 +101,16 @@ export default {
   methods: {
     saveSettingsToDb: function() {
       db.ref("settings/" + this.$store.state.session.user.uid).set({
-        randomStart: this.newRandomStart || this.randomStart,
+        randomStart:
+          typeof this.newRandomStart === "boolean"
+            ? this.newRandomStart
+            : this.randomStart,
         correctAnswer: this.newCorrectAnswer || this.correctAnswer,
         badPartScoring: this.newBadPartScoring || this.badPartScoring,
-        limitedAnswerTime: this.newLimitedAnswerTime || this.limitedAnswerTime,
+        limitedAnswerTime:
+          typeof this.newLimitedAnswerTime === "boolean"
+            ? this.newLimitedAnswerTime
+            : this.limitedAnswerTime,
         timeLimit: this.newTimeLimit || this.timeLimit
       });
     }

@@ -9,12 +9,13 @@
         <div class="halfwidth-wrapper text-body-1 pa-4">
           <br />Random start of a piece
           <v-switch
-            v-model="randomStart"
+            :value="randomStart"
+            @input="newRandomStart = $event.target.value"
             color="orange darken-3"
             hide-details
           ></v-switch>
           <br />Correct answers
-          <v-radio-group v-model="correctAnswer" row mandatory>
+          <v-radio-group :value="correctAnswer" @input="newCorrectAnswer = $event.target.value" row mandatory>
             <v-radio
               label="After each piece"
               value="eachPiece"
@@ -28,7 +29,7 @@
           </v-radio-group>
 
           <br />Correct piece, incorrect part score
-          <v-radio-group v-model="badPartScoring" row mandatory>
+          <v-radio-group :value="badPartScoring" @input="newBadPartScoring = $event.target.value" row mandatory>
             <v-radio
               label="0.5 p."
               value="0.5"
@@ -39,18 +40,27 @@
 
           <br />Limited answer time
           <v-switch
-            v-model="limitedAnswerTime"
+            :value="limitedAnswerTime"
+            @input="newLimitedAnswerTime = $event.target.value"
             color="orange darken-3"
             hide-details
           ></v-switch>
           <div v-if="limitedAnswerTime" class="pa-4">
             <v-text-field
-              v-model="timeLimit"
+              :value="timeLimit"
+              @input="newTimeLimit = $event.target.value"
               label="Time (in sec)"
               placeholder="30"
               outlined
             ></v-text-field>
           </div>
+          <v-btn
+            color="orange darken-2"
+            class="ma-2 white--text"
+            @click.prevent="saveSettingsToDb()"
+          >
+            Save
+          </v-btn>
         </div>
       </v-col>
     </v-row>
@@ -58,12 +68,29 @@
 </template>
 
 <script>
+import { db } from "@/repositories/firebase";
 export default {
   data() {
     return {
       clientImageUrl: this.$store.state.session.user.photoURL,
-      clientName: this.$store.state.session.user.displayName
+      clientName: this.$store.state.session.user.displayName,
+      newRandomStart: undefined,
+      newCorrectAnswer: undefined,
+      newBadPartScoring: undefined,
+      newLimitedAnswerTime: undefined,
+      newTimeLimit: undefined
     };
+  },
+  methods: {
+    saveSettingsToDb: function() {
+      db.ref("settings/" + this.$store.state.session.user.uid).set({
+        randomStart: this.newRandomStart || this.randomStart,
+        correctAnswer: this.newCorrectAnswer || this.correctAnswer,
+        badPartScoring: this.newBadPartScoring || this.badPartScoring,
+        limitedAnswerTime: this.newLimitedAnswerTime || this.limitedAnswerTime,
+        timeLimit: this.newTimeLimit || this.timeLimit
+      });
+    }
   },
   computed: {
     randomStart() {
@@ -88,9 +115,7 @@ export default {
     }
   },
   created: function() {
-    if (!this.$store.state.settings) {
-      this.$store.dispatch("loadSettings");
-    }
+    this.$store.dispatch("loadSettings");
   }
 };
 </script>

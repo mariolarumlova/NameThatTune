@@ -2,6 +2,8 @@
 Code from master branch is being deployed here:
 https://name-that-tune-be415.firebaseapp.com/
 
+Before running the project, cd to name-that-tune
+
 ## Project setup
 ```
 npm install
@@ -21,6 +23,11 @@ VUE_APP_YOUTUBE_API_KEY={YOUTUBE_API_KEY}
 ### Compiles and minifies for production
 ```
 npm run build
+```
+
+### Deploys to production
+```
+firebase deploy
 ```
 
 ### Lints and fixes files

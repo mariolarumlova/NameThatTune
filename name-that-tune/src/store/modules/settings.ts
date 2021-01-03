@@ -1,4 +1,4 @@
-import { settingsRef } from "@/repositories/firebase.js";
+import { db } from "@/repositories/firebase.js";
 
 const state = {
   customSettings: []
@@ -10,11 +10,12 @@ const getters = {
 
 const actions = {
   loadSettings: ({commit} : { commit: any}) => {
-    settingsRef.on('value', (snapshot) => {
+    const user = localStorage.getItem("user");
+    const uid = user ? JSON.parse(user).uid : "";
+    console.log(uid);
+    db.ref("settings/" + uid).on('value', (snapshot) => {
       const data = snapshot.val();
-      const session = localStorage.getItem("session");
-      const uid = session ? JSON.parse(session).user.uid : null;
-      commit("SET_SETTINGS", data[uid]);
+      commit("SET_SETTINGS", data);
     });
   }
 };

@@ -78,6 +78,12 @@
           >
             Save
           </v-btn>
+          <v-alert type="error" dismissible v-if="dbUpdateError"
+            >Could not update settings: {{ dbUpdateError }}</v-alert
+          >
+          <v-alert type="success" dismissible v-if="dbUpdateSuccess"
+            >Settings saved successfully</v-alert
+          >
         </div>
       </v-col>
     </v-row>
@@ -95,24 +101,35 @@ export default {
       newCorrectAnswer: undefined,
       newBadPartScoring: undefined,
       newLimitedAnswerTime: undefined,
-      newTimeLimit: undefined
+      newTimeLimit: undefined,
+      dbUpdateError: undefined,
+      dbUpdateSuccess: undefined
     };
   },
   methods: {
     saveSettingsToDb: function() {
-      db.ref("settings/" + this.$store.state.session.user.uid).set({
-        randomStart:
-          typeof this.newRandomStart === "boolean"
-            ? this.newRandomStart
-            : this.randomStart,
-        correctAnswer: this.newCorrectAnswer || this.correctAnswer,
-        badPartScoring: this.newBadPartScoring || this.badPartScoring,
-        limitedAnswerTime:
-          typeof this.newLimitedAnswerTime === "boolean"
-            ? this.newLimitedAnswerTime
-            : this.limitedAnswerTime,
-        timeLimit: this.newTimeLimit || this.timeLimit
-      });
+      db.ref("settings/" + this.$store.state.uid).set(
+        {
+          randomStart:
+            typeof this.newRandomStart === "boolean"
+              ? this.newRandomStart
+              : this.randomStart,
+          correctAnswer: this.newCorrectAnswer || this.correctAnswer,
+          badPartScoring: this.newBadPartScoring || this.badPartScoring,
+          limitedAnswerTime:
+            typeof this.newLimitedAnswerTime === "boolean"
+              ? this.newLimitedAnswerTime
+              : this.limitedAnswerTime,
+          timeLimit: this.newTimeLimit || this.timeLimit
+        },
+        error => {
+          if (error) {
+            this.dbUpdateError = true;
+          } else {
+            this.dbUpdateSuccess = true;
+          }
+        }
+      );
     }
   },
   computed: {

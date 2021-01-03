@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       clientName: this.$store.state.session.user.displayName,
-      clientUid: this.$store.state.session.user.uid
+      clientUid: this.$store.state.uid
     };
   },
   computed: {

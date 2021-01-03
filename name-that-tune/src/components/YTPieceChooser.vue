@@ -6,11 +6,11 @@
         <v-subheader>Choose piece:</v-subheader>
         <v-list-item-group v-model="selectedItem" color="primary">
           <v-list-item
-            v-for="(item, i) in playlistItems"
+            v-for="(item, i) in playlistItemsComputed"
             :key="i"
             @click.prevent="setPiece(item)"
           >
-            <v-list-item-avatar>
+            <v-list-item-avatar v-if="item.avatar">
               <v-img :src="item.avatar.url"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
@@ -38,6 +38,11 @@ export default {
   methods: {
     setPiece(selectedItem) {
       this.$emit("pieceChosen", selectedItem);
+    }
+  },
+  computed: {
+    playlistItemsComputed() {
+      return this.playlistItems;
     }
   }
 };

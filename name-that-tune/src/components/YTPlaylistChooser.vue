@@ -17,7 +17,7 @@
             :key="i"
             @click.prevent="setPlaylistItems(item)"
           >
-            <v-list-item-avatar>
+            <v-list-item-avatar v-if="item.avatar">
               <v-img :src="item.avatar.url"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>

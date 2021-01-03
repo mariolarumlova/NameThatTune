@@ -1,4 +1,4 @@
-interface Settings {
+interface Tournament {
     id: string,
     playlistId: string,
     userId: string,

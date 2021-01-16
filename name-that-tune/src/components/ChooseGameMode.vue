@@ -21,21 +21,26 @@
 
 <script>
 import { mapGetters } from "vuex";
+import databaseFactory from "@/dataProvider/classes/Database";
+import firebaseFactory from "@/dataProvider/classes/FirebaseDriver";
+import userFactory from "@/dataProvider/dto/User";
+
 export default {
   data() {
     return {
       clientName: this.$store.state.session.user.displayName,
-      clientUid: this.$store.state.uid
+      clientUid: this.$store.state.uid,
+      users: ""
     };
   },
   computed: {
-    ...mapGetters(["session"]),
-    users() {
-      return this.$store.state.users.records;
-    }
+    ...mapGetters(["session"])
   },
-  created: function() {
-    this.$store.dispatch("loadUsers");
+  created: async function() {
+    const dbDriver = firebaseFactory();
+    const db = databaseFactory(dbDriver);
+    const factory = userFactory(db);
+    this.users = JSON.stringify(await factory.getAll());
   }
 };
 </script>

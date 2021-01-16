@@ -44,6 +44,4 @@ const signOut = () => {
 
 const db = app.database();
 
-const usersRef = db.ref("users");
-
-export { signIn, signOut, db, usersRef };
+export { signIn, signOut, db };

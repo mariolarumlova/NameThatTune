@@ -1,5 +1,4 @@
 interface PiecePart {
-    id: string,
     title: string,
     musicalPieceId: string,
     youtubeId: string,
@@ -10,6 +9,4 @@ interface PiecePart {
     // key: Enumerator,
     notes: string,
     // image: string //url
-    createdAtTimestamp: number,
-    lastModifiedAtTimestamp: number
 }

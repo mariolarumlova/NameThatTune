@@ -1,25 +1,34 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { setStore, getStore } from "@/config/utils";
+import users from "@/store/modules/users";
+import settings from "@/store/modules/settings";
 
 Vue.use(Vuex);
 
+const session = getStore("session");
 const user = getStore("user");
 
 export default new Vuex.Store({
   state: {
-    loginUser: user
+    session: session,
+    uid: user ? user.uid : false
   },
   mutations: {
-    setLoginUser(state, user) {
-      state.loginUser = user;
-      setStore("user", user);
+    SET_SESSION(state, session) {
+      setStore("session", session);
+      setStore("user", { uid: session && session.user ? session.user.uid : false});
+      state.session = session;
+      state.uid = session && session.user ? session.user.uid : false;
     }
   },
   actions: {},
   getters: {
-    getLoginUserInfo(state) {
-      return state.loginUser;
-    }
+    session: (state: { session: any; }) => state.session,
+    uid: (state: { uid: any; }) => state.uid
+  },
+  modules: {
+    users,
+    settings
   }
 });

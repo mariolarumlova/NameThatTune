@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "name-that-tune-be415",
     "public": "dist",
     "ignore": [
       "firebase.json",

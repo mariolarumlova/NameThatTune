@@ -6,6 +6,7 @@
         <v-avatar size="120" tile>
           <img :src="clientImageUrl" />
         </v-avatar>
+        {{ settings }}
         <div class="halfwidth-wrapper text-body-1 pa-4">
           <br />Random start of a piece
           <v-switch
@@ -78,12 +79,7 @@
           >
             Save
           </v-btn>
-          <v-alert type="error" dismissible v-if="dbUpdateError"
-            >Could not update settings: {{ dbUpdateError }}</v-alert
-          >
-          <v-alert type="success" dismissible v-if="dbUpdateSuccess"
-            >Settings saved successfully</v-alert
-          >
+          <v-alert type="success" dismissible v-if="dbUpdateMessage">{{ dbUpdateMessage }}</v-alert>
         </div>
       </v-col>
     </v-row>
@@ -91,7 +87,10 @@
 </template>
 
 <script>
-import { db } from "@/repositories/firebase";
+import databaseFactory from "@/dataProvider/classes/Database";
+import firebaseFactory from "@/dataProvider/classes/FirebaseDriver";
+import settingsFactory from "@/dataProvider/dto/Settings";
+
 export default {
   data() {
     return {
@@ -102,13 +101,14 @@ export default {
       newBadPartScoring: undefined,
       newLimitedAnswerTime: undefined,
       newTimeLimit: undefined,
-      dbUpdateError: undefined,
-      dbUpdateSuccess: undefined
+      dbUpdateMessage: undefined,
+      settings: {}
     };
   },
   methods: {
-    saveSettingsToDb: function() {
-      db.ref("settings/" + this.$store.state.uid).set(
+    saveSettingsToDb: async function() {
+      this.dbUpdateMessage = await this.settingsTable.update(
+        this.$store.state.uid,
         {
           randomStart:
             typeof this.newRandomStart === "boolean"
@@ -121,41 +121,32 @@ export default {
               ? this.newLimitedAnswerTime
               : this.limitedAnswerTime,
           timeLimit: this.newTimeLimit || this.timeLimit
-        },
-        error => {
-          if (error) {
-            this.dbUpdateError = true;
-          } else {
-            this.dbUpdateSuccess = true;
-          }
         }
       );
     }
   },
   computed: {
     randomStart() {
-      const settings = this.$store.state.settings.customSettings;
-      return settings ? settings.randomStart : false;
+      return this.settings ? this.settings.randomStart : false;
     },
     correctAnswer() {
-      const settings = this.$store.state.settings.customSettings;
-      return settings ? settings.correctAnswer : "eachPiece";
+      return this.settings ? this.settings.correctAnswer : "eachPiece";
     },
     badPartScoring() {
-      const settings = this.$store.state.settings.customSettings;
-      return settings ? settings.badPartScoring : "0.5";
+      return this.settings ? this.settings.badPartScoring : "0.5";
     },
     limitedAnswerTime() {
-      const settings = this.$store.state.settings.customSettings;
-      return settings ? settings.limitedAnswerTime : true;
+      return this.settings ? this.settings.limitedAnswerTime : true;
     },
     timeLimit() {
-      const settings = this.$store.state.settings.customSettings;
-      return settings ? settings.timeLimit : "";
+      return this.settings ? this.settings.timeLimit : "";
     }
   },
-  created: function() {
-    this.$store.dispatch("loadSettings");
+  created: async function() {
+    const dbDriver = firebaseFactory();
+    const db = databaseFactory(dbDriver);
+    this.settingsTable = settingsFactory(db);
+    this.settings = await this.settingsTable.getById(this.$store.state.uid);
   }
 };
 </script>

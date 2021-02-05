@@ -19,15 +19,19 @@ export class UserModel implements IModel {
     private db: IDatabase;
 
     constructor(db: IDatabase) {
-    this.db = db;
+        this.db = db;
     }
 
     public async getAll(): Promise<User[]> {
-    return this.db.getAll(this.table);
+        return this.db.getAll(this.table);
     }
 
-    public getById(id: string): User {
-    return this.db.getById(id, this.table);
+    public getById(id: string): Promise<User> {
+        return this.db.getById(id, this.table);
+    }
+
+    public update(id: string, value: IContent): Promise<string> {
+        return this.db.update(id, value, this.table);
     }
 }
 

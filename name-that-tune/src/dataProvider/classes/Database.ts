@@ -1,4 +1,5 @@
 import { IDatabase } from '../interfaces/IDatabase';
+import { IContent } from '../interfaces/IContent';
 
 export class Database implements IDatabase {
   private driver: IDatabase;
@@ -17,6 +18,10 @@ export class Database implements IDatabase {
 
   public getById(id: string, table: string) {
     return this.driver.getById(id, table);
+  }
+
+  public update(id: string, value: IContent, table: string) {
+    return this.driver.update(id, value, table);
   }
 }
 

@@ -11,16 +11,33 @@ export class FirebaseDriver implements IDatabase {
     
   public getAllPromise(table: string): Promise<IContent[]> {
     return new Promise((resolve, reject) => {
-      db.ref(table).on('value', (snapshot) => {
-        console.log(JSON.stringify(snapshot.val()));
+      db.ref(table)
+      .on('value', (snapshot) => {
         resolve(snapshot.val());
       });
     });
   }
 
-  public getById(id: string, table: string) {
-    return db.ref(`${table}/${id}`).on('value', (snapshot) => {
-        return snapshot.val();
+  public getById(id: string, table: string): Promise<IContent> {
+    return new Promise((resolve, reject) => {
+      db.ref(`${table}/${id}`)
+      .on('value', (snapshot) => {
+        resolve(snapshot.val());
+      });
+    });
+  }
+
+  public update(id: string, value: IContent, table: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      db.ref(`${table}/${id}`)
+      .set(value,
+        error => {
+          if (error) {
+            resolve(`Successfully updated record ${id} in the table ${table}`);
+          } else {
+            reject(`Could not update record ${id} in the table ${table}`);
+          }
+        });
     });
   }
 

@@ -6,7 +6,6 @@
         <v-avatar size="120" tile>
           <img :src="clientImageUrl" />
         </v-avatar>
-        {{ settings }}
         <div class="halfwidth-wrapper text-body-1 pa-4">
           <br />Random start of a piece
           <v-switch

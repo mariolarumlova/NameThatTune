@@ -1,6 +1,6 @@
 import { IContent } from '../interfaces/IContent';
 import { IDatabase } from '../interfaces/IDatabase';
-import { IModel } from '../interfaces/IModel';
+import { Model } from '../classes/Model';
 import { DBResult } from '../interfaces/DBResult';
 
 export interface Settings extends IContent {
@@ -12,23 +12,13 @@ export interface Settings extends IContent {
     ownerId?: string
 }
 
-export class SettingsModel implements IModel {
-    public table = `settings`;
-    private db: IDatabase;
-
+export class SettingsModel extends Model {
     constructor(db: IDatabase) {
-        this.db = db;
+        super(db);
+        this.table = `settings`;
     }
 
-    public async getAll(): Promise<DBResult> {
-        return this.db.getAll(this.table);
-    }
-
-    public getById(id: string): Promise<DBResult> {
-        return this.db.getById(id, this.table);
-    }
-
-    public update(id: string, value: IContent): Promise<DBResult> {
+    public update(id: string, value: Settings): Promise<DBResult> {
         return this.db.update(id, value, this.table);
     }
 }

@@ -1,6 +1,6 @@
 import { IContent } from '../interfaces/IContent';
 import { IDatabase } from '../interfaces/IDatabase';
-import { IModel } from '../interfaces/IModel';
+import { Model } from '../classes/Model';
 import { DBResult } from '../interfaces/DBResult';
 
 export interface User extends IContent {
@@ -15,23 +15,13 @@ export interface User extends IContent {
     // roleId: string
 }
 
-export class UserModel implements IModel {
-    public table = `users`;
-    private db: IDatabase;
-
+export class UserModel extends Model {
     constructor(db: IDatabase) {
-        this.db = db;
+        super(db);
+        this.table = `users`;
     }
 
-    public async getAll(): Promise<DBResult> {
-        return this.db.getAll(this.table);
-    }
-
-    public getById(id: string): Promise<DBResult> {
-        return this.db.getById(id, this.table);
-    }
-
-    public update(id: string, value: IContent): Promise<DBResult> {
+    public update(id: string, value: User): Promise<DBResult> {
         return this.db.update(id, value, this.table);
     }
 }

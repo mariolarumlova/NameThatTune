@@ -9,13 +9,17 @@ const app = firebase.initializeApp({
   messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
 });
 
-const signIn = () => {
+const signIn = (googleIdToken, googleAccessToken) => {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
-    const provider = new firebase.auth.GoogleAuthProvider();
     firebase
       .auth()
-      .signInWithPopup(provider)
+      .signInWithCredential(
+        firebase.auth.GoogleAuthProvider.credential(
+          googleIdToken,
+          googleAccessToken
+        )
+      )
       .then(function(result) {
         console.log("signed in!");
         resolve(result);

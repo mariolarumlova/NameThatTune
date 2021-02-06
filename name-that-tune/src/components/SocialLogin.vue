@@ -26,8 +26,8 @@ export default {
       });
   },
   methods: {
-    signIn() {
-      return signIn();
+    signIn(idToken, accessToken) {
+      return signIn(idToken, accessToken);
     },
     authenticate: async function(scopes) {
       return await authenticate(gapi, scopes);
@@ -41,8 +41,9 @@ export default {
     },
 
     logInViaGoogle: async function() {
-      const result = await this.signIn();
       const googleUser = await this.authenticate(["https://www.googleapis.com/auth/youtube.readonly"]);
+      console.log(googleUser);
+      const result = await this.signIn(googleUser.uc.id_token, googleUser.uc.access_token);
       this.$store.commit("SET_SESSION", result);
       await this.loadClient("youtube", "v3");
       await this.goToMainPage();

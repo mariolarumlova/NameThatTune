@@ -1,6 +1,7 @@
 import { IContent } from '../interfaces/IContent';
 import { IDatabase } from '../interfaces/IDatabase';
 import { IModel } from '../interfaces/IModel';
+import { DBResult } from '../interfaces/DBResult';
 
 export interface User extends IContent {
     name?: string,
@@ -22,15 +23,15 @@ export class UserModel implements IModel {
         this.db = db;
     }
 
-    public async getAll(): Promise<User[]> {
+    public async getAll(): Promise<DBResult> {
         return this.db.getAll(this.table);
     }
 
-    public getById(id: string): Promise<User> {
+    public getById(id: string): Promise<DBResult> {
         return this.db.getById(id, this.table);
     }
 
-    public update(id: string, value: IContent): Promise<string> {
+    public update(id: string, value: IContent): Promise<DBResult> {
         return this.db.update(id, value, this.table);
     }
 }

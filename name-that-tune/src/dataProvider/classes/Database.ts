@@ -1,5 +1,6 @@
 import { IDatabase } from '../interfaces/IDatabase';
 import { IContent } from '../interfaces/IContent';
+import firebaseDriverFactory from './FirebaseDriver';
 
 export class Database implements IDatabase {
   private driver: IDatabase;
@@ -29,6 +30,7 @@ export class Database implements IDatabase {
  * databaseFactory
  * @param driver
  */
-export default function databaseFactory(driver: IDatabase) {
+export default function databaseFactory() {
+  const driver: IDatabase = firebaseDriverFactory();
   return new Database(driver);
 }

@@ -1,6 +1,7 @@
 import { IContent } from '../interfaces/IContent';
 import { IDatabase } from '../interfaces/IDatabase';
 import { IModel } from '../interfaces/IModel';
+import { DBResult } from '../interfaces/DBResult';
 
 export interface Settings extends IContent {
     badPartScoring?: string,
@@ -19,15 +20,15 @@ export class SettingsModel implements IModel {
         this.db = db;
     }
 
-    public async getAll(): Promise<Settings[]> {
+    public async getAll(): Promise<DBResult> {
         return this.db.getAll(this.table);
     }
 
-    public getById(id: string): Promise<Settings> {
+    public getById(id: string): Promise<DBResult> {
         return this.db.getById(id, this.table);
     }
 
-    public update(id: string, value: IContent): Promise<string> {
+    public update(id: string, value: IContent): Promise<DBResult> {
         return this.db.update(id, value, this.table);
     }
 }

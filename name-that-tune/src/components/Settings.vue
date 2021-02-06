@@ -79,7 +79,12 @@
           >
             Save
           </v-btn>
-          <v-alert type="success" dismissible v-if="dbUpdateMessage">{{ dbUpdateMessage }}</v-alert>
+          <v-alert
+            :type="dbError ? 'error' : 'success'"
+            v-model="showAlert"
+            dismissible
+            >{{ dbMessage }}</v-alert
+          >
         </div>
       </v-col>
     </v-row>
@@ -88,7 +93,6 @@
 
 <script>
 import databaseFactory from "@/dataProvider/classes/Database";
-import firebaseFactory from "@/dataProvider/classes/FirebaseDriver";
 import settingsFactory from "@/dataProvider/dto/Settings";
 
 export default {
@@ -101,28 +105,30 @@ export default {
       newBadPartScoring: undefined,
       newLimitedAnswerTime: undefined,
       newTimeLimit: undefined,
-      dbUpdateMessage: undefined,
+      dbMessage: undefined,
+      dbError: undefined,
+      showAlert: false,
       settings: {}
     };
   },
   methods: {
     saveSettingsToDb: async function() {
-      this.dbUpdateMessage = await this.settingsTable.update(
-        this.$store.state.uid,
-        {
-          randomStart:
-            typeof this.newRandomStart === "boolean"
-              ? this.newRandomStart
-              : this.randomStart,
-          correctAnswer: this.newCorrectAnswer || this.correctAnswer,
-          badPartScoring: this.newBadPartScoring || this.badPartScoring,
-          limitedAnswerTime:
-            typeof this.newLimitedAnswerTime === "boolean"
-              ? this.newLimitedAnswerTime
-              : this.limitedAnswerTime,
-          timeLimit: this.newTimeLimit || this.timeLimit
-        }
-      );
+      const result = await this.settingsTable.update(this.$store.state.uid, {
+        randomStart:
+          typeof this.newRandomStart === "boolean"
+            ? this.newRandomStart
+            : this.randomStart,
+        correctAnswer: this.newCorrectAnswer || this.correctAnswer,
+        badPartScoring: this.newBadPartScoring || this.badPartScoring,
+        limitedAnswerTime:
+          typeof this.newLimitedAnswerTime === "boolean"
+            ? this.newLimitedAnswerTime
+            : this.limitedAnswerTime,
+        timeLimit: this.newTimeLimit || this.timeLimit
+      });
+      this.dbError = !result.isSuccessful;
+      this.dbMessage = result.stdout || result.stderr;
+      this.showAlert = true;
     }
   },
   computed: {
@@ -143,10 +149,10 @@ export default {
     }
   },
   created: async function() {
-    const dbDriver = firebaseFactory();
-    const db = databaseFactory(dbDriver);
+    const db = databaseFactory();
     this.settingsTable = settingsFactory(db);
-    this.settings = await this.settingsTable.getById(this.$store.state.uid);
+    const result = await this.settingsTable.getById(this.$store.state.uid);
+    this.settings = result.data;
   }
 };
 </script>

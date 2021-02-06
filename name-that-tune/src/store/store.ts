@@ -25,8 +25,5 @@ export default new Vuex.Store({
   getters: {
     session: (state: { session: any; }) => state.session,
     uid: (state: { uid: any; }) => state.uid
-  },
-  modules: {
-    settings
   }
 });

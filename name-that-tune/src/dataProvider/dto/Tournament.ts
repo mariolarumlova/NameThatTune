@@ -5,9 +5,12 @@ import { DBResult } from '../interfaces/DBResult';
 
 interface Tournament extends IContent {
     playlistId: string,
+    youtubeId: string,
     userId: string,
     correctAnswersAmount: number,
-    totalAnswersAmount: number
+    totalAnswersAmount: number,
+    complete: boolean,
+    customPlaylist: boolean
 }
 
 export class TournamentModel extends Model {

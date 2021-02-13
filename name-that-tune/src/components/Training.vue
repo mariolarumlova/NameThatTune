@@ -36,7 +36,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <PlaylistChooser v-else @playlistChosen="playlistItems = $event" />
+    <PlaylistChooser v-else @playlistChosen="playlistItems = $event.items" />
   </div>
 </template>
 

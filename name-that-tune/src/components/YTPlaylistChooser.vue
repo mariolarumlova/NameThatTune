@@ -59,7 +59,10 @@ export default {
   methods: {
     async setPlaylistItems(selectedPlaylist) {
       const playlistItems = await this.getPlaylistItems(selectedPlaylist.id);
-      this.$emit("playlistChosen", playlistItems);
+      this.$emit("playlistChosen", {
+        id: selectedPlaylist.id,
+        items: playlistItems
+      });
     },
     getPlaylists: function() {
       return getPlaylists(gapi);

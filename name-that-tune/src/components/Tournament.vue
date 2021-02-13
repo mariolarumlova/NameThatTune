@@ -60,6 +60,10 @@ import PlaylistChooser from "@/components/YTPlaylistChooser";
 import MusicPlayer from "@/components/MusicPlayer";
 import databaseFactory from "@/dataProvider/classes/Database";
 import settingsFactory from "@/dataProvider/dto/Settings";
+import tournamentFactory from "@/dataProvider/dto/Tournament";
+import answerFactory from "@/dataProvider/dto/Answer";
+import { shuffle } from "@/business/tournament";
+import { v4 as generateGuid } from 'uuid';
 export default {
   props: {
     piece: Object
@@ -74,7 +78,9 @@ export default {
     ).data;
   },
   methods: {
-    checkPiece: function() {
+    checkPiece: async function() {
+      const givenPiece = this.selected.title;
+      const correctPiece = this.currentPiece.title;
       this.result = this.selected.title === this.currentPiece.title;
       this.correctAnswersNo = this.result
         ? this.correctAnswersNo + 1
@@ -85,34 +91,49 @@ export default {
       } else {
         this.tournamentComplete = true;
       }
+      const now = Date.now();
+      await tournamentFactory(databaseFactory()).update(this.tournamentGuid, {
+        complete: this.tournamentComplete,
+        correctAnswersAmount: this.correctAnswersNo,
+        totalAnswersAmount: this.index,
+        lastModifiedAtTimestamp: now
+      });
+      const guid = generateGuid();
+      await answerFactory(databaseFactory()).update(guid, {
+        id: guid,
+        tournamentId: this.tournamentGuid,
+        givenPiece: givenPiece,
+        correctPiece: correctPiece,
+        createdAtTimestamp: now,
+        lastModifiedAtTimestamp: now
+      });
     },
-    setPlaylist: function(event) {
+    setPlaylist: async function(event) {
       this.pieces =
-        event && event.length
-          ? event.map(item => {
+        event && event.items && event.items.length
+          ? event.items.map(item => {
               return {
                 text: item.title,
                 value: item
               };
             })
           : [];
-      this.playlistItems = this.shuffle(event);
+      this.playlistItems = shuffle(event.items);
       this.index = 0;
       this.currentPiece = this.playlistItems[this.index];
       this.tournamentComplete = false;
       this.correctAnswersNo = 0;
-    },
-    shuffle: function(inputArray) {
-      const array = JSON.parse(JSON.stringify(inputArray));
-      let m = array.length;
-      let t, i;
-      while (m) {
-        i = Math.floor(Math.random() * m--);
-        t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-      }
-      return array;
+      this.tournamentGuid = generateGuid();
+      const now = Date.now();
+      await tournamentFactory(databaseFactory()).update(this.tournamentGuid, {
+        id: this.tournamentGuid,
+        userId: this.$store.state.uid,
+        youtubeId: event.id,
+        complete: false,
+        customPlaylist: false,
+        createdAtTimestamp: now,
+        lastModifiedAtTimestamp: now
+      });
     }
   },
   data() {

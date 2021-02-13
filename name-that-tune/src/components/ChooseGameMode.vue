@@ -6,7 +6,7 @@
           Hello, {{ clientName }}! Choose game mode <br />
           {{ users }}
 
-          {{ clientUid }}
+          <!-- {{ clientUid }} -->
         </div>
         <v-btn class="ma-8" elevation="2" outlined large to="training"
           >Training</v-btn
@@ -22,7 +22,7 @@
 <script>
 import { mapGetters } from "vuex";
 import databaseFactory from "@/dataProvider/classes/Database";
-import userFactory from "@/dataProvider/dto/User";
+import settingsFactory from "@/dataProvider/dto/Settings";
 
 export default {
   data() {
@@ -37,7 +37,7 @@ export default {
   },
   created: async function() {
     const db = databaseFactory();
-    const factory = userFactory(db);
+    const factory = settingsFactory(db);
     this.users = JSON.stringify(await factory.getAll());
   }
 };

@@ -113,6 +113,7 @@ export default {
   methods: {
     saveSettingsToDb: async function() {
       const result = await this.settingsTable.update(this.$store.state.uid, {
+        id: this.$store.state.uid,
         randomStart:
           typeof this.newRandomStart === "boolean"
             ? this.newRandomStart
@@ -148,10 +149,10 @@ export default {
     }
   },
   created: async function() {
-    const db = databaseFactory();
-    this.settingsTable = settingsFactory(db);
-    const result = await this.settingsTable.getById(this.$store.state.uid);
-    this.settings = result.data;
+    this.settingsTable = settingsFactory(databaseFactory());
+    this.settings = (
+      await this.settingsTable.getById(this.$store.state.uid)
+    ).data;
   }
 };
 </script>

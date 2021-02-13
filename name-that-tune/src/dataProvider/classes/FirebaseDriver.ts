@@ -53,9 +53,26 @@ export class FirebaseDriver implements IDatabase {
     return result;
   }
 
-  public getByIdPromise(id: string, table: string): Promise<IContent> {
+  public async getIndexOfObject(id: string, records: IContent[]): Promise<number> {
+    let index = 0;
+    if (records && records.length) {
+      const record = records.find(el => el.id === id);
+      index = record ? records.indexOf(record) : -1;
+      index = index === -1 ? records.length : index;
+    }
+    return index;
+  }
+
+  public async getValueOfObject(id: string, value: IContent, records: IContent[]): Promise<IContent> {
+    const existingRecord = records && records.length ? records.find(el => el.id === id) : {};
+    return { ...existingRecord, ...value };
+  }
+
+  public async getByIdPromise(id: string, table: string): Promise<IContent> {
+    const records = await this.getAllPromise(table);
+    const index = await this.getIndexOfObject(id, records);
     return new Promise((resolve, reject) => {
-      db.ref(`${table}/${id}`).once("value")
+      db.ref(`${table}/${index}`).once("value")
       .then(snapshot => {
         resolve(snapshot.val());
       })
@@ -83,13 +100,16 @@ export class FirebaseDriver implements IDatabase {
     return result;
   }
 
-  public updatePromise(
+  public async updatePromise(
     id: string,
     value: IContent,
     table: string
   ): Promise<string> {
+    const records = await this.getAllPromise(table);
+    const index = await this.getIndexOfObject(id, records);
+    const upsertValue = await this.getValueOfObject(id, value, records);
     return new Promise((resolve, reject) => {
-      db.ref(`${table}/${id}`).set(value, (error) => {
+      db.ref(`${table}/${index}`).set(upsertValue, (error) => {
         if (error) {
           reject(`Could not update record ${id} in the table ${table}`);
         } else {

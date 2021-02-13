@@ -11,8 +11,10 @@
               :key="index"
               customStyle="display: none"
               :videoDetails="currentPiece"
-              randomStartTime="true"
-              playTimeSec="60"
+              :randomStartTime="settings.randomStart"
+              :playTimeSec="
+                settings.limitedAnswerTime ? settings.timeLimit : undefined
+              "
             />
             <v-btn @click.prevent="checkPiece()">Check</v-btn>
             <br />
@@ -56,6 +58,8 @@
 <script>
 import PlaylistChooser from "@/components/YTPlaylistChooser";
 import MusicPlayer from "@/components/MusicPlayer";
+import databaseFactory from "@/dataProvider/classes/Database";
+import settingsFactory from "@/dataProvider/dto/Settings";
 export default {
   props: {
     piece: Object
@@ -63,6 +67,11 @@ export default {
   components: {
     MusicPlayer,
     PlaylistChooser
+  },
+  async created() {
+    this.settings = (
+      await settingsFactory(databaseFactory()).getById(this.$store.state.uid)
+    ).data;
   },
   methods: {
     checkPiece: function() {
@@ -116,7 +125,8 @@ export default {
       index: 0,
       currentPiece: {},
       tournamentComplete: false,
-      correctAnswersNo: 0
+      correctAnswersNo: 0,
+      settings: {}
     };
   }
 };

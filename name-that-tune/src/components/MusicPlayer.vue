@@ -23,7 +23,7 @@ export default {
   props: {
     videoDetails: Object,
     customStyle: String,
-    randomStartTime: String,
+    randomStartTime: Boolean,
     playTimeSec: String
   },
   data() {
@@ -34,12 +34,15 @@ export default {
   methods: {
     getVideoUrl: function() {
       let url = `https://www.youtube.com/embed/${this.videoDetails.id}?autoplay=1&rel=0&disablekb=1`;
-      if (this.randomStartTime === "true") {
-        const startTimeSec = this.getStartTimeSec(
+      let startTimeSec = 0;
+      if (this.randomStartTime) {
+        startTimeSec = this.getStartTimeSec(
           this.videoDetails.duration,
-          this.playTimeSec
+          this.playTimeSec || 30
         );
-        url += startTimeSec ? `&start=${startTimeSec}` : "";
+      }
+      url += `&start=${startTimeSec}`;
+      if (this.playTimeSec) {
         const endTime = parseInt(startTimeSec) + parseInt(this.playTimeSec);
         url += endTime ? `&end=${endTime}` : "";
       }

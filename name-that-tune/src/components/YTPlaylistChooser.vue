@@ -48,7 +48,9 @@ export default {
   async created() {
     this.loading = true;
     if (!gapi.client) {
-      await authenticate(gapi, ["https://www.googleapis.com/auth/youtube.readonly"]);
+      await authenticate(gapi, [
+        "https://www.googleapis.com/auth/youtube.readonly"
+      ]);
       await loadClient(gapi, "youtube", "v3");
     }
     this.items = await this.getPlaylists();

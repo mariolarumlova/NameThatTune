@@ -1,5 +1,6 @@
 import { IDatabase } from '../interfaces/IDatabase';
 import { IContent } from '../interfaces/IContent';
+import { Filter } from '../interfaces/Filter';
 import firebaseDriverFactory from './FirebaseDriver';
 
 export class Database implements IDatabase {
@@ -15,6 +16,10 @@ export class Database implements IDatabase {
 
   public getAll(table: string) {
     return this.driver.getAll(table);
+  }
+
+  public query(filters: Filter[], table: string) {
+    return this.driver.query(filters, table);
   }
 
   public getById(id: string, table: string) {

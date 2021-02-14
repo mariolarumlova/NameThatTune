@@ -2,6 +2,7 @@ import { IContent } from '../interfaces/IContent';
 import { IDatabase } from '../interfaces/IDatabase';
 import { IModel } from '../interfaces/IModel';
 import { DBResult } from '../interfaces/DBResult';
+import { Filter } from '../interfaces/Filter';
 
 export class Model implements IModel {
     public table: string;
@@ -12,8 +13,12 @@ export class Model implements IModel {
         this.table = table;
     }
 
-    public async getAll(): Promise<DBResult> {
+    public getAll(): Promise<DBResult> {
         return this.db.getAll(this.table);
+    }
+
+    public query(filters: Filter[]): Promise<DBResult> {
+        return this.db.query(filters, this.table);
     }
 
     public getById(id: string): Promise<DBResult> {

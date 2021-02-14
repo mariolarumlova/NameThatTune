@@ -1,8 +1,8 @@
 import { db } from "@/repositories/firebase.js";
 import { IContent } from "../interfaces/IContent";
-
 import { IDatabase } from "../interfaces/IDatabase";
 import { DBResult } from "../interfaces/DBResult";
+import { Filter } from "../interfaces/Filter";
 
 export class FirebaseDriver implements IDatabase {
   public async getAll(table: string) {
@@ -12,10 +12,11 @@ export class FirebaseDriver implements IDatabase {
     };
     try {
       const records = await this.getAllPromise(table);
+      const ids = Object.keys(records);
       result = {
         isSuccessful: true,
-        totalRecords: records && records.length > 0 ? records.length : 0,
-        data: records,
+        totalRecords: ids && ids.length > 0 ? ids.length : 0,
+        data: Object.values(records),
       };
     } catch (err) {
       result.stderr = JSON.stringify(err);
@@ -27,6 +28,38 @@ export class FirebaseDriver implements IDatabase {
     return new Promise((resolve, reject) => {
       db.ref(table).once("value")
       .then(snapshot => {
+        resolve(snapshot.val());
+      })
+      .catch(err => {
+        reject(err);
+      })
+    });
+  }
+
+  public async query(filters: Filter[], table: string) {
+    let result: DBResult = {
+      isSuccessful: false,
+      totalRecords: 0,
+    };
+    try {
+      const records = await this.queryPromise(filters, table);
+      const ids = Object.keys(records);
+      result = {
+        isSuccessful: true,
+        totalRecords: ids && ids.length > 0 ? ids.length : 0,
+        data: Object.values(records),
+      };
+    } catch (err) {
+      result.stderr = JSON.stringify(err);
+    } 
+    return result;
+  }
+
+  public queryPromise(filters: Filter[], table: string): Promise<IContent[]> {
+    return new Promise((resolve, reject) => {
+      let ref = db.ref(table)
+      filters.forEach( filter => ref = ref.orderByChild(filter.key).equalTo(filter.value));
+      ref.on("child_added", snapshot => {
         resolve(snapshot.val());
       })
       .catch(err => {
@@ -53,26 +86,14 @@ export class FirebaseDriver implements IDatabase {
     return result;
   }
 
-  public async getIndexOfObject(id: string, records: IContent[]): Promise<number> {
-    let index = 0;
-    if (records && records.length) {
-      const record = records.find(el => el.id === id);
-      index = record ? records.indexOf(record) : -1;
-      index = index === -1 ? records.length : index;
-    }
-    return index;
-  }
-
-  public async getValueOfObject(id: string, value: IContent, records: IContent[]): Promise<IContent> {
-    const existingRecord = records && records.length ? records.find(el => el.id === id) : {};
+  public async getValueOfObject(id: string, table: string, value: IContent): Promise<IContent> {
+    const existingRecord = await this.getByIdPromise(id, table) || {};
     return { ...existingRecord, ...value };
   }
 
   public async getByIdPromise(id: string, table: string): Promise<IContent> {
-    const records = await this.getAllPromise(table);
-    const index = await this.getIndexOfObject(id, records);
     return new Promise((resolve, reject) => {
-      db.ref(`${table}/${index}`).once("value")
+      db.ref(`${table}/${id}`).once("value")
       .then(snapshot => {
         resolve(snapshot.val());
       })
@@ -105,11 +126,9 @@ export class FirebaseDriver implements IDatabase {
     value: IContent,
     table: string
   ): Promise<string> {
-    const records = await this.getAllPromise(table);
-    const index = await this.getIndexOfObject(id, records);
-    const upsertValue = await this.getValueOfObject(id, value, records);
+    const upsertValue = await this.getValueOfObject(id, table, value);
     return new Promise((resolve, reject) => {
-      db.ref(`${table}/${index}`).set(upsertValue, (error) => {
+      db.ref(`${table}/${id}`).set(upsertValue, (error) => {
         if (error) {
           reject(`Could not update record ${id} in the table ${table}`);
         } else {

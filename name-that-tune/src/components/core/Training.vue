@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import PlaylistChooser from "@/components/core/PlaylistChooserYoutube";
+import PlaylistChooser from "@/components/core/PlaylistChooser";
 import MusicPlayer from "@/components/core/MusicPlayer";
 import PieceChooser from "@/components/core/PieceChooserYoutube";
 import PieceDetails from "@/components/core/PieceDetails";

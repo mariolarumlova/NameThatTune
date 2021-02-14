@@ -56,14 +56,14 @@
 </template>
 
 <script>
-import PlaylistChooser from "@/components/YTPlaylistChooser";
+import PlaylistChooser from "@/components/PlaylistChooserYoutube";
 import MusicPlayer from "@/components/MusicPlayer";
 import databaseFactory from "@/dataProvider/classes/Database";
 import settingsFactory from "@/dataProvider/dto/Settings";
 import tournamentFactory from "@/dataProvider/dto/Tournament";
 import answerFactory from "@/dataProvider/dto/Answer";
 import { shuffle } from "@/business/tournament";
-import { v4 as generateGuid } from 'uuid';
+import { v4 as generateGuid } from "uuid";
 export default {
   props: {
     piece: Object

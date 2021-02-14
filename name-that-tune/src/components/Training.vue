@@ -8,17 +8,7 @@
           </div>
           <div v-if="piece" class="text-body-1 pa-4">
             <MusicPlayer :videoDetails="piece" />
-            Notes:
-            <br />
-            {{ message }}
-            <div class="halfwidth-wrapper">
-              <v-textarea
-                clearable
-                solo
-                v-model="message"
-                placeholder="Add multiple lines"
-              ></v-textarea>
-            </div>
+            <PieceDetails :piece="piece" />
             <v-btn class="ma-8" @click.prevent="clearPiece()">Save</v-btn>
             <v-btn class="ma-8" @click.prevent="clearPiece()"
               >Back to playlist</v-btn
@@ -27,7 +17,7 @@
           <div v-else>
             <PieceChooser
               :playlistItems="playlistItems"
-              @pieceChosen="piece = $event"
+              @pieceChosen="setPiece($event)"
             />
             <v-btn class="ma-8" @click.prevent="clearPlaylist()"
               >Back to playlists</v-btn
@@ -41,9 +31,10 @@
 </template>
 
 <script>
-import PlaylistChooser from "@/components/YTPlaylistChooser";
+import PlaylistChooser from "@/components/PlaylistChooserYoutube";
 import MusicPlayer from "@/components/MusicPlayer";
-import PieceChooser from "@/components/YTPieceChooser";
+import PieceChooser from "@/components/PieceChooserYoutube";
+import PieceDetails from "@/components/PieceDetails";
 export default {
   props: {
     playlistItems: Array,
@@ -52,19 +43,19 @@ export default {
   components: {
     MusicPlayer,
     PlaylistChooser,
-    PieceChooser
+    PieceChooser,
+    PieceDetails
   },
-  data() {
-    return {
-      message: ""
-    };
-  },
+  computed: {},
   methods: {
     clearPiece: function() {
       this.piece = null;
     },
     clearPlaylist: function() {
       this.playlistItems = null;
+    },
+    setPiece: function(event) {
+      this.piece = event;
     }
   }
 };

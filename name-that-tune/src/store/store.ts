@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { setStore, getStore } from "@/config/utils";
-import settings from "@/store/modules/settings";
 
 Vue.use(Vuex);
 

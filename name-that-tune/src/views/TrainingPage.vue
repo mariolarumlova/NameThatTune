@@ -14,11 +14,6 @@ import Menu from "@/components/Menu";
 import Training from "@/components/Training";
 
 export default {
-  data() {
-    return {
-      message: ""
-    };
-  },
   name: "training",
   components: {
     Menu,

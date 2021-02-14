@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import Menu from "@/components/Menu";
-import ChooseGameMode from "@/components/ChooseGameMode";
+import Menu from "@/components/utils/Menu";
+import ChooseGameMode from "@/components/utils/ChooseGameMode";
 
 export default {
   data() {

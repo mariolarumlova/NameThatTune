@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import PlaylistChooser from "@/components/PlaylistChooserYoutube";
-import MusicPlayer from "@/components/MusicPlayer";
-import PieceChooser from "@/components/PieceChooserYoutube";
-import PieceDetails from "@/components/PieceDetails";
+import PlaylistChooser from "@/components/core/PlaylistChooserYoutube";
+import MusicPlayer from "@/components/core/MusicPlayer";
+import PieceChooser from "@/components/core/PieceChooserYoutube";
+import PieceDetails from "@/components/core/PieceDetails";
 export default {
   props: {
     playlistItems: Array,

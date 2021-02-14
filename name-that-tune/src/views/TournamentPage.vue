@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import Menu from "@/components/Menu";
-import Tournament from "@/components/Tournament";
+import Menu from "@/components/utils/Menu";
+import Tournament from "@/components/core/Tournament";
 
 export default {
   data() {

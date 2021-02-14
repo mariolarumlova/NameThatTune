@@ -56,8 +56,8 @@
 </template>
 
 <script>
-import PlaylistChooser from "@/components/PlaylistChooserYoutube";
-import MusicPlayer from "@/components/MusicPlayer";
+import PlaylistChooser from "@/components/core/PlaylistChooserYoutube";
+import MusicPlayer from "@/components/core/MusicPlayer";
 import databaseFactory from "@/dataProvider/classes/Database";
 import settingsFactory from "@/dataProvider/dto/Settings";
 import tournamentFactory from "@/dataProvider/dto/Tournament";

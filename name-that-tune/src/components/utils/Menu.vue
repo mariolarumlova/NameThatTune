@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app color="white" flat>
     <v-avatar size="60" tile>
-      <img src="../../public/img/icons/logo.png" />
+      <img src="../../../public/img/icons/logo.png" />
     </v-avatar>
 
     <v-tabs centered class="ml-n9" color="grey darken-1" v-model="activeTab">

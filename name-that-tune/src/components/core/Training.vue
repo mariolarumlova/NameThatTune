@@ -7,7 +7,6 @@
             Training mode
           </div>
           <div v-if="piece" class="text-body-1 pa-4">
-            <MusicPlayer :videoDetails="piece" />
             <PieceDetails :piece="piece" />
             <v-btn class="ma-8" @click.prevent="clearPiece()">Save</v-btn>
             <v-btn class="ma-8" @click.prevent="clearPiece()"
@@ -32,8 +31,7 @@
 
 <script>
 import PlaylistChooser from "@/components/core/PlaylistChooser";
-import MusicPlayer from "@/components/core/MusicPlayer";
-import PieceChooser from "@/components/core/PieceChooserYoutube";
+import PieceChooser from "@/components/core/PieceChooser";
 import PieceDetails from "@/components/core/PieceDetails";
 export default {
   props: {
@@ -41,7 +39,6 @@ export default {
     piece: Object
   },
   components: {
-    MusicPlayer,
     PlaylistChooser,
     PieceChooser,
     PieceDetails

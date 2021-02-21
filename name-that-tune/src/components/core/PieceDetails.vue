@@ -1,28 +1,35 @@
 <template>
-  <div class="halfwidth-wrapper">
-    <v-switch
-      :value="includeInTournament"
-      color="orange darken-3"
-      hide-details
-      hint="Include in tournaments"
-    ></v-switch>
-    {{ includeInTournament }}
-    <br />
-    Notes:
-    <br />
-    <v-textarea
-      clearable
-      solo
-      v-model="message"
-      placeholder="Add multiple lines"
-    ></v-textarea>
+  <div>
+    <MusicPlayer :videoDetails="piece" />
+    <div class="halfwidth-wrapper">
+      <v-switch
+        :value="includeInTournament"
+        color="orange darken-3"
+        hide-details
+        hint="Include in tournaments"
+      ></v-switch>
+      {{ includeInTournament }}
+      <br />
+      Notes:
+      <br />
+      <v-textarea
+        clearable
+        solo
+        v-model="message"
+        placeholder="Add multiple lines"
+      ></v-textarea>
+    </div>
   </div>
 </template>
 
 <script>
+import MusicPlayer from "@/components/core/MusicPlayer";
 export default {
   props: {
     piece: Object
+  },
+  components: {
+    MusicPlayer
   },
   computed: {
     message() {

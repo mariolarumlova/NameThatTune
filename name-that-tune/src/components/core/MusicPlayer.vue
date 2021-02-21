@@ -33,7 +33,8 @@ export default {
   },
   methods: {
     getVideoUrl: function() {
-      let url = `https://www.youtube.com/embed/${this.videoDetails.id}?autoplay=1&rel=0&disablekb=1`;
+      const youtubeId = this.videoDetails.youtubeId || this.videoDetails.id;
+      let url = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&disablekb=1`;
       let startTimeSec = 0;
       if (this.randomStartTime) {
         startTimeSec = this.getStartTimeSec(

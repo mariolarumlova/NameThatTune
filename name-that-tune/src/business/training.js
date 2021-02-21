@@ -46,6 +46,7 @@ const addPlaylistItemsToDatabase = async (playlistId, youtubeItems) => {
       avatar: ytItem.avatar,
       multipart: false,
       playlistId: playlistId,
+      includedInTournament: true,
       createdAtTimestamp: now,
       lastModifiedAtTimestamp: now
     };

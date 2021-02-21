@@ -9,7 +9,11 @@
           color="orange darken-2"
           :multiple="multiple"
         >
-          <v-list-item v-for="(item, i) in playlistItemsComputed" :key="i">
+          <v-list-item
+            v-for="(item, i) in playlistItemsComputed"
+            :key="i"
+            @click.prevent="setPiece(item)"
+          >
             <v-list-item-avatar v-if="item.avatar">
               <v-img :src="item.avatar"></v-img>
             </v-list-item-avatar>
@@ -48,6 +52,11 @@ export default {
     };
   },
   methods: {
+    setPiece(selectedItem) {
+      if (!this.multiple) {
+        this.$emit("pieceChosen", selectedItem);
+      }
+    },
     setPieces() {
       const selectedItems = this.selectedItems.map(
         el => this.playlistItems[el]

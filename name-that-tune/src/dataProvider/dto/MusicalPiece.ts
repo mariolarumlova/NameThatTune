@@ -8,8 +8,9 @@ interface MusicalPiece extends IContent {
     avatar: string,
     composer?: string,
     multipart: boolean,
+    includedInTournament: boolean,
     playlistId: string,
-    notes: string
+    notes?: string
 }
 
 export class MusicalPieceModel extends Model {

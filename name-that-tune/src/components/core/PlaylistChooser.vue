@@ -60,7 +60,7 @@
 /* eslint-disable no-undef */
 import YoutubePlaylists from "@/components/core/PlaylistChooserYoutube";
 import CustomPlaylists from "@/components/core/PlaylistChooserCustom";
-import PieceChooser from "@/components/core/PieceChooserYoutube";
+import PieceChooser from "@/components/core/PieceChooser";
 
 import {
   addPlaylistToDatabase,
@@ -112,10 +112,7 @@ export default {
     youtubePlaylistChosen(event) {
       this.selectedItem = event;
       if (this.gameMode === "tournament") {
-        //   this.$emit("playlistChosen", {
-        //   ...customPlaylist,
-        //   items: event
-        // });
+        this.$emit("playlistChosen", event);
       } else {
         this.refreshIndex++;
       }

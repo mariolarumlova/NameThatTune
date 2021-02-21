@@ -5,8 +5,11 @@ import { DBResult } from '../interfaces/DBResult';
 
 interface MusicalPiece extends IContent {
     title: string,
-    composerId: string,
-    multipart: boolean
+    avatar: string,
+    composer?: string,
+    multipart: boolean,
+    playlistId: string,
+    notes: string
 }
 
 export class MusicalPieceModel extends Model {

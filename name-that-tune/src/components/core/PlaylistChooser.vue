@@ -61,9 +61,11 @@
 import YoutubePlaylists from "@/components/core/PlaylistChooserYoutube";
 import CustomPlaylists from "@/components/core/PlaylistChooserCustom";
 import PieceChooser from "@/components/core/PieceChooserYoutube";
-import databaseFactory from "@/dataProvider/classes/Database";
-import playlistFactory from "@/dataProvider/dto/Playlist";
-import { getPlaylistDbObject } from "@/business/training";
+
+import {
+  addPlaylistToDatabase,
+  addPlaylistItemsToDatabase
+} from "@/business/training";
 
 export default {
   props: {
@@ -92,27 +94,31 @@ export default {
       this.$emit("playlistChosen", event);
     },
     async saveCustomPlaylistToDb(event) {
-      console.log(event);
-      const customPlaylist = getPlaylistDbObject(
+      const customPlaylist = await addPlaylistToDatabase(
         this.$store.state.uid,
         this.selectedItem
       );
-      const result = await playlistFactory(databaseFactory()).update(
-        customPlaylist.id,
-        customPlaylist
-      );
-      console.log({
-        ...customPlaylist,
-        items: event
-      });
-      this.$emit("playlistChosen", {
-        ...customPlaylist,
-        items: event
-      });
+      const items =
+        event && event.length
+          ? await addPlaylistItemsToDatabase(customPlaylist.id, event)
+          : event;
+      if (customPlaylist) {
+        this.$emit("playlistChosen", {
+          ...customPlaylist,
+          items: items
+        });
+      }
     },
     youtubePlaylistChosen(event) {
       this.selectedItem = event;
-      this.refreshIndex++;
+      if (this.gameMode === "tournament") {
+        //   this.$emit("playlistChosen", {
+        //   ...customPlaylist,
+        //   items: event
+        // });
+      } else {
+        this.refreshIndex++;
+      }
     }
   }
 };

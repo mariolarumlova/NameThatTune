@@ -11,4 +11,8 @@ const shuffle = inputArray => {
   return array;
 };
 
-export { shuffle };
+const getPiecesWithParts = playlistId => {
+  return [];
+};
+
+export { shuffle, getPiecesWithParts };

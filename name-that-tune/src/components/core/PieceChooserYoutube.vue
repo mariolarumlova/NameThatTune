@@ -11,7 +11,7 @@
         >
           <v-list-item v-for="(item, i) in playlistItemsComputed" :key="i">
             <v-list-item-avatar v-if="item.avatar">
-              <v-img :src="item.avatar.url"></v-img>
+              <v-img :src="item.avatar"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title v-text="item.title"></v-list-item-title>

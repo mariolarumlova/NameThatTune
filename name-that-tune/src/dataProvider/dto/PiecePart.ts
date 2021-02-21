@@ -5,6 +5,7 @@ import { DBResult } from '../interfaces/DBResult';
 
 interface PiecePart extends IContent {
     title: string,
+    avatar: string,
     musicalPieceId: string,
     youtubeId: string,
     startTimeSec: number,
@@ -12,7 +13,6 @@ interface PiecePart extends IContent {
     // instruments: Enumerator[],
     // metrum: Enumerator[],
     // key: Enumerator,
-    notes: string,
     // image: string //url
 }
 

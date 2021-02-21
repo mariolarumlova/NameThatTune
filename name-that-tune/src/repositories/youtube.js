@@ -13,7 +13,7 @@ const getVideosWithDurations = async (gapi, videos) => {
     return {
       id: piece.id,
       title: piece.snippet.title,
-      avatar: piece.snippet.thumbnails.default,
+      avatar: piece.snippet.thumbnails.default.url,
       duration: duration
     };
   });
@@ -29,7 +29,7 @@ const getPlaylists = async gapi => {
     return {
       id: playlist.id,
       title: playlist.snippet.title,
-      avatar: playlist.snippet.thumbnails.default
+      avatar: playlist.snippet.thumbnails.default.url
     };
   });
 };
@@ -41,17 +41,14 @@ const getPlaylistItems = async (gapi, playlistId, gameMode) => {
     maxResults: 50
   });
   console.log("Response - playlist items", response);
-  let items = response.result.items.map(piece => {
+  const items = response.result.items.map(piece => {
     return {
       id: piece.contentDetails.videoId,
       title: piece.snippet.title,
       avatar: piece.snippet.thumbnails.default
     };
   });
-  if (gameMode === "tournament") {
-    items = await getVideosWithDurations(gapi, items);
-  }
-  return items;
+  return getVideosWithDurations(gapi, items);
 };
 
 export { getPlaylists, getPlaylistItems };

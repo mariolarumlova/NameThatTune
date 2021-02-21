@@ -10,7 +10,7 @@
           @click.prevent="setPlaylistItems(item)"
         >
           <v-list-item-avatar v-if="item.avatar">
-            <v-img :src="item.avatar.url"></v-img>
+            <v-img :src="item.avatar"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title v-text="item.title"></v-list-item-title>
@@ -25,6 +25,8 @@
 /* eslint-disable no-undef */
 import databaseFactory from "@/dataProvider/classes/Database";
 import playlistFactory from "@/dataProvider/dto/Playlist";
+import { getCustomPieces } from "@/business/training";
+import { getPiecesWithParts } from "@/business/tournament";
 export default {
   props: {
     gameMode: String,
@@ -58,10 +60,13 @@ export default {
       if (this.youtubeId) {
         filters = [...filters, { key: "youtubeId", value: this.youtubeId }];
       }
-      return (await playlistFactory(databaseFactory()).query(filters)).data;
+      const result = await playlistFactory(databaseFactory()).query(filters);
+      return result.data;
     },
     getPlaylistItems: function(playlistId) {
-      return [];
+      return this.gameMode === "tournament"
+        ? getPiecesWithParts(playlistId)
+        : getCustomPieces(playlistId);
     }
   }
 };

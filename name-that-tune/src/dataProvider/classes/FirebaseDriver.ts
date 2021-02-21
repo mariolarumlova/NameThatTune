@@ -43,24 +43,33 @@ export class FirebaseDriver implements IDatabase {
     };
     try {
       const records = await this.queryPromise(filters, table);
-      const ids = Object.keys(records);
+      const ids = records ? Object.keys(records) : [];
       result = {
         isSuccessful: true,
-        totalRecords: ids && ids.length > 0 ? ids.length : 0,
+        totalRecords: ids.length > 0 ? ids.length : 0,
         data: Object.values(records),
       };
     } catch (err) {
-      result.stderr = JSON.stringify(err);
+      result.stderr = JSON.stringify(err, Object.getOwnPropertyNames(err));
     } 
     return result;
   }
 
   public queryPromise(filters: Filter[], table: string): Promise<IContent[]> {
     return new Promise((resolve, reject) => {
-      let ref = db.ref(table)
-      filters.forEach( filter => ref = ref.orderByChild(filter.key).equalTo(filter.value));
-      ref.on("child_added", snapshot => {
-        resolve(snapshot.val());
+      let ref = db.ref(table);
+      ref = filters && filters.length ? ref.orderByChild(filters[0].key).equalTo(filters[0].value) : ref;
+      ref.once("value")
+      .then(snapshot => {
+        const areFilters = filters && filters.length;
+        const resultFiltered = areFilters
+        ? Object.keys(snapshot.val())
+          .reduce( (acc, key) => {
+            const matchesFilters = filters.every(filter => snapshot.val()[key][filter.key] === filter.value);
+            return matchesFilters ? {...acc, [key]: snapshot.val()[key]} : acc;
+          }, {})
+        : snapshot.val();
+        resolve(resultFiltered);
       })
       .catch(err => {
         reject(err);

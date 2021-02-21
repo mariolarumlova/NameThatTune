@@ -1,59 +1,93 @@
 <template>
   <div>
-    <MusicPlayer :videoDetails="piece" />
-    <div class="halfwidth-wrapper">
-      <v-switch
-        :value="includeInTournament"
-        color="orange darken-3"
-        hide-details
-        hint="Include in tournaments"
-      ></v-switch>
-      {{ includeInTournament }}
-      <br />
-      Notes:
-      <br />
-      <v-textarea
-        clearable
-        solo
-        v-model="message"
-        placeholder="Add multiple lines"
-      ></v-textarea>
+    <div v-if="pieceWithParts" :key="selectedPart.index">
+      <MusicPlayer :videoDetails="selectedPart" />
+      <div class="halfwidth-wrapper">
+        <v-switch
+          v-model="pieceWithParts.includeInTournament"
+          label="Include in tournaments"
+          color="orange darken-3"
+          hide-details
+        ></v-switch>
+        <br />
+        Notes:
+        <br />
+        <v-textarea
+          clearable
+          solo
+          v-model="pieceWithParts.notes"
+          placeholder="Add multiple lines"
+        ></v-textarea>
+        <v-switch
+          v-model="pieceWithParts.multipart"
+          label="Multipart"
+          color="orange darken-3"
+          hide-details
+        ></v-switch>
+        <PieceParts
+          v-if="pieceWithParts.multipart"
+          :piecePartsInput="pieceWithParts.parts"
+        />
+      </div>
     </div>
+    <v-progress-circular v-else></v-progress-circular>
   </div>
 </template>
 
 <script>
 import MusicPlayer from "@/components/core/MusicPlayer";
+import PieceParts from "@/components/core/PieceParts";
+import databaseFactory from "@/dataProvider/classes/Database";
+import piecePartsFactory from "@/dataProvider/dto/PiecePart";
 export default {
   props: {
     piece: Object
   },
   components: {
-    MusicPlayer
+    MusicPlayer,
+    PieceParts
   },
-  computed: {
-    message() {
-      return this.piece ? this.piece.message : false;
-    },
-    includeInTournament() {
-      return this.piece.includeInTournament || true;
-    },
-    multipart() {
-      return this.piece ? this.piece.multipart : false;
-    },
-    partsInThisVideoAllowed() {
-      return this.piece ? this.piece.partsInThisVideoAllowed : false;
-    },
-    partsInAnotherVideosAllowed() {
-      return this.piece ? this.piece.partsInAnotherVideosAllowed : false;
-    },
-    partsInThisVideo() {
-      return this.piece ? this.piece.partsInThisVideo : []; //here should be at least one piece
-    },
-    partsInAnotherVideo() {
-      return this.piece ? this.piece.partsInAnotherVideo : [];
-    }
+  data() {
+    return {
+      pieceWithParts: null,
+      selectedPart: null
+    };
   },
-  methods: {}
+  // computed: {
+  //   message() {
+  //     return this.pieceWithParts ? this.pieceWithParts.notes : "";
+  //   },
+  //   includeInTournament() {
+  //     return this.pieceWithParts ? this.pieceWithParts.includeInTournament : false;
+  //   },
+  //   multipart() {
+  //     return this.pieceWithParts ? this.pieceWithParts.multipart : false;
+  //   },
+  //   partsInThisVideoAllowed() {
+  //     return this.pieceWithParts ? this.pieceWithParts.partsInThisVideoAllowed : false;
+  //   },
+  //   partsInAnotherVideosAllowed() {
+  //     return this.pieceWithParts ? this.pieceWithParts.partsInAnotherVideosAllowed : false;
+  //   },
+  //   parts() {
+  //     return this.pieceWithParts ? this.pieceWithParts.parts : [];
+  //   }
+  // },
+  methods: {},
+  created: async function() {
+    const piecePartsTable = piecePartsFactory(databaseFactory());
+    const pieceParts = await piecePartsTable.query([
+      { key: "musicalPieceId", value: this.piece.id }
+    ]);
+    console.log("===PIECE PARTS===");
+    console.log(pieceParts);
+    this.selectedPart = pieceParts.isSuccessful ? pieceParts.data[0] : null;
+    this.pieceWithParts = {
+      ...this.piece,
+      parts: pieceParts.data
+    };
+    console.log("===PIECE===");
+    console.log(this.pieceWithParts);
+  }
 };
 </script>

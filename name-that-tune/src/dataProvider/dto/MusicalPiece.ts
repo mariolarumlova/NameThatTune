@@ -8,7 +8,7 @@ interface MusicalPiece extends IContent {
     avatar: string,
     composer?: string,
     multipart: boolean,
-    includedInTournament: boolean,
+    includeInTournament: boolean,
     playlistId: string,
     notes?: string
 }

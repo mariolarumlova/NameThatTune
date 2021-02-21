@@ -10,6 +10,7 @@ interface PiecePart extends IContent {
     youtubeId: string,
     startTimeSec: number,
     endTimeSec: number,
+    index: number,
     // instruments: Enumerator[],
     // metrum: Enumerator[],
     // key: Enumerator,

@@ -35,28 +35,33 @@ export default {
     getVideoUrl: function() {
       const youtubeId = this.videoDetails.youtubeId || this.videoDetails.id;
       let url = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&disablekb=1`;
-      let startTimeSec = 0;
+      let startTimeSec = this.videoDetails.startTimeSec || 0;
       if (this.randomStartTime) {
         startTimeSec = this.getStartTimeSec(
-          this.videoDetails.duration,
+          startTimeSec,
+          this.videoDetails.endTimeSec || this.videoDetails.duration,
           this.playTimeSec || 30
         );
       }
       url += `&start=${startTimeSec}`;
-      if (this.playTimeSec) {
-        const endTime = parseInt(startTimeSec) + parseInt(this.playTimeSec);
-        url += endTime ? `&end=${endTime}` : "";
-      }
+      const endTime = this.playTimeSec
+        ? parseInt(startTimeSec) + parseInt(this.playTimeSec)
+        : this.videoDetails.endTimeSec || this.videoDetails.duration;
+      url += endTime ? `&end=${endTime}` : "";
       console.log(url);
       return url;
     },
-    getStartTimeSec: function(trackDuration, answerTime) {
-      const maxStartTime = trackDuration - answerTime;
-      return this.getRandomIntInclusive(maxStartTime > 0 ? maxStartTime : 0);
+    getStartTimeSec: function(minStartTime, piecePartEndTime, answerTime) {
+      const maxStartTime = piecePartEndTime - answerTime;
+      return this.getRandomIntInclusive(
+        minStartTime,
+        maxStartTime > 0 ? maxStartTime : 0
+      );
     },
-    getRandomIntInclusive: function(max) {
+    getRandomIntInclusive: function(min, max) {
+      min = Math.ceil(min);
       max = Math.floor(max);
-      return Math.floor(Math.random() * (max + 1));
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
   }
 };

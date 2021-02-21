@@ -24,11 +24,16 @@
           color="orange darken-3"
           hide-details
         ></v-switch>
-        <PieceParts
-          v-if="pieceWithParts.multipart"
-          :piecePartsInput="pieceWithParts.parts"
-        />
       </div>
+      <PieceParts
+        v-if="pieceWithParts.multipart"
+        :piecePartsInput="pieceWithParts.parts"
+        :defaultYoutubeId="pieceWithParts.youtubeId"
+      />
+      <v-btn class="ma-8" @click.prevent="$emit('save', pieceWithParts)"
+        >Save</v-btn
+      >
+      <v-btn class="ma-8" @click.prevent="$emit('cancel')">Cancel</v-btn>
     </div>
     <v-progress-circular v-else></v-progress-circular>
   </div>
@@ -53,41 +58,17 @@ export default {
       selectedPart: null
     };
   },
-  // computed: {
-  //   message() {
-  //     return this.pieceWithParts ? this.pieceWithParts.notes : "";
-  //   },
-  //   includeInTournament() {
-  //     return this.pieceWithParts ? this.pieceWithParts.includeInTournament : false;
-  //   },
-  //   multipart() {
-  //     return this.pieceWithParts ? this.pieceWithParts.multipart : false;
-  //   },
-  //   partsInThisVideoAllowed() {
-  //     return this.pieceWithParts ? this.pieceWithParts.partsInThisVideoAllowed : false;
-  //   },
-  //   partsInAnotherVideosAllowed() {
-  //     return this.pieceWithParts ? this.pieceWithParts.partsInAnotherVideosAllowed : false;
-  //   },
-  //   parts() {
-  //     return this.pieceWithParts ? this.pieceWithParts.parts : [];
-  //   }
-  // },
   methods: {},
   created: async function() {
     const piecePartsTable = piecePartsFactory(databaseFactory());
     const pieceParts = await piecePartsTable.query([
       { key: "musicalPieceId", value: this.piece.id }
     ]);
-    console.log("===PIECE PARTS===");
-    console.log(pieceParts);
     this.selectedPart = pieceParts.isSuccessful ? pieceParts.data[0] : null;
     this.pieceWithParts = {
       ...this.piece,
       parts: pieceParts.data
     };
-    console.log("===PIECE===");
-    console.log(this.pieceWithParts);
   }
 };
 </script>

@@ -2,12 +2,11 @@
   <v-data-table
     :headers="headers"
     :items="pieceParts"
-    sort-by="calories"
+    :hide-default-footer="true"
+    sort-by="index"
     class="elevation-1"
   >
     <template v-slot:top>
-      <v-divider class="mx-4" inset vertical></v-divider>
-      <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -17,7 +16,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            New Item
+            Add a new part
           </v-btn>
         </template>
         <v-card>
@@ -43,13 +42,13 @@
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
                     v-model="editedItem.startTimeSec"
-                    label="Start time"
+                    label="Start time [sec]"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
                     v-model="editedItem.endTimeSec"
-                    label="End time"
+                    label="End time [sec]"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -94,9 +93,7 @@
       </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="orange darken-3" @click="initialize">
-        Reset
-      </v-btn>
+      There are no parts assigned to this piece. Create a new one or cancel.
     </template>
   </v-data-table>
 </template>
@@ -115,16 +112,12 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        {
-          text: "Index",
-          //   align: "start",
-          sortable: false,
-          value: "index"
-        },
+        { text: "Index", value: "index" },
         { text: "Title", value: "title" },
         { text: "Youtube ID", value: "youtubeId" },
-        { text: "Start time", value: "startTimeSec" },
-        { text: "End time", value: "endTimeSec" }
+        { text: "Start time [sec]", value: "startTimeSec" },
+        { text: "End time [sec]", value: "endTimeSec" },
+        { text: "Actions", value: "actions", sortable: false }
       ],
       editedIndex: -1,
       editedItem: {
@@ -158,8 +151,6 @@ export default {
   },
   methods: {
     initialize() {
-      console.log("===PIECE PARTS===");
-      console.log(this.piecePartsInput);
       this.pieceParts = this.piecePartsInput;
     },
     editItem(item) {
@@ -194,6 +185,10 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.pieceParts[this.editedIndex], this.editedItem);
       } else {
+        const indexes = this.pieceParts.length
+          ? this.pieceParts.map(el => el.index)
+          : [0];
+        this.editedItem.index = Math.max(...indexes) + 1;
         this.pieceParts.push(this.editedItem);
       }
       this.close();

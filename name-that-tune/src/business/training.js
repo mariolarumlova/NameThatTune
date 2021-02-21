@@ -54,6 +54,7 @@ const addPlaylistItemsToDatabase = async (playlistId, youtubeItems) => {
     const piecePartGuid = generateGuid();
     const piecePart = {
       id: piecePartGuid,
+      index: 0,
       avatar: ytItem.avatar,
       musicalPieceId: musicalPieceGuid,
       youtubeId: ytItem.id,

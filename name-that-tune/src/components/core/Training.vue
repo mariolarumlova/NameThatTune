@@ -7,11 +7,11 @@
             Training mode
           </div>
           <div v-if="piece" class="text-body-1 pa-4">
-            <PieceDetails :piece="piece" />
-            <v-btn class="ma-8" @click.prevent="clearPiece()">Save</v-btn>
-            <v-btn class="ma-8" @click.prevent="clearPiece()"
-              >Back to playlist</v-btn
-            >
+            <PieceDetails
+              :piece="piece"
+              @save="savePiece($event)"
+              @cancel="clearPiece()"
+            />
           </div>
           <div v-else>
             <PieceChooser

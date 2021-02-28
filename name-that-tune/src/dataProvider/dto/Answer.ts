@@ -7,6 +7,7 @@ interface Answer extends IContent {
     correctPiece: string,
     givenPiece: string,
     tournamentId: string,
+    score: number
 }
 
 export class AnswerModel extends Model {

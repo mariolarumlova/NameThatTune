@@ -33,6 +33,7 @@
 import PlaylistChooser from "@/components/core/PlaylistChooser";
 import PieceChooser from "@/components/core/PieceChooser";
 import PieceDetails from "@/components/core/PieceDetails";
+import { updateMusicalPiece } from "@/business/training";
 export default {
   props: {
     playlistItems: Array,
@@ -53,6 +54,9 @@ export default {
     },
     setPiece: function(event) {
       this.piece = event;
+    },
+    savePiece: function(event) {
+      updateMusicalPiece(event);
     }
   }
 };

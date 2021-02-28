@@ -54,12 +54,14 @@ const addPlaylistItemsToDatabase = async (playlistId, youtubeItems) => {
     const piecePartGuid = generateGuid();
     const piecePart = {
       id: piecePartGuid,
-      index: 0,
+      index: 1,
       avatar: ytItem.avatar,
       musicalPieceId: musicalPieceGuid,
       youtubeId: ytItem.id,
       startTimeSec: 0,
-      endTimeSec: ytItem.duration
+      endTimeSec: ytItem.duration,
+      createdAtTimestamp: now,
+      lastModifiedAtTimestamp: now
     };
     piecePartsToInsert = [
       ...piecePartsToInsert,
@@ -73,8 +75,6 @@ const addPlaylistItemsToDatabase = async (playlistId, youtubeItems) => {
     )
   );
   const piecePartsResults = await Promise.all(piecePartsToInsert);
-  console.log(musicalPiecesResults);
-  console.log(piecePartsResults);
   return musicalPiecesResults.every(result => result.isSuccessful) &&
     piecePartsResults.every(result => result.isSuccessful)
     ? musicalPiecesToInsert
@@ -88,4 +88,55 @@ const getCustomPieces = async playlistId => {
   return result && result.isSuccessful ? result.data : [];
 };
 
-export { addPlaylistToDatabase, addPlaylistItemsToDatabase, getCustomPieces };
+const getPieceParts = async musicalPieceId => {
+  const result = await piecePartsTable.query([
+    { key: "musicalPieceId", value: musicalPieceId }
+  ]);
+  return result && result.isSuccessful ? result.data : [];
+};
+
+const updatePieceParts = async pieceWithParts => {
+  const now = Date.now();
+  const oldPieceParts = await getPieceParts(pieceWithParts.id);
+  const newPiecePartsIds = pieceWithParts.parts.map(part => part.id);
+  const deletedPartsIds = oldPieceParts.reduce((acc, part) => {
+    return !newPiecePartsIds.includes(part.id) ? [...acc, part.id] : acc;
+  }, []);
+  //TODO Delete parts from list deletedPartsIds
+  const piecePartPromises = pieceWithParts.parts.reduce((acc, part) => {
+    if (!part.id) {
+      part.id = generateGuid();
+    }
+    part.musicalPieceId = pieceWithParts.id;
+    part.lastModifiedAtTimestamp = now;
+    return [...acc, piecePartsTable.update(part.id, part)];
+  }, []);
+  const piecePartsResults = await Promise.all(piecePartPromises);
+  return piecePartsResults.every(result => result.isSuccessful) ? true : false;
+};
+
+const updateMusicalPiece = async pieceWithParts => {
+  const now = Date.now();
+  const musicalPieceToUpdate = {
+    includedInTournament: pieceWithParts.includedInTournament,
+    lastModifiedAtTimestamp: now,
+    multipart: pieceWithParts.multipart,
+    title: pieceWithParts.title,
+    notes: pieceWithParts.notes
+  };
+  const musicalPieceResult = await musicalPiecesTable.update(
+    pieceWithParts.id,
+    musicalPieceToUpdate
+  );
+
+  const piecePartsUpdated = await updatePieceParts(pieceWithParts);
+
+  return musicalPieceResult.isSuccessful && piecePartsUpdated ? true : false;
+};
+
+export {
+  addPlaylistToDatabase,
+  addPlaylistItemsToDatabase,
+  getCustomPieces,
+  updateMusicalPiece
+};

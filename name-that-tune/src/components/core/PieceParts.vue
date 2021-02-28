@@ -29,6 +29,12 @@
               <v-row>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
+                    v-model="editedItem.index"
+                    label="Index"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
                     v-model="editedItem.title"
                     label="Title"
                   ></v-text-field>
@@ -130,7 +136,7 @@ export default {
       defaultItem: {
         index: 0,
         title: "",
-        youtubeId: this.defaultYoutubeId,
+        youtubeId: "",
         startTimeSec: 0,
         endTimeSec: 0
       }
@@ -138,7 +144,7 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "New Part" : "Edit Part";
     }
   },
   watch: {
@@ -180,18 +186,16 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+      this.$emit("piecePartsChanged", this.pieceParts);
     },
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.pieceParts[this.editedIndex], this.editedItem);
       } else {
-        const indexes = this.pieceParts.length
-          ? this.pieceParts.map(el => el.index)
-          : [0];
-        this.editedItem.index = Math.max(...indexes) + 1;
         this.pieceParts.push(this.editedItem);
       }
       this.close();
+      this.$emit("piecePartsChanged", this.pieceParts);
     }
   }
 };

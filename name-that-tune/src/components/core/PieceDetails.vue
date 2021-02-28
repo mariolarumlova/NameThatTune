@@ -4,7 +4,7 @@
       <MusicPlayer :videoDetails="selectedPart" />
       <div class="halfwidth-wrapper">
         <v-switch
-          v-model="pieceWithParts.includeInTournament"
+          v-model="pieceWithParts.includedInTournament"
           label="Include in tournaments"
           color="orange darken-3"
           hide-details
@@ -16,7 +16,7 @@
           clearable
           solo
           v-model="pieceWithParts.notes"
-          placeholder="Add multiple lines"
+          placeholder="What do you think when you listen to this piece?"
         ></v-textarea>
         <v-switch
           v-model="pieceWithParts.multipart"
@@ -25,10 +25,12 @@
           hide-details
         ></v-switch>
       </div>
+      {{ pieceWithParts.parts }}
       <PieceParts
         v-if="pieceWithParts.multipart"
         :piecePartsInput="pieceWithParts.parts"
-        :defaultYoutubeId="pieceWithParts.youtubeId"
+        :defaultYoutubeId="pieceWithParts.parts[0].youtubeId"
+        @piecePartsChanged="pieceWithParts.parts = $event"
       />
       <v-btn class="ma-8" @click.prevent="$emit('save', pieceWithParts)"
         >Save</v-btn
@@ -64,10 +66,11 @@ export default {
     const pieceParts = await piecePartsTable.query([
       { key: "musicalPieceId", value: this.piece.id }
     ]);
-    this.selectedPart = pieceParts.isSuccessful ? pieceParts.data[0] : null;
+    const piecePartsSorted = pieceParts.data.sort((a, b) => a.index - b.index);
+    [this.selectedPart] = piecePartsSorted;
     this.pieceWithParts = {
       ...this.piece,
-      parts: pieceParts.data
+      parts: piecePartsSorted
     };
   }
 };

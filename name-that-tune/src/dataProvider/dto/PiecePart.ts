@@ -10,11 +10,7 @@ interface PiecePart extends IContent {
     youtubeId: string,
     startTimeSec: number,
     endTimeSec: number,
-    index: number,
-    // instruments: Enumerator[],
-    // metrum: Enumerator[],
-    // key: Enumerator,
-    // image: string //url
+    index: number
 }
 
 export class PiecePartModel extends Model {

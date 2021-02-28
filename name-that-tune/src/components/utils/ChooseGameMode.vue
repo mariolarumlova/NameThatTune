@@ -4,9 +4,6 @@
       <v-col align="center" justify="space-around">
         <div class="text-h4 pa-4">
           Hello, {{ clientName }}! Choose game mode <br />
-          {{ users }}
-
-          <!-- {{ clientUid }} -->
         </div>
         <v-btn class="ma-8" elevation="2" outlined large to="training"
           >Training</v-btn

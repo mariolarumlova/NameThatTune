@@ -12,7 +12,10 @@
         @youtubePlaylistChosen="youtubePlaylistChosen($event)"
       />
       <br />
-      <CustomPlaylists @customPlaylistChosen="customPlaylistChosen($event)" />
+      <CustomPlaylists
+        :gameMode="gameMode"
+        @customPlaylistChosen="customPlaylistChosen($event)"
+      />
     </v-container>
     <v-container
       fill-height
@@ -31,6 +34,7 @@
       <CustomPlaylists
         :key="refreshIndex"
         :youtubeId="selectedItem.id"
+        :gameMode="gameMode"
         @customPlaylistChosen="customPlaylistChosen($event)"
       />
     </v-container>

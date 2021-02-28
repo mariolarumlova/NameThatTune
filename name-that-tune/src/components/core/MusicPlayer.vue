@@ -24,7 +24,7 @@ export default {
     videoDetails: Object,
     customStyle: String,
     randomStartTime: Boolean,
-    playTimeSec: Number
+    playTimeSec: String
   },
   data() {
     return {

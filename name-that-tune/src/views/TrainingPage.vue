@@ -10,15 +10,10 @@
 </template>
 
 <script>
-import Menu from "@/components/Menu";
-import Training from "@/components/Training";
+import Menu from "@/components/utils/Menu";
+import Training from "@/components/core/Training";
 
 export default {
-  data() {
-    return {
-      message: ""
-    };
-  },
   name: "training",
   components: {
     Menu,

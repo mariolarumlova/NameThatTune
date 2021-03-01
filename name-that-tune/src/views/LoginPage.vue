@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import SocialLogin from "@/components/SocialLogin";
+import SocialLogin from "@/components/utils/SocialLogin";
 export default {
   name: "login",
   components: {

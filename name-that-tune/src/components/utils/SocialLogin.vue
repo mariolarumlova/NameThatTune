@@ -16,8 +16,19 @@
 
 import router from "@/router/router";
 import { authenticate, loadClient } from "@/repositories/google";
+import firebase from "firebase";
+import { signIn } from "@/repositories/firebase";
+
 export default {
+  beforeCreate() {
+      firebase.auth().onAuthStateChanged((user) => {
+          this.$store.commit('SET_SESSION', user || false)
+      });
+  },
   methods: {
+    signIn(idToken, accessToken) {
+      return signIn(idToken, accessToken);
+    },
     authenticate: async function(scopes) {
       return await authenticate(gapi, scopes);
     },
@@ -31,18 +42,17 @@ export default {
 
     logInViaGoogle: async function() {
       const googleUser = await this.authenticate(["https://www.googleapis.com/auth/youtube.readonly"]);
-      await this.storeClientInfo(googleUser);
+      console.log(googleUser);
+      const result = await this.signIn(googleUser.uc.id_token, googleUser.uc.access_token);
+      this.$store.commit("SET_SESSION", result);
       await this.loadClient("youtube", "v3");
       await this.goToMainPage();
-    },
-    
-    storeClientInfo: function(googleUser) {
-      const userInfo = {
-          loginType: "google",
-          google: googleUser,
-        };
-      this.$store.commit("setLoginUser", userInfo);
     }
   },
+  computed: {
+    mySession() {
+      return this.$store.getters.session;
+    }
+  }
 };
 </script>

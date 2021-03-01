@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import Menu from "@/components/Menu";
-import Settings from "@/components/Settings";
+import Menu from "@/components/utils/Menu";
+import Settings from "@/components/utils/Settings";
 
 export default {
   data() {

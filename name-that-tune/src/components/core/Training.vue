@@ -7,27 +7,16 @@
             Training mode
           </div>
           <div v-if="piece" class="text-body-1 pa-4">
-            <MusicPlayer :videoDetails="piece" />
-            Notes:
-            <br />
-            {{ message }}
-            <div class="halfwidth-wrapper">
-              <v-textarea
-                clearable
-                solo
-                v-model="message"
-                placeholder="Add multiple lines"
-              ></v-textarea>
-            </div>
-            <v-btn class="ma-8" @click.prevent="clearPiece()">Save</v-btn>
-            <v-btn class="ma-8" @click.prevent="clearPiece()"
-              >Back to playlist</v-btn
-            >
+            <PieceDetails
+              :piece="piece"
+              @save="savePiece($event)"
+              @cancel="clearPiece()"
+            />
           </div>
           <div v-else>
             <PieceChooser
               :playlistItems="playlistItems"
-              @pieceChosen="piece = $event"
+              @pieceChosen="setPiece($event)"
             />
             <v-btn class="ma-8" @click.prevent="clearPlaylist()"
               >Back to playlists</v-btn
@@ -36,35 +25,38 @@
         </v-col>
       </v-row>
     </v-container>
-    <PlaylistChooser v-else @playlistChosen="playlistItems = $event" />
+    <PlaylistChooser v-else @playlistChosen="playlistItems = $event.items" />
   </div>
 </template>
 
 <script>
-import PlaylistChooser from "@/components/YTPlaylistChooser";
-import MusicPlayer from "@/components/MusicPlayer";
-import PieceChooser from "@/components/YTPieceChooser";
+import PlaylistChooser from "@/components/core/PlaylistChooser";
+import PieceChooser from "@/components/core/PieceChooser";
+import PieceDetails from "@/components/core/PieceDetails";
+import { updateMusicalPiece } from "@/business/training";
 export default {
   props: {
     playlistItems: Array,
     piece: Object
   },
   components: {
-    MusicPlayer,
     PlaylistChooser,
-    PieceChooser
+    PieceChooser,
+    PieceDetails
   },
-  data() {
-    return {
-      message: ""
-    };
-  },
+  computed: {},
   methods: {
     clearPiece: function() {
       this.piece = null;
     },
     clearPlaylist: function() {
       this.playlistItems = null;
+    },
+    setPiece: function(event) {
+      this.piece = event;
+    },
+    savePiece: function(event) {
+      updateMusicalPiece(event);
     }
   }
 };

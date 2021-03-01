@@ -28,4 +28,8 @@ export class Model implements IModel {
     public update(id: string, value: IContent): Promise<DBResult> {
         return this.db.update(id, value, this.table);
     }
+
+    public delete(id: string): Promise<DBResult> {
+        return this.db.delete(id, this.table);
+    }
 }

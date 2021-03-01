@@ -29,6 +29,10 @@ export class Database implements IDatabase {
   public update(id: string, value: IContent, table: string) {
     return this.driver.update(id, value, table);
   }
+
+  public delete(id: string, table: string) {
+    return this.driver.delete(id, table);
+  }
 }
 
 /**

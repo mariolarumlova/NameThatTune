@@ -143,9 +143,43 @@ export class FirebaseDriver implements IDatabase {
     return new Promise((resolve, reject) => {
       db.ref(`${table}/${id}`).set(upsertValue, (error) => {
         if (error) {
-          reject(`Could not update record ${id} in the table ${table}`);
+          reject(`Could not update record ${id} in the table ${table}. ${error}`);
         } else {
           resolve(`Successfully updated record ${id} in the table ${table}`);
+        }
+      });
+    });
+  }
+
+  public async delete(id: string, table: string) {
+    let result: DBResult = {
+      isSuccessful: false,
+      totalRecords: 0,
+    };
+    try {
+      const deleteMessage = await this.deletePromise(id, table);
+      result = {
+        isSuccessful: true,
+        totalRecords: 1,
+        stdout: deleteMessage,
+      };
+    } catch (err) {
+      console.error(err);
+      result.stderr = JSON.stringify(err, Object.getOwnPropertyNames(err));
+    }
+    return result;
+  }
+
+  public async deletePromise(
+    id: string,
+    table: string
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      db.ref(`${table}/${id}`).set(null, (error) => {
+        if (error) {
+          reject(`Could not delete record ${id} in the table ${table}. ${error}`);
+        } else {
+          resolve(`Successfully deleted record ${id} in the table ${table}`);
         }
       });
     });

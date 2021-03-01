@@ -102,7 +102,9 @@ const updatePieceParts = async pieceWithParts => {
   const deletedPartsIds = oldPieceParts.reduce((acc, part) => {
     return !newPiecePartsIds.includes(part.id) ? [...acc, part.id] : acc;
   }, []);
-  //TODO Delete parts from list deletedPartsIds
+  const deleteResults = await Promise.all(
+    deletedPartsIds.map(partId => piecePartsTable.delete(partId))
+  );
   const piecePartPromises = pieceWithParts.parts.reduce((acc, part) => {
     if (!part.id) {
       part.id = generateGuid();

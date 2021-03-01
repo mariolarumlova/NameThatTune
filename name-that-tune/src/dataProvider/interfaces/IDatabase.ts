@@ -7,4 +7,5 @@ export interface IDatabase {
   getById: (id: string, table: string) => Promise<DBResult>;
   update: (id: string, value: IContent, table: string) => Promise<DBResult>;
   query: (filters: Filter[], table: string) => Promise<DBResult>;
+  delete: (id: string, table: string) => Promise<DBResult>;
 }

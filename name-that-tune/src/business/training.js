@@ -136,9 +136,15 @@ const updateMusicalPiece = async pieceWithParts => {
   return musicalPieceResult.isSuccessful && piecePartsUpdated ? true : false;
 };
 
+const isMusicalPieceValid = pieceWithParts => {
+  const hasParts = pieceWithParts.parts && pieceWithParts.parts.length;
+  return hasParts;
+}
+
 export {
   addPlaylistToDatabase,
   addPlaylistItemsToDatabase,
   getCustomPieces,
-  updateMusicalPiece
+  updateMusicalPiece,
+  isMusicalPieceValid
 };

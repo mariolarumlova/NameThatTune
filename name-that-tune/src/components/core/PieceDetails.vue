@@ -28,7 +28,6 @@
       <PieceParts
         v-if="pieceWithParts.multipart"
         :piecePartsInput="pieceWithParts.parts"
-        :defaultYoutubeId="pieceWithParts.parts[0].youtubeId"
         @piecePartsChanged="pieceWithParts.parts = $event"
         @previewChanged="selectedPart = $event"
       />

@@ -110,8 +110,7 @@
 <script>
 export default {
   props: {
-    piecePartsInput: Array,
-    defaultYoutubeId: String
+    piecePartsInput: Array
   },
   created() {
     this.initialize();

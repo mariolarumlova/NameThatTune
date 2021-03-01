@@ -23,12 +23,12 @@
           >
             <v-radio
               label="After each piece"
-              value="eachPiece"
+              :value="true"
               color="orange darken-3"
             ></v-radio>
             <v-radio
               label="At the end of the tournament"
-              value="tournamentSummary"
+              :value="false"
               color="orange darken-3"
             ></v-radio>
           </v-radio-group>

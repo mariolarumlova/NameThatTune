@@ -11,16 +11,18 @@
               :key="tournament.totalAnswersAmount"
               customStyle="display: none"
               :videoDetails="currentPiece"
-              :randomStartTime="settings.randomStart"
+              :randomStartTime="settings.randomStart == true"
               :playTimeSec="
-                settings.limitedAnswerTime ? settings.timeLimit : undefined
+                settings.limitedAnswerTime == true
+                  ? settings.timeLimit
+                  : undefined
               "
             />
             <v-btn @click.prevent="checkPiece()">Check</v-btn>
             <br />
             <div
               v-if="
-                settings.correctAnswerEachPiece &&
+                settings.correctAnswerEachPiece == true &&
                   tournament.totalAnswersAmount > 0
               "
             >

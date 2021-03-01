@@ -94,8 +94,11 @@
       <v-icon small class="mr-2" @click="editItem(item)">
         mdi-pencil
       </v-icon>
-      <v-icon small @click="deleteItem(item)">
+      <v-icon small class="mr-2" @click="deleteItem(item)">
         mdi-delete
+      </v-icon>
+      <v-icon small @click="viewItem(item)">
+        mdi-eye
       </v-icon>
     </template>
     <template v-slot:no-data>
@@ -196,6 +199,11 @@ export default {
       }
       this.close();
       this.$emit("piecePartsChanged", this.pieceParts);
+    },
+    viewItem(item) {
+      this.editedIndex = this.pieceParts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.$emit("previewChanged", this.editedItem);
     }
   }
 };

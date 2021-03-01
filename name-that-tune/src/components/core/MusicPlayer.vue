@@ -36,11 +36,11 @@ export default {
     getVideoUrl: function() {
       const youtubeId = this.videoDetails.currentPart
         ? this.videoDetails.currentPart.youtubeId
-        : this.videoDetails.id;
+        : this.videoDetails.youtubeId || this.videoDetails.id;
       let url = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&disablekb=1`;
       let startTimeSec = this.videoDetails.currentPart
         ? this.videoDetails.currentPart.startTimeSec
-        : 0;
+        : this.videoDetails.startTimeSec || 0;
       if (this.randomStartTime) {
         startTimeSec = this.getStartTimeSec(
           startTimeSec,
@@ -55,7 +55,7 @@ export default {
         ? parseInt(startTimeSec) + parseInt(this.playTimeSec)
         : this.videoDetails.currentPart
         ? this.videoDetails.currentPart.endTimeSec
-        : this.videoDetails.duration;
+        : this.videoDetails.endTimeSec || this.videoDetails.duration;
       url += endTime ? `&end=${endTime}` : "";
       console.log(url);
       return url;

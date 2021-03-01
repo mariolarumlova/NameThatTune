@@ -10,20 +10,6 @@ const musicalPiecesTable = musicalPieceFactory(database);
 const piecePartsTable = piecePartFactory(database);
 const tournamentsTable = tournamentFactory(database);
 const answersTable = answerFactory(database);
-
-const shuffle = inputArray => {
-  const array = JSON.parse(JSON.stringify(inputArray));
-  let m = array.length;
-  let t, i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = array[m];
-    array[m] = array[i];
-    array[i] = t;
-  }
-  return array;
-};
-
 const getPiecesWithParts = async playlistId => {
   const result = await musicalPiecesTable.query([
     { key: "playlistId", value: playlistId }
@@ -84,7 +70,8 @@ const getCorrectPieceName = currentPiece => {
     (currentPiece.currentPart.title || currentPiece.currentPart.index)
   ) {
     name +=
-      " - " + (currentPiece.currentPart.title || currentPiece.currentPart.index);
+      " - " +
+      (currentPiece.currentPart.title || currentPiece.currentPart.index);
   }
   return name;
 };
@@ -139,7 +126,6 @@ const addAnswerToDatabase = async (
 };
 
 export {
-  shuffle,
   getPiecesWithParts,
   addTournamentToDatabase,
   updateTournament,

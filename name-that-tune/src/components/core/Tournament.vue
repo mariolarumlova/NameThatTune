@@ -61,12 +61,11 @@ import MusicPlayer from "@/components/core/MusicPlayer";
 import databaseFactory from "@/dataProvider/classes/Database";
 import settingsFactory from "@/dataProvider/dto/Settings";
 import {
-  shuffle,
   addTournamentToDatabase,
   addAnswerToDatabase,
   updateTournament
 } from "@/business/tournament";
-import { getRandomIntInclusive } from "@/business/mathUtils";
+import { getRandomIntInclusive, shuffle } from "@/business/mathUtils";
 export default {
   props: {
     piece: Object

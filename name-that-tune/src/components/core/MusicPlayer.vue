@@ -19,6 +19,7 @@
 
 <script>
 /* eslint-disable no-undef */
+import { getRandomIntInclusive } from "@/business/mathUtils";
 export default {
   props: {
     videoDetails: Object,
@@ -33,35 +34,38 @@ export default {
   },
   methods: {
     getVideoUrl: function() {
-      const youtubeId = this.videoDetails.youtubeId || this.videoDetails.id;
+      const youtubeId = this.videoDetails.currentPart
+        ? this.videoDetails.currentPart.youtubeId
+        : this.videoDetails.id;
       let url = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&disablekb=1`;
-      let startTimeSec = this.videoDetails.startTimeSec || 0;
+      let startTimeSec = this.videoDetails.currentPart
+        ? this.videoDetails.currentPart.startTimeSec
+        : 0;
       if (this.randomStartTime) {
         startTimeSec = this.getStartTimeSec(
           startTimeSec,
-          this.videoDetails.endTimeSec || this.videoDetails.duration,
+          this.videoDetails.currentPart
+            ? this.videoDetails.currentPart.endTimeSec
+            : this.videoDetails.duration,
           this.playTimeSec || 30
         );
       }
       url += `&start=${startTimeSec}`;
       const endTime = this.playTimeSec
         ? parseInt(startTimeSec) + parseInt(this.playTimeSec)
-        : this.videoDetails.endTimeSec || this.videoDetails.duration;
+        : this.videoDetails.currentPart
+        ? this.videoDetails.currentPart.endTimeSec
+        : this.videoDetails.duration;
       url += endTime ? `&end=${endTime}` : "";
       console.log(url);
       return url;
     },
     getStartTimeSec: function(minStartTime, piecePartEndTime, answerTime) {
       const maxStartTime = piecePartEndTime - answerTime;
-      return this.getRandomIntInclusive(
+      return getRandomIntInclusive(
         minStartTime,
         maxStartTime > 0 ? maxStartTime : 0
       );
-    },
-    getRandomIntInclusive: function(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
   }
 };

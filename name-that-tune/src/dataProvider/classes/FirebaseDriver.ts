@@ -19,7 +19,8 @@ export class FirebaseDriver implements IDatabase {
         data: Object.values(records),
       };
     } catch (err) {
-      result.stderr = JSON.stringify(err);
+      console.error(err);
+      result.stderr = JSON.stringify(err, Object.getOwnPropertyNames(err));
     } 
     return result;
   }
@@ -50,6 +51,7 @@ export class FirebaseDriver implements IDatabase {
         data: Object.values(records),
       };
     } catch (err) {
+      console.error(err);
       result.stderr = JSON.stringify(err, Object.getOwnPropertyNames(err));
     } 
     return result;
@@ -90,7 +92,8 @@ export class FirebaseDriver implements IDatabase {
         data: record,
       };
     } catch (err) {
-      result.stderr = JSON.stringify(err);
+      console.error(err);
+      result.stderr = JSON.stringify(err, Object.getOwnPropertyNames(err));
     } 
     return result;
   }
@@ -125,7 +128,8 @@ export class FirebaseDriver implements IDatabase {
         stdout: updateMessage,
       };
     } catch (err) {
-      result.stderr = JSON.stringify(err);
+      console.error(err);
+      result.stderr = JSON.stringify(err, Object.getOwnPropertyNames(err));
     }
     return result;
   }

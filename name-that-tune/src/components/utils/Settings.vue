@@ -16,8 +16,8 @@
           ></v-switch>
           <br />Correct answers
           <v-radio-group
-            :value="correctAnswer"
-            @change="newCorrectAnswer = $event"
+            :value="correctAnswerEachPiece"
+            @change="newCorrectAnswerEachPiece = $event"
             row
             mandatory
           >
@@ -100,7 +100,7 @@ export default {
       clientImageUrl: this.$store.state.session.user.photoURL,
       clientName: this.$store.state.session.user.displayName,
       newRandomStart: undefined,
-      newCorrectAnswer: undefined,
+      newCorrectAnswerEachPiece: undefined,
       newBadPartScoring: undefined,
       newLimitedAnswerTime: undefined,
       newTimeLimit: undefined,
@@ -118,7 +118,10 @@ export default {
           typeof this.newRandomStart === "boolean"
             ? this.newRandomStart
             : this.randomStart,
-        correctAnswer: this.newCorrectAnswer || this.correctAnswer,
+        correctAnswerEachPiece:
+          typeof this.newCorrectAnswerEachPiece === "boolean"
+            ? this.newCorrectAnswerEachPiece
+            : this.correctAnswerEachPiece,
         badPartScoring: this.newBadPartScoring || this.badPartScoring,
         limitedAnswerTime:
           typeof this.newLimitedAnswerTime === "boolean"
@@ -135,8 +138,8 @@ export default {
     randomStart() {
       return this.settings ? this.settings.randomStart : false;
     },
-    correctAnswer() {
-      return this.settings ? this.settings.correctAnswer : "eachPiece";
+    correctAnswerEachPiece() {
+      return this.settings ? this.settings.correctAnswerEachPiece : true;
     },
     badPartScoring() {
       return this.settings ? this.settings.badPartScoring : "0.5";

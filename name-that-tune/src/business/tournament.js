@@ -57,7 +57,7 @@ const updateTournament = async tournament => {
 
 const getGivenPieceName = (selected, selectedPart) => {
   let name = selected.title;
-  if (selectedPart && (selectedPart.title || selectedPart.index)) {
+  if (selectedPart && selected.multipart) {
     name += " - " + (selectedPart.title || selectedPart.index);
   }
   return name;
@@ -65,10 +65,7 @@ const getGivenPieceName = (selected, selectedPart) => {
 
 const getCorrectPieceName = currentPiece => {
   let name = currentPiece.title;
-  if (
-    currentPiece.currentPart &&
-    (currentPiece.currentPart.title || currentPiece.currentPart.index)
-  ) {
+  if (currentPiece.currentPart && currentPiece.multipart) {
     name +=
       " - " +
       (currentPiece.currentPart.title || currentPiece.currentPart.index);
@@ -100,11 +97,12 @@ const addAnswerToDatabase = async (
   currentPiece,
   selected,
   selectedPart,
-  badPartScoring
+  userBadPartScoring
 ) => {
   const now = Date.now();
   const givenPiece = getGivenPieceName(selected, selectedPart);
   const correctPiece = getCorrectPieceName(currentPiece);
+  const badPartScoring = +userBadPartScoring || 0.5;
   const score = calculateScore(
     currentPiece,
     selected,
@@ -125,9 +123,24 @@ const addAnswerToDatabase = async (
   return result.isSuccessful ? answer : null;
 };
 
+const getHumanReadableResult = answer => {
+  const { correctPiece, givenPiece, score } = answer;
+  switch (score) {
+    case 1:
+      return `Correct answer!`;
+    case 0.5:
+      return `Incorrect part! It's ${correctPiece}, not ${givenPiece}`;
+    case 0:
+      return `Incorrect piece! It's ${correctPiece}, not ${givenPiece}`;
+    default:
+      return `An error occured`;
+  }
+};
+
 export {
   getPiecesWithParts,
   addTournamentToDatabase,
   updateTournament,
-  addAnswerToDatabase
+  addAnswerToDatabase,
+  getHumanReadableResult
 };

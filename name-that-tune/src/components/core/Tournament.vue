@@ -18,10 +18,17 @@
             />
             <v-btn @click.prevent="checkPiece()">Check</v-btn>
             <br />
-            Result: {{ result }} <br />
-            Index: {{ tournament.totalAnswersAmount }} <br />
-            Tournament complete: {{ tournament.complete }} <br />
-
+            <div
+              v-if="
+                settings.correctAnswerEachPiece &&
+                  tournament.totalAnswersAmount > 0
+              "
+            >
+              Result: {{ result }} <br />
+            </div>
+            <!-- Below is the prototype of progress bar -->
+            Answered: {{ tournament.totalAnswersAmount }} /
+            {{ playlistItems.length }} <br />
             <div class="halfwidth-wrapper">
               <v-select
                 :items="pieces"
@@ -42,7 +49,10 @@
           <div v-else class="text-body-1 pa-4">
             Tournament complete. Your score is
             {{ tournament.correctAnswersAmount }} out of
-            {{ playlistItems.length }}
+            {{ playlistItems.length }}. <br />
+
+            Detail results:
+            <SimpleTable :headers="finalResultsHeaders" :items="answers" />
           </div>
         </v-col>
       </v-row>
@@ -58,11 +68,13 @@
 <script>
 import PlaylistChooser from "@/components/core/PlaylistChooser";
 import MusicPlayer from "@/components/core/MusicPlayer";
+import SimpleTable from "@/components/utils/SimpleTable";
 import databaseFactory from "@/dataProvider/classes/Database";
 import settingsFactory from "@/dataProvider/dto/Settings";
 import {
   addTournamentToDatabase,
   addAnswerToDatabase,
+  getHumanReadableResult,
   updateTournament
 } from "@/business/tournament";
 import { getRandomIntInclusive, shuffle } from "@/business/mathUtils";
@@ -72,7 +84,8 @@ export default {
   },
   components: {
     MusicPlayer,
-    PlaylistChooser
+    PlaylistChooser,
+    SimpleTable
   },
   async created() {
     this.settings = (
@@ -81,15 +94,16 @@ export default {
   },
   methods: {
     checkPiece: async function() {
-      const { score } = await addAnswerToDatabase(
+      const answer = await addAnswerToDatabase(
         this.tournament.id,
         this.currentPiece,
         this.selected,
         this.selectedPart,
         this.settings.badPartScoring
       );
-      this.result = score;
-      this.tournament.correctAnswersAmount += +score;
+      this.answers = [...this.answers, answer];
+      this.result = getHumanReadableResult(answer);
+      this.tournament.correctAnswersAmount += answer.score;
       this.tournament.totalAnswersAmount += 1;
       if (this.tournament.totalAnswersAmount < this.playlistItems.length) {
         this.currentPiece = this.playlistItems[
@@ -138,7 +152,13 @@ export default {
       result: 0,
       tournament: {},
       currentPiece: {},
-      settings: {}
+      settings: {},
+      answers: [],
+      finalResultsHeaders: [
+        { name: "Given piece", apiName: "givenPiece" },
+        { name: "Correct piece", apiName: "correctPiece" },
+        { name: "Score", apiName: "score" }
+      ]
     };
   }
 };

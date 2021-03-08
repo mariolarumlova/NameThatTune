@@ -98,19 +98,22 @@ export default {
       this.$emit("playlistChosen", event);
     },
     async saveCustomPlaylistToDb(event) {
-      const customPlaylist = await addPlaylistToDatabase(
-        this.$store.state.uid,
-        this.selectedItem
-      );
-      const items =
-        event && event.length
-          ? await addPlaylistItemsToDatabase(customPlaylist.id, event)
-          : event;
-      if (customPlaylist) {
+      if (event && event.length) {
+        const customPlaylist = await addPlaylistToDatabase(
+          this.$store.state.uid,
+          this.selectedItem
+        );
+        const items = await addPlaylistItemsToDatabase(
+          customPlaylist.id,
+          event
+        );
         this.$emit("playlistChosen", {
           ...customPlaylist,
           items: items
         });
+      } else {
+        //TODO Show it as a snackbar
+        console.error("Cannot save an empty custom playlist");
       }
     },
     youtubePlaylistChosen(event) {

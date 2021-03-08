@@ -58,6 +58,11 @@ export default {
     savePiece: function(event) {
       if (isMusicalPieceValid(event)) {
         updateMusicalPiece(event);
+      } else {
+        //TODO Show it as a snackbar
+        console.error(
+          "Cannot save a piece. Check whether you have at least one piece part and all the youtube ids are correct."
+        );
       }
     }
   }

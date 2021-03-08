@@ -124,7 +124,7 @@ const updateMusicalPiece = async pieceWithParts => {
     lastModifiedAtTimestamp: now,
     multipart: pieceWithParts.multipart,
     title: pieceWithParts.title,
-    notes: pieceWithParts.notes
+    notes: pieceWithParts.notes ? pieceWithParts.notes : null
   };
   const musicalPieceResult = await musicalPiecesTable.update(
     pieceWithParts.id,

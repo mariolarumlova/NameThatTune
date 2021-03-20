@@ -9,17 +9,23 @@
           color="orange darken-2"
           :multiple="multiple"
         >
-          <v-list-item
-            v-for="(item, i) in playlistItemsComputed"
-            :key="i"
-            @click.prevent="setPiece(item)"
-          >
+          <v-list-item v-for="(item, i) in playlistItems" :key="i">
             <v-list-item-avatar v-if="item.avatar">
               <v-img :src="item.avatar"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title v-text="item.title"></v-list-item-title>
             </v-list-item-content>
+            <v-list-item-action v-if="!multiple">
+              <v-icon @click="setPiece(item)">
+                mdi-pencil
+              </v-icon>
+            </v-list-item-action>
+            <v-list-item-action v-if="!multiple">
+              <v-icon @click="deletePiece(item)">
+                mdi-delete
+              </v-icon>
+            </v-list-item-action>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -31,16 +37,29 @@
       >
         Accept
       </v-btn>
+      <DeleteConfirmator
+        v-if="pieceToDelete"
+        :key="refreshDeleteConfirmator"
+        :itemToDelete="pieceToDelete"
+        :deleteFunc="deleteFunc"
+        @itemDeleted="onPieceDeleted()"
+        confirmationMessage="Are you sure you want to delete this item with all the notes and piece parts?"
+      />
     </v-card>
   </v-container>
 </template>
 
 <script>
 /* eslint-disable no-undef */
+import DeleteConfirmator from "@/components/utils/DeleteConfirmator";
+import { deletePiece } from "@/business/training";
 export default {
   props: {
-    playlistItems: Array,
+    playlistItemsParam: Array,
     multiple: Boolean
+  },
+  components: {
+    DeleteConfirmator
   },
   created() {
     this.selectedItems = this.multiple ? [] : {};
@@ -48,25 +67,31 @@ export default {
   data() {
     return {
       loading: false,
-      selectedItems: { title: "", icon: "" }
+      selectedItems: { title: "", icon: "" },
+      playlistItems: this.playlistItemsParam,
+      pieceToDelete: null,
+      deleteFunc: deletePiece,
+      refreshDeleteConfirmator: 0
     };
   },
   methods: {
     setPiece(selectedItem) {
-      if (!this.multiple) {
-        this.$emit("pieceChosen", selectedItem);
-      }
+      this.$emit("pieceChosen", selectedItem);
     },
     setPieces() {
       const selectedItems = this.selectedItems.map(
         el => this.playlistItems[el]
       );
       this.$emit("piecesChosen", selectedItems);
-    }
-  },
-  computed: {
-    playlistItemsComputed() {
-      return this.playlistItems;
+    },
+    deletePiece(selectedPiece) {
+      this.pieceToDelete = selectedPiece;
+      this.refreshDeleteConfirmator++;
+    },
+    onPieceDeleted() {
+      const indexToDelete = this.playlistItems.indexOf(this.pieceToDelete);
+      this.playlistItems.splice(indexToDelete, 1);
+      this.pieceToDelete = null;
     }
   }
 };

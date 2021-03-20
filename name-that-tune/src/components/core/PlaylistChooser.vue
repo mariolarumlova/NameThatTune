@@ -52,7 +52,7 @@
         Choose pieces which you want to use
       </div>
       <PieceChooser
-        :playlistItems="selectedItem.items"
+        :playlistItemsParam="selectedItem.items"
         :multiple="true"
         @piecesChosen="saveCustomPlaylistToDb($event)"
       />

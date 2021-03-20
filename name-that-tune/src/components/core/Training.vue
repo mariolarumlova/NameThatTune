@@ -15,7 +15,7 @@
           </div>
           <div v-else>
             <PieceChooser
-              :playlistItems="playlistItems"
+              :playlistItemsParam="playlistItems"
               @pieceChosen="setPiece($event)"
             />
             <v-btn class="ma-8" @click.prevent="clearPlaylist()"

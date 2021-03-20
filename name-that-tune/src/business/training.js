@@ -153,6 +153,15 @@ const deletePieceParts = async pieceId => {
   );
 };
 
+const deletePiece = async pieceId => {
+  const pieceDeletionResult = await musicalPiecesTable.delete(pieceId);
+  const piecePartsDeletionResults = await deletePieceParts(pieceId);
+  return (
+    pieceDeletionResult.isSuccessful &&
+    piecePartsDeletionResults.every(el => el.isSuccessful)
+  );
+};
+
 const deletePlaylist = async playlistId => {
   const playlistDeleted = await playlistsTable.delete(playlistId);
   const result = await musicalPiecesTable.query([
@@ -160,14 +169,7 @@ const deletePlaylist = async playlistId => {
   ]);
   const musicalPiecesIds = result.data.map(el => el.id);
   const piecesDeletionResults = await Promise.all(
-    musicalPiecesIds.map(async pieceId => {
-      const pieceDeletionResult = await musicalPiecesTable.delete(pieceId);
-      const piecePartsDeletionResults = await deletePieceParts(pieceId);
-      return (
-        pieceDeletionResult.isSuccessful &&
-        piecePartsDeletionResults.every(el => el.isSuccessful)
-      );
-    })
+    musicalPiecesIds.map(pieceId => deletePiece(pieceId))
   );
   return (
     playlistDeleted.isSuccessful &&
@@ -181,5 +183,6 @@ export {
   getCustomPieces,
   updateMusicalPiece,
   isMusicalPieceValid,
-  deletePlaylist
+  deletePlaylist,
+  deletePiece
 };

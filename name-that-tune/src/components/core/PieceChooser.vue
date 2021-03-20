@@ -22,7 +22,10 @@
               </v-icon>
             </v-list-item-action>
             <v-list-item-action v-if="!multiple">
-              <v-icon @click="deletePiece(item)">
+              <v-icon
+                :disabled="playlistItems.length <= 1"
+                @click="deletePiece(item)"
+              >
                 mdi-delete
               </v-icon>
             </v-list-item-action>

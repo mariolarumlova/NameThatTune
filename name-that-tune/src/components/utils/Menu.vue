@@ -14,7 +14,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-avatar
           color="grey darken-1 shrink"
-          size="60"
+          size="54"
           v-bind="attrs"
           v-on="on"
         >

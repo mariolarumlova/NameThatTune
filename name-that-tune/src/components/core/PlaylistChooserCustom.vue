@@ -22,7 +22,7 @@
               mdi-pencil
             </v-icon>
           </v-list-item-action>
-          <v-list-item-action>
+          <v-list-item-action v-if="gameMode !== 'tournament'">
             <v-icon @click="deletePlaylist(item)">
               mdi-delete
             </v-icon>

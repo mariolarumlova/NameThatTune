@@ -139,12 +139,47 @@ const updateMusicalPiece = async pieceWithParts => {
 const isMusicalPieceValid = pieceWithParts => {
   const hasParts = pieceWithParts.parts && pieceWithParts.parts.length;
   return hasParts;
-}
+};
+
+const deletePieceParts = async pieceId => {
+  const pieceParts = await piecePartsTable.query([
+    { key: "musicalPieceId", value: pieceId }
+  ]);
+  const piecePartsIds = pieceParts.data.map(el => el.id);
+  return Promise.all(
+    piecePartsIds.map(async partId => {
+      return await piecePartsTable.delete(partId);
+    })
+  );
+};
+
+const deletePlaylist = async playlistId => {
+  const playlistDeleted = await playlistsTable.delete(playlistId);
+  const result = await musicalPiecesTable.query([
+    { key: "playlistId", value: playlistId }
+  ]);
+  const musicalPiecesIds = result.data.map(el => el.id);
+  const piecesDeletionResults = await Promise.all(
+    musicalPiecesIds.map(async pieceId => {
+      const pieceDeletionResult = await musicalPiecesTable.delete(pieceId);
+      const piecePartsDeletionResults = await deletePieceParts(pieceId);
+      return (
+        pieceDeletionResult.isSuccessful &&
+        piecePartsDeletionResults.every(el => el.isSuccessful)
+      );
+    })
+  );
+  return (
+    playlistDeleted.isSuccessful &&
+    piecesDeletionResults.every(el => el === true)
+  );
+};
 
 export {
   addPlaylistToDatabase,
   addPlaylistItemsToDatabase,
   getCustomPieces,
   updateMusicalPiece,
-  isMusicalPieceValid
+  isMusicalPieceValid,
+  deletePlaylist
 };

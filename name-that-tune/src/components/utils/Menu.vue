@@ -13,7 +13,6 @@
     <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
         <v-avatar
-          class="hidden-sm-and-down"
           color="grey darken-1 shrink"
           size="60"
           v-bind="attrs"

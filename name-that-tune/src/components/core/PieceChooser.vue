@@ -29,6 +29,13 @@
                 mdi-delete
               </v-icon>
             </v-list-item-action>
+            <v-list-item-action v-if="!multiple">
+              <v-icon
+                :color="item.includedInTournament ? 'green darken-2' : ''"
+              >
+                mdi-check
+              </v-icon>
+            </v-list-item-action>
           </v-list-item>
         </v-list-item-group>
       </v-list>

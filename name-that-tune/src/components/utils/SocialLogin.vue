@@ -43,7 +43,16 @@ export default {
     logInViaGoogle: async function() {
       const googleUser = await this.authenticate(["https://www.googleapis.com/auth/youtube.readonly"]);
       console.log(googleUser);
-      const result = await this.signIn(googleUser.uc.id_token, googleUser.uc.access_token);
+      const [ idToken, accessToken ] = Object.keys(googleUser).reduce((acc, key) => {
+        if (typeof googleUser[key] === "object"
+        && Object.keys(googleUser[key]).includes("id_token")
+        && Object.keys(googleUser[key]).includes("access_token")) {
+          acc.push(googleUser[key].id_token);
+          acc.push(googleUser[key].access_token);
+        }
+        return acc;
+      }, []);
+      const result = await this.signIn(idToken, accessToken);
       this.$store.commit("SET_SESSION", result);
       await this.loadClient("youtube", "v3");
       await this.goToMainPage();

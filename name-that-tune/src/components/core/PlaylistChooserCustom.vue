@@ -3,10 +3,7 @@
     <v-progress-circular v-if="loading"></v-progress-circular>
     <v-list v-else rounded>
       <v-subheader>My custom playlists:</v-subheader>
-      <v-list-item-group
-        v-model="selectedItem"
-        color="orange darken-2"
-      >
+      <v-list-item-group v-model="selectedItem" color="orange darken-2">
         <v-list-item
           v-for="(item, i) in items"
           :key="i"
@@ -33,50 +30,21 @@
         </v-list-item>
       </v-list-item-group>
     </v-list>
-    <v-dialog v-model="dialogDelete" max-width="500px">
-      <v-card>
-        <v-card-title class="headline"
-          >Are you sure you want to delete this playlist with its musical pieces
-          and all the notes and piece parts?</v-card-title
-        >
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="orange darken-3" text @click="closeDelete"
-            >Cancel</v-btn
-          >
-          <v-btn
-            color="orange darken-3"
-            text
-            @click="deletePlaylistConfirm(playlistToDelete)"
-            >OK</v-btn
-          >
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-snackbar v-model="snackbar" timeout="2000">
-      {{
-        success
-          ? "Successfully updated the record"
-          : "Could not update the record"
-      }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          :color="success ? 'green' : 'red'"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <DeleteConfirmator
+      v-if="playlistToDelete"
+      :key="refreshDeleteConfirmator"
+      :itemToDelete="playlistToDelete"
+      :deleteFunc="deleteFunc"
+      @itemDeleted="onPlaylistDeleted()"
+      confirmationMessage="Are you sure you want to delete this item with its musical pieces
+          and all the notes and piece parts?"
+    />
   </v-card>
 </template>
 
 <script>
 /* eslint-disable no-undef */
+import DeleteConfirmator from "@/components/utils/DeleteConfirmator";
 import databaseFactory from "@/dataProvider/classes/Database";
 import playlistFactory from "@/dataProvider/dto/Playlist";
 import { getCustomPieces, deletePlaylist } from "@/business/training";
@@ -86,15 +54,17 @@ export default {
     gameMode: String,
     youtubeId: String
   },
+  components: {
+    DeleteConfirmator
+  },
   data() {
     return {
       loading: false,
       selectedItem: { title: "", icon: "" },
       items: [],
-      dialogDelete: false,
       playlistToDelete: null,
-      success: false,
-      snackbar: false
+      deleteFunc: deletePlaylist,
+      refreshDeleteConfirmator: 0
     };
   },
   async created() {
@@ -105,20 +75,12 @@ export default {
   methods: {
     deletePlaylist(selectedPlaylist) {
       this.playlistToDelete = selectedPlaylist;
-      this.dialogDelete = true;
+      this.refreshDeleteConfirmator++;
     },
-    closeDelete() {
+    onPlaylistDeleted() {
+      const indexToDelete = this.items.indexOf(this.playlistToDelete);
+      this.items.splice(indexToDelete, 1);
       this.playlistToDelete = null;
-      this.dialogDelete = false;
-    },
-    async deletePlaylistConfirm(playlistToDelete) {
-      this.success = await deletePlaylist(playlistToDelete.id);
-      this.snackbar = true;
-      this.dialogDelete = false;
-      if (this.success) {
-        const indexToDelete = this.items.indexOf(playlistToDelete);
-        this.items.splice(indexToDelete, 1);
-      }
     },
     async setPlaylistItems(selectedPlaylist) {
       const playlistItems = await this.getPlaylistItems(selectedPlaylist.id);

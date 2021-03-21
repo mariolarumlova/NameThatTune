@@ -102,7 +102,7 @@ export default {
     },
     getPlaylistItems: function(playlistId) {
       return this.gameMode === "tournament"
-        ? getPiecesWithParts(playlistId)
+        ? getPiecesWithParts(playlistId, true)
         : getCustomPieces(playlistId);
     }
   }

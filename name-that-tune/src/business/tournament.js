@@ -10,9 +10,10 @@ const musicalPiecesTable = musicalPieceFactory(database);
 const piecePartsTable = piecePartFactory(database);
 const tournamentsTable = tournamentFactory(database);
 const answersTable = answerFactory(database);
-const getPiecesWithParts = async playlistId => {
+const getPiecesWithParts = async (playlistId, includedInTournament) => {
   const result = await musicalPiecesTable.query([
-    { key: "playlistId", value: playlistId }
+    { key: "playlistId", value: playlistId },
+    { key: "includedInTournament", value: includedInTournament }
   ]);
   const resultWithParts = await Promise.all(
     result.data.map(async piece => {

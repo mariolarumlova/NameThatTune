@@ -30,9 +30,7 @@
               </v-icon>
             </v-list-item-action>
             <v-list-item-action v-if="!multiple">
-              <v-icon
-                :color="item.includedInTournament ? 'green darken-2' : ''"
-              >
+              <v-icon v-if="item.includedInTournament" color="green darken-2">
                 mdi-check
               </v-icon>
             </v-list-item-action>

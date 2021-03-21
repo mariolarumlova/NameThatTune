@@ -1,5 +1,6 @@
 <template>
   <v-data-table
+    :key="refreshIndex"
     :headers="headers"
     :items="pieceParts"
     :hide-default-footer="true"
@@ -25,40 +26,77 @@
           </v-card-title>
 
           <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="editedItem.index"
-                    label="Index"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="editedItem.title"
-                    label="Title"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="editedItem.youtubeId"
-                    label="Youtube ID"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="editedItem.startTimeSec"
-                    label="Start time [sec]"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="editedItem.endTimeSec"
-                    label="End time [sec]"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
+            <v-form v-model="isFormValid">
+              <v-container>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.index"
+                      label="Index"
+                      :rules="[rules.required]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.title"
+                      label="Title"
+                      clearable
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.youtubeId"
+                      label="Youtube ID"
+                      :rules="[rules.required]"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" sm="6" md="3">
+                    <v-text-field
+                      v-model="editedItem.startMin"
+                      label="Start time"
+                      type="number"
+                      suffix="min"
+                      :rules="[rules.required, rules.positiveNumber]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3">
+                    <v-text-field
+                      v-model="editedItem.startSec"
+                      type="number"
+                      suffix="sec"
+                      :rules="[
+                        rules.required,
+                        rules.positiveNumber,
+                        rules.seconds
+                      ]"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3">
+                    <v-text-field
+                      v-model="editedItem.endMin"
+                      label="End time"
+                      type="number"
+                      suffix="min"
+                      :rules="[rules.required, rules.positiveNumber]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3">
+                    <v-text-field
+                      v-model="editedItem.endSec"
+                      type="number"
+                      suffix="sec"
+                      :rules="[
+                        rules.required,
+                        rules.positiveNumber,
+                        rules.seconds
+                      ]"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-form>
           </v-card-text>
 
           <v-card-actions>
@@ -66,7 +104,12 @@
             <v-btn color="orange darken-3" text @click="close">
               Cancel
             </v-btn>
-            <v-btn color="orange darken-3" text @click="save">
+            <v-btn
+              color="orange darken-3"
+              :disabled="!isFormValid"
+              text
+              @click="save"
+            >
               Save
             </v-btn>
           </v-card-actions>
@@ -108,6 +151,7 @@
 </template>
 
 <script>
+import { parseDuration, minutesToSeconds } from "@/business/training";
 export default {
   props: {
     piecePartsInput: Array
@@ -119,12 +163,20 @@ export default {
     return {
       dialog: false,
       dialogDelete: false,
+      isFormValid: false,
+      refreshIndex: 0,
+      rules: {
+        required: value => !!value || value === 0 || "Required",
+        positiveNumber: v =>
+          (!isNaN(parseFloat(v)) && v >= 0) || "The number must be positive",
+        seconds: v => v < 60 || "Max value for seconds is 59"
+      },
       headers: [
         { text: "Index", value: "index" },
         { text: "Title", value: "title" },
         { text: "Youtube ID", value: "youtubeId" },
-        { text: "Start time [sec]", value: "startTimeSec" },
-        { text: "End time [sec]", value: "endTimeSec" },
+        { text: "Start time", value: "startTimeDisplay" },
+        { text: "End time", value: "endTimeDisplay" },
         { text: "Actions", value: "actions", sortable: false }
       ],
       editedIndex: -1,
@@ -133,14 +185,19 @@ export default {
         title: "",
         youtubeId: "",
         startTimeSec: 0,
-        endTimeSec: 0
+        endTimeSec: 0,
+        startMin: 0,
+        startSec: 0,
+        endMin: 0,
+        endSec: 0
       },
       defaultItem: {
-        index: 0,
         title: "",
         youtubeId: "",
-        startTimeSec: 0,
-        endTimeSec: 0
+        startMin: 0,
+        startSec: 0,
+        endMin: 0,
+        endSec: 0
       }
     };
   },
@@ -159,7 +216,17 @@ export default {
   },
   methods: {
     initialize() {
-      this.pieceParts = this.piecePartsInput;
+      this.pieceParts = this.piecePartsInput.map(el => {
+        const parsedStart = parseDuration(el.startTimeSec);
+        el.startMin = parsedStart.minutes;
+        el.startSec = parsedStart.seconds;
+        el.startTimeDisplay = parsedStart.display;
+        const parsedEnd = parseDuration(el.endTimeSec);
+        el.endMin = parsedEnd.minutes;
+        el.endSec = parsedEnd.seconds;
+        el.endTimeDisplay = parsedEnd.display;
+        return el;
+      });
     },
     editItem(item) {
       this.editedIndex = this.pieceParts.indexOf(item);
@@ -173,6 +240,7 @@ export default {
     },
     deleteItemConfirm() {
       this.pieceParts.splice(this.editedIndex, 1);
+      this.refreshIndex++;
       this.closeDelete();
     },
     close() {
@@ -191,11 +259,26 @@ export default {
       this.$emit("piecePartsChanged", this.pieceParts);
     },
     save() {
+      this.editedItem.startTimeSec = minutesToSeconds(
+        this.editedItem.startMin,
+        this.editedItem.startSec
+      );
+      this.editedItem.startTimeDisplay = parseDuration(
+        this.editedItem.startTimeSec
+      ).display;
+      this.editedItem.endTimeSec = minutesToSeconds(
+        this.editedItem.endMin,
+        this.editedItem.endSec
+      );
+      this.editedItem.endTimeDisplay = parseDuration(
+        this.editedItem.endTimeSec
+      ).display;
       if (this.editedIndex > -1) {
         Object.assign(this.pieceParts[this.editedIndex], this.editedItem);
       } else {
         this.pieceParts.push(this.editedItem);
       }
+      this.refreshIndex++;
       this.close();
       this.$emit("piecePartsChanged", this.pieceParts);
     },

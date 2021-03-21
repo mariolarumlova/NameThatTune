@@ -106,12 +106,21 @@ const updatePieceParts = async pieceWithParts => {
     deletedPartsIds.map(partId => piecePartsTable.delete(partId))
   );
   const piecePartPromises = pieceWithParts.parts.reduce((acc, part) => {
-    if (!part.id) {
-      part.id = generateGuid();
+    const partToUpdate = {
+      id: part.id,
+      title: part.title || null,
+      musicalPieceId: part.musicalPieceId,
+      youtubeId: part.youtubeId,
+      startTimeSec: part.startTimeSec,
+      endTimeSec: part.endTimeSec,
+      index: part.index
+    };
+    if (!partToUpdate.id) {
+      partToUpdate.id = generateGuid();
     }
-    part.musicalPieceId = pieceWithParts.id;
-    part.lastModifiedAtTimestamp = now;
-    return [...acc, piecePartsTable.update(part.id, part)];
+    partToUpdate.musicalPieceId = pieceWithParts.id;
+    partToUpdate.lastModifiedAtTimestamp = now;
+    return [...acc, piecePartsTable.update(partToUpdate.id, partToUpdate)];
   }, []);
   const piecePartsResults = await Promise.all(piecePartPromises);
   return piecePartsResults.every(result => result.isSuccessful) ? true : false;
@@ -177,6 +186,20 @@ const deletePlaylist = async playlistId => {
   );
 };
 
+const parseDuration = durationSec => {
+  const minutes = (+durationSec - (+durationSec % 60)) / 60;
+  const seconds = +durationSec % 60;
+  return {
+    minutes: minutes,
+    seconds: seconds,
+    display: minutes + ":" + ("0" + seconds).slice(-2)
+  };
+};
+
+const minutesToSeconds = (minutes, seconds) => {
+  return +minutes * 60 + +seconds;
+};
+
 export {
   addPlaylistToDatabase,
   addPlaylistItemsToDatabase,
@@ -184,5 +207,7 @@ export {
   updateMusicalPiece,
   isMusicalPieceValid,
   deletePlaylist,
-  deletePiece
+  deletePiece,
+  parseDuration,
+  minutesToSeconds
 };

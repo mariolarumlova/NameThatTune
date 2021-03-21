@@ -78,12 +78,20 @@
           >
             Save
           </v-btn>
-          <v-alert
-            :type="dbError ? 'error' : 'success'"
-            v-model="showAlert"
-            dismissible
-            >{{ dbMessage }}</v-alert
-          >
+          <v-snackbar v-model="showAlert" timeout="2000">
+            {{ dbMessage }}
+
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                :color="dbError ? 'red' : 'green'"
+                text
+                v-bind="attrs"
+                @click="showAlert = false"
+              >
+                Close
+              </v-btn>
+            </template>
+          </v-snackbar>
         </div>
       </v-col>
     </v-row>

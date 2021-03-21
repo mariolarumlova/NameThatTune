@@ -117,12 +117,16 @@ export default {
       await updateTournament(this.tournament);
     },
     parseForListview: function(parts) {
-      return parts.map(item => {
-        return {
-          text: item.title || item.index,
-          value: item
-        };
-      });
+      return parts
+        .map(item => {
+          return {
+            text: item.title || item.index,
+            value: item
+          };
+        })
+        .sort((a, b) => {
+          return a.value.index - b.value.index;
+        });
     },
     setPlaylist: async function(event) {
       this.pieces =

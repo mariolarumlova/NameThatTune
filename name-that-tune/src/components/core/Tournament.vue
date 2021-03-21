@@ -18,7 +18,13 @@
                   : undefined
               "
             />
-            <v-btn @click.prevent="checkPiece()">Check</v-btn>
+            <v-btn
+              :disabled="
+                !selected.id || (selected.multipart && !selectedPart.id)
+              "
+              @click.prevent="checkPiece()"
+              >Check</v-btn
+            >
             <br />
             <div
               v-if="

@@ -34,9 +34,17 @@
             >
               Result: {{ result }} <br />
             </div>
-            <!-- Below is the prototype of progress bar -->
-            Answered: {{ tournament.totalAnswersAmount }} /
-            {{ playlistItems.length }} <br />
+            <br />
+            <v-progress-linear
+              background-color="orange lighten-4"
+              color="orange darken-2"
+              :value="
+                (100 * tournament.totalAnswersAmount) / playlistItems.length
+              "
+            ></v-progress-linear>
+            <br />
+            {{ playlistItems.length - tournament.totalAnswersAmount }}
+            pieces left to guess!
             <div class="halfwidth-wrapper">
               <v-select
                 :items="pieces"

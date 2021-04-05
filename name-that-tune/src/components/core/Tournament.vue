@@ -14,7 +14,7 @@
               :randomStartTime="settings.randomStart == true"
               :playTimeSec="
                 settings.limitedAnswerTime == true
-                  ? settings.timeLimit
+                  ? `${settings.timeLimit}`
                   : undefined
               "
             />
@@ -91,7 +91,8 @@ import {
   addTournamentToDatabase,
   addAnswerToDatabase,
   getHumanReadableResult,
-  updateTournament
+  updateTournament,
+  defaultSettings
 } from "@/business/tournament";
 import { getRandomIntInclusive, shuffle } from "@/business/mathUtils";
 export default {
@@ -104,9 +105,9 @@ export default {
     SimpleTable
   },
   async created() {
-    this.settings = (
-      await settingsFactory(databaseFactory()).getById(this.$store.state.uid)
-    ).data; //TODO Co jak ktos nie ma?
+    this.settings =
+      (await settingsFactory(databaseFactory()).getById(this.$store.state.uid))
+        .data ?? defaultSettings;
   },
   methods: {
     checkPiece: async function() {

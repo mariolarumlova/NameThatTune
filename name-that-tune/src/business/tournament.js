@@ -138,10 +138,19 @@ const getHumanReadableResult = answer => {
   }
 };
 
+const defaultSettings = {
+  badPartScoring: 0.5,
+  correctAnswerEachPiece: true,
+  limitedAnswerTime: true,
+  randomStart: true,
+  timeLimit: 10
+};
+
 export {
   getPiecesWithParts,
   addTournamentToDatabase,
   updateTournament,
   addAnswerToDatabase,
-  getHumanReadableResult
+  getHumanReadableResult,
+  defaultSettings
 };

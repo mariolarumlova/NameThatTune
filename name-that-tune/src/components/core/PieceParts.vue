@@ -1,153 +1,152 @@
 <template>
-  <v-data-table
-    :key="refreshIndex"
-    :headers="headers"
-    :items="pieceParts"
-    :hide-default-footer="true"
-    sort-by="index"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-dialog v-model="dialog" max-width="500px">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="orange darken-3"
-            dark
-            class="mb-2"
-            v-bind="attrs"
-            v-on="on"
-          >
-            Add a new part
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            <span class="headline">{{ formTitle }}</span>
-          </v-card-title>
+  <div>
+    <v-btn
+      color="orange darken-3"
+      dark
+      class="mb-2"
+      @click.prevent="editItem(defaultItem)"
+    >
+      Add a new part
+    </v-btn>
+    <v-data-table
+      :key="refreshIndex"
+      :headers="headers"
+      :items="pieceParts"
+      :hide-default-footer="true"
+      sort-by="index"
+      class="elevation-1"
+    >
+      <template v-slot:top>
+        <v-dialog v-model="dialog" max-width="500px">
+          <v-card>
+            <v-card-title>
+              <span class="headline">{{ formTitle }}</span>
+            </v-card-title>
 
-          <v-card-text>
-            <v-form v-model="isFormValid">
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.index"
-                      label="Index"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.title"
-                      label="Title"
-                      clearable
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.youtubeId"
-                      label="Youtube ID"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" sm="6" md="3">
-                    <v-text-field
-                      v-model="editedItem.startMin"
-                      label="Start time"
-                      type="number"
-                      suffix="min"
-                      :rules="[rules.required, rules.positiveNumber]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <v-text-field
-                      v-model="editedItem.startSec"
-                      type="number"
-                      suffix="sec"
-                      :rules="[
-                        rules.required,
-                        rules.positiveNumber,
-                        rules.seconds
-                      ]"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <v-text-field
-                      v-model="editedItem.endMin"
-                      label="End time"
-                      type="number"
-                      suffix="min"
-                      :rules="[rules.required, rules.positiveNumber]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="3">
-                    <v-text-field
-                      v-model="editedItem.endSec"
-                      type="number"
-                      suffix="sec"
-                      :rules="[
-                        rules.required,
-                        rules.positiveNumber,
-                        rules.seconds
-                      ]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-form>
-          </v-card-text>
+            <v-card-text>
+              <v-form v-model="isFormValid">
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.index"
+                        label="Index"
+                        :rules="[rules.required]"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.title"
+                        label="Title"
+                        clearable
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.youtubeId"
+                        label="Youtube ID"
+                        :rules="[rules.required, rules.youtubeIdValid]"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="3">
+                      <v-text-field
+                        v-model="editedItem.startMin"
+                        label="Start time"
+                        type="number"
+                        suffix="min"
+                        :rules="[rules.required, rules.positiveNumber]"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="3">
+                      <v-text-field
+                        v-model="editedItem.startSec"
+                        type="number"
+                        suffix="sec"
+                        :rules="[
+                          rules.required,
+                          rules.positiveNumber,
+                          rules.seconds
+                        ]"
+                      />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="3">
+                      <v-text-field
+                        v-model="editedItem.endMin"
+                        label="End time"
+                        type="number"
+                        suffix="min"
+                        :rules="[rules.required, rules.positiveNumber]"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="3">
+                      <v-text-field
+                        v-model="editedItem.endSec"
+                        type="number"
+                        suffix="sec"
+                        :rules="[
+                          rules.required,
+                          rules.positiveNumber,
+                          rules.seconds
+                        ]"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
+            </v-card-text>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="orange darken-3" text @click="close">
-              Cancel
-            </v-btn>
-            <v-btn
-              color="orange darken-3"
-              :disabled="!isFormValid"
-              text
-              @click="save"
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="orange darken-3" text @click="close">
+                Cancel
+              </v-btn>
+              <v-btn
+                color="orange darken-3"
+                :disabled="!isFormValid"
+                text
+                @click="save"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="headline"
+              >Are you sure you want to delete this item?</v-card-title
             >
-              Save
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-dialog v-model="dialogDelete" max-width="500px">
-        <v-card>
-          <v-card-title class="headline"
-            >Are you sure you want to delete this item?</v-card-title
-          >
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="orange darken-3" text @click="closeDelete"
-              >Cancel</v-btn
-            >
-            <v-btn color="orange darken-3" text @click="deleteItemConfirm"
-              >OK</v-btn
-            >
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </template>
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">
-        mdi-pencil
-      </v-icon>
-      <v-icon small class="mr-2" @click="deleteItem(item)">
-        mdi-delete
-      </v-icon>
-      <v-icon small @click="viewItem(item)">
-        mdi-eye
-      </v-icon>
-    </template>
-    <template v-slot:no-data>
-      There are no parts assigned to this piece. Create a new one or cancel.
-    </template>
-  </v-data-table>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="orange darken-3" text @click="closeDelete"
+                >Cancel</v-btn
+              >
+              <v-btn color="orange darken-3" text @click="deleteItemConfirm"
+                >OK</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </template>
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)">
+          mdi-pencil
+        </v-icon>
+        <v-icon small class="mr-2" @click="deleteItem(item)">
+          mdi-delete
+        </v-icon>
+        <v-icon small @click="viewItem(item)">
+          mdi-eye
+        </v-icon>
+      </template>
+      <template v-slot:no-data>
+        There are no parts assigned to this piece. Create a new one or cancel.
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script>
@@ -169,7 +168,10 @@ export default {
         required: value => !!value || value === 0 || "Required",
         positiveNumber: v =>
           (!isNaN(parseFloat(v)) && v >= 0) || "The number must be positive",
-        seconds: v => v < 60 || "Max value for seconds is 59"
+        seconds: v => v < 60 || "Max value for seconds is 59",
+        youtubeIdValid: v =>
+          !!v &&
+          (v.length === 11 || v.startsWith("https://www.youtube.com/watch?v="))
       },
       headers: [
         { text: "Index", value: "index" },
@@ -232,6 +234,20 @@ export default {
       this.editedIndex = this.pieceParts.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
+      if (!(this.editedItem.youtubeId > "") && this.piecePartsInput[0]) {
+        const {
+          youtubeId,
+          startMin,
+          endMin,
+          startSec,
+          endSec
+        } = this.piecePartsInput[0];
+        this.editedItem.youtubeId = youtubeId;
+        this.editedItem.startMin = startMin;
+        this.editedItem.endMin = endMin;
+        this.editedItem.startSec = startSec;
+        this.editedItem.endSec = endSec;
+      }
     },
     deleteItem(item) {
       this.editedIndex = this.pieceParts.indexOf(item);
@@ -273,6 +289,10 @@ export default {
       this.editedItem.endTimeDisplay = parseDuration(
         this.editedItem.endTimeSec
       ).display;
+      this.editedItem.youtubeId =
+        this.editedItem.youtubeId.length === 11
+          ? this.editedItem.youtubeId
+          : this.editedItem.youtubeId.substring(32, 43);
       if (this.editedIndex > -1) {
         Object.assign(this.pieceParts[this.editedIndex], this.editedItem);
       } else {

@@ -147,7 +147,10 @@ const updateMusicalPiece = async pieceWithParts => {
 
 const isMusicalPieceValid = pieceWithParts => {
   const hasParts = pieceWithParts.parts && pieceWithParts.parts.length;
-  return hasParts;
+  const partsValid = hasParts
+    ? !pieceWithParts.parts.some(p => p.startTimeSec > p.endTimeSec)
+    : false;
+  return hasParts && partsValid;
 };
 
 const deletePieceParts = async pieceId => {

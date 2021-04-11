@@ -7,8 +7,9 @@
           <img :src="clientImageUrl" />
         </v-avatar>
         <div class="halfwidth-wrapper text-body-1 pa-4">
-          <br />Random start of a piece
+          <br />
           <v-switch
+            label="Random start of a piece"
             :value="randomStart"
             @change="newRandomStart = $event === true"
             color="orange darken-3"
@@ -48,8 +49,9 @@
             <v-radio label="0 p." value="0" color="orange darken-3"></v-radio>
           </v-radio-group>
 
-          <br />Limited answer time
+          <br />
           <v-switch
+            label="Limited answer time"
             :value="limitedAnswerTime"
             @change="newLimitedAnswerTime = $event === true"
             color="orange darken-3"

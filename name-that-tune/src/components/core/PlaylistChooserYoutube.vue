@@ -1,7 +1,7 @@
 <template>
-  <v-card class="mx-auto" tile>
+  <v-card class="mx-md-auto mx-lg-auto mb-10" tile>
     <v-progress-circular v-if="loading"></v-progress-circular>
-    <v-list v-else rounded>
+    <v-list v-else rounded class="justify-center">
       <v-subheader>My youtube playlists:</v-subheader>
       <v-subheader v-if="!items || !items.length"
         >There are no playlists in your YouTube account. <br />

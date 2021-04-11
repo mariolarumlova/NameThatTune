@@ -7,56 +7,66 @@
         </div>
       </v-col>
     </v-row>
-    <v-container fill-height fluid v-if="!selectedItem">
-      <YoutubePlaylists
-        @youtubePlaylistChosen="youtubePlaylistChosen($event)"
-      />
-      <br />
-      <CustomPlaylists
-        :gameMode="gameMode"
-        @customPlaylistChosen="customPlaylistChosen($event)"
-      />
-    </v-container>
-    <v-container
-      fill-height
-      fluid
-      v-if="
-        selectedItem && !selectedItem.customPlaylist && !creationPageVisible
-      "
-    >
-      <v-btn
-        color="orange darken-2"
-        class="ma-2 white--text"
-        @click.prevent="createCustomPlaylist()"
-      >
-        Create a new custom playlist
-      </v-btn>
-      <CustomPlaylists
-        :key="refreshIndex"
-        :youtubeId="selectedItem.id"
-        :gameMode="gameMode"
-        @customPlaylistChosen="customPlaylistChosen($event)"
-      />
-    </v-container>
-    <v-container fill-height fluid v-if="creationPageVisible">
-      <div>
-        Choose a name for your custom playlist
-        <br />
-        <v-text-field
-          label="Title"
-          :placeholder="selectedItem.title"
-          outlined
-          v-model="selectedItem.customTitle"
-        ></v-text-field>
-        <br />
-        Choose pieces which you want to use
-      </div>
-      <PieceChooser
-        :playlistItemsParam="selectedItem.items"
-        :multiple="true"
-        @piecesChosen="saveCustomPlaylistToDb($event)"
-      />
-    </v-container>
+    <v-row align="center" justify="space-around">
+      <v-col align="center" justify="space-around">
+        <v-container fill-height fluid v-if="!selectedItem">
+          <YoutubePlaylists
+            @youtubePlaylistChosen="youtubePlaylistChosen($event)"
+          />
+          <br />
+          <CustomPlaylists
+            :gameMode="gameMode"
+            @customPlaylistChosen="customPlaylistChosen($event)"
+          />
+        </v-container>
+        <v-container
+          class="halfwidth-wrapper"
+          fill-height
+          fluid
+          v-if="
+            selectedItem && !selectedItem.customPlaylist && !creationPageVisible
+          "
+        >
+          <v-btn
+            color="orange darken-2"
+            class="ma-2 ml-lg-16 ml-md-16 white--text"
+            @click.prevent="createCustomPlaylist()"
+          >
+            Create a new custom playlist
+          </v-btn>
+          <CustomPlaylists
+            :key="refreshIndex"
+            :youtubeId="selectedItem.id"
+            :gameMode="gameMode"
+            @customPlaylistChosen="customPlaylistChosen($event)"
+          />
+        </v-container>
+        <v-container
+          class="halfwidth-wrapper"
+          fill-height
+          fluid
+          v-if="creationPageVisible"
+        >
+          <div>
+            Choose a name for your custom playlist
+            <br />
+            <v-text-field
+              label="Title"
+              :placeholder="selectedItem.title"
+              outlined
+              v-model="selectedItem.customTitle"
+            ></v-text-field>
+            <br />
+            Choose pieces which you want to use
+          </div>
+          <PieceChooser
+            :playlistItemsParam="selectedItem.items"
+            :multiple="true"
+            @piecesChosen="saveCustomPlaylistToDb($event)"
+          />
+        </v-container>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

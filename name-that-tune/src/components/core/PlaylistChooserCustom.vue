@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" tile>
+  <v-card class="mx-md-auto mx-lg-auto mt-10" tile>
     <v-progress-circular v-if="loading"></v-progress-circular>
     <v-list v-else rounded>
       <v-subheader>My custom playlists:</v-subheader>
@@ -24,12 +24,12 @@
             <v-list-item-title v-text="item.title"></v-list-item-title>
           </v-list-item-content>
           <v-list-item-action v-if="gameMode !== 'tournament'">
-            <v-icon @click="setPlaylistItems(item)">
+            <v-icon @click="setPlaylistItems(item)" class="ma-2">
               mdi-pencil
             </v-icon>
           </v-list-item-action>
           <v-list-item-action v-if="gameMode !== 'tournament'">
-            <v-icon @click="deletePlaylist(item)">
+            <v-icon @click="deletePlaylist(item)" class="ma-2">
               mdi-delete
             </v-icon>
           </v-list-item-action>

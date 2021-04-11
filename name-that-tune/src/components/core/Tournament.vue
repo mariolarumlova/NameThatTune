@@ -7,17 +7,6 @@
             Tournament mode
           </div>
           <div v-if="!tournament.complete" class="text-body-1 pa-4">
-            <MusicPlayer
-              :key="tournament.totalAnswersAmount"
-              customStyle="display: none"
-              :videoDetails="currentPiece"
-              :randomStartTime="settings.randomStart == true"
-              :playTimeSec="
-                settings.limitedAnswerTime == true
-                  ? `${settings.timeLimit}`
-                  : undefined
-              "
-            />
             <v-btn
               :disabled="
                 !selected.id || (selected.multipart && !selectedPart.id)
@@ -34,6 +23,19 @@
             >
               Result: {{ result }} <br />
             </div>
+            <br />
+            <MusicPlayer
+              :key="tournament.totalAnswersAmount"
+              customStyle="display: none"
+              :videoDetails="currentPiece"
+              :randomStartTime="settings.randomStart == true"
+              :playTimeSec="
+                settings.limitedAnswerTime == true
+                  ? `${settings.timeLimit}`
+                  : undefined
+              "
+              :buttonVisible="true"
+            />
             <br />
             <v-progress-linear
               background-color="orange lighten-4"

@@ -40,6 +40,9 @@
             :gameMode="gameMode"
             @customPlaylistChosen="customPlaylistChosen($event)"
           />
+          <v-btn class="ma-8" @click.prevent="clearPlaylist()"
+            >Back to playlists</v-btn
+          >
         </v-container>
         <v-container
           class="halfwidth-wrapper"
@@ -64,6 +67,9 @@
             :multiple="true"
             @piecesChosen="saveCustomPlaylistToDb($event)"
           />
+          <v-btn class="ma-8" @click.prevent="clearPlaylist()"
+            >Back to playlists</v-btn
+          >
         </v-container>
       </v-col>
     </v-row>
@@ -111,6 +117,10 @@ export default {
     };
   },
   methods: {
+    clearPlaylist() {
+      this.creationPageVisible = false;
+      this.selectedItem = null;
+    },
     createCustomPlaylist() {
       this.creationPageVisible = true;
     },

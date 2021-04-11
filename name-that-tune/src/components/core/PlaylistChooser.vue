@@ -67,6 +67,15 @@
         </v-container>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" timeout="2000">
+      {{ snackbarMessage }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn :color="'red'" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -96,7 +105,9 @@ export default {
       selectedItem: null,
       refreshIndex: 0,
       creationPageVisible: false,
-      customTitle: null
+      customTitle: null,
+      snackbar: false,
+      snackbarMessage: ""
     };
   },
   methods: {
@@ -122,8 +133,8 @@ export default {
           items: items
         });
       } else {
-        //TODO Show it as a snackbar
-        console.error("Cannot save an empty custom playlist");
+        this.snackbarMessage = "Cannot save an empty custom playlist";
+        this.snackbar = true;
       }
     },
     youtubePlaylistChosen(event) {

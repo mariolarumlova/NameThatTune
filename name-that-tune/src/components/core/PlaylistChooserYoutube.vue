@@ -67,7 +67,7 @@ export default {
       return getPlaylists(gapi);
     },
     getPlaylistItems: function(playlistId) {
-      return getPlaylistItems(gapi, playlistId, this.gameMode);
+      return getPlaylistItems(gapi, playlistId);
     }
   }
 };

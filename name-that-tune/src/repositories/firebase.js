@@ -21,7 +21,7 @@ const signIn = (googleIdToken, googleAccessToken) => {
         )
       )
       .then(function(result) {
-        console.log("signed in!");
+        console.log("Firebase: Signed in");
         resolve(result);
       })
       .catch(function(error) {

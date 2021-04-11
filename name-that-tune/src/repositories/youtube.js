@@ -7,7 +7,6 @@ const getVideosWithDurations = async (gapi, videos) => {
     id: videoIds,
     maxResults: 50
   });
-  console.log("Response - videos", response);
   return response.result.items.map(piece => {
     const duration = toSeconds(parse(piece.contentDetails.duration));
     return {
@@ -24,7 +23,6 @@ const getPlaylists = async gapi => {
     mine: true,
     maxResults: 50
   });
-  console.log("Response - user playlists", response);
   return response.result.items.map(playlist => {
     return {
       id: playlist.id,
@@ -34,13 +32,12 @@ const getPlaylists = async gapi => {
   });
 };
 
-const getPlaylistItems = async (gapi, playlistId, gameMode) => {
+const getPlaylistItems = async (gapi, playlistId) => {
   const response = await gapi.client.youtube.playlistItems.list({
     part: ["id,status,snippet,contentDetails"],
     playlistId: playlistId,
     maxResults: 50
   });
-  console.log("Response - playlist items", response);
   const items = response.result.items.map(piece => {
     return {
       id: piece.contentDetails.videoId,

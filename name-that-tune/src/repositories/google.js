@@ -16,7 +16,7 @@ const authenticate = (gapi, scope, clientName) => {
         .getAuthInstance()
         .signIn()
         .then(data => {
-          console.log("Sign-in successful");
+          console.log("Google: Signed in");
           resolve(data);
         })
         .catch(err => {

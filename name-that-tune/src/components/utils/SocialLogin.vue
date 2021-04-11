@@ -39,7 +39,6 @@ export default {
 
     logInViaGoogle: async function() {
       const googleUser = await this.authenticate("https://www.googleapis.com/auth/youtube.readonly", "youtube/v3");
-      console.log(googleUser);
       const [ idToken, accessToken ] = Object.keys(googleUser).reduce((acc, key) => {
         if (typeof googleUser[key] === "object"
         && Object.keys(googleUser[key]).includes("id_token")

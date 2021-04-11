@@ -2,6 +2,14 @@
   <v-container fill-height fluid>
     <v-progress-circular v-if="loading"></v-progress-circular>
     <v-card v-else class="mx-auto" tile>
+      <v-btn
+        v-if="multiple"
+        color="orange darken-2"
+        class="ma-2 white--text"
+        @click.prevent="changeSelection()"
+      >
+        {{ allSelected ? "Deselect all" : "Select all" }}
+      </v-btn>
       <v-list rounded>
         <v-subheader>Choose piece:</v-subheader>
         <v-list-item-group
@@ -70,10 +78,15 @@ export default {
     DeleteConfirmator
   },
   created() {
-    this.selectedItems = this.multiple ? [] : {};
+    if (this.multiple) {
+      this.changeSelection();
+    } else {
+      this.selectedItems = {};
+    }
   },
   data() {
     return {
+      allSelected: false,
       loading: false,
       selectedItems: { title: "", icon: "" },
       playlistItems: this.playlistItemsParam,
@@ -83,6 +96,14 @@ export default {
     };
   },
   methods: {
+    changeSelection() {
+      if (this.allSelected) {
+        this.selectedItems = [];
+      } else {
+        this.selectedItems = [...Array(this.playlistItems.length).keys()];
+      }
+      this.allSelected = !this.allSelected;
+    },
     setPiece(selectedItem) {
       this.$emit("pieceChosen", selectedItem);
     },

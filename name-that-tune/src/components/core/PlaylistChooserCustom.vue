@@ -3,6 +3,12 @@
     <v-progress-circular v-if="loading"></v-progress-circular>
     <v-list v-else rounded>
       <v-subheader>My custom playlists:</v-subheader>
+      <v-subheader v-if="!items || !items.length"
+        >There are no custom playlists. <br />
+        Create some by choosing one of the <br />
+        YouTube playlists and clicking <br />
+        "Create new custom playlist".</v-subheader
+      >
       <v-list-item-group v-model="selectedItem" color="orange darken-2">
         <v-list-item
           v-for="(item, i) in items"

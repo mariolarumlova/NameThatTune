@@ -3,6 +3,10 @@
     <v-progress-circular v-if="loading"></v-progress-circular>
     <v-list v-else rounded>
       <v-subheader>My youtube playlists:</v-subheader>
+      <v-subheader v-if="!items || !items.length"
+        >There are no playlists in your YouTube account. <br />
+        Create some and try again.</v-subheader
+      >
       <v-list-item-group v-model="selectedItem" color="orange darken-2">
         <v-list-item
           v-for="(item, i) in items"

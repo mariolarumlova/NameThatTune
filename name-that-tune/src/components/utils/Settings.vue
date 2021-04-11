@@ -7,8 +7,9 @@
           <img :src="clientImageUrl" />
         </v-avatar>
         <div class="halfwidth-wrapper text-body-1 pa-4">
-          <br />Random start of a piece
+          <br />
           <v-switch
+            label="Random start of a piece"
             :value="randomStart"
             @change="newRandomStart = $event === true"
             color="orange darken-3"
@@ -16,19 +17,19 @@
           ></v-switch>
           <br />Correct answers
           <v-radio-group
-            :value="correctAnswer"
-            @change="newCorrectAnswer = $event"
+            :value="correctAnswerEachPiece"
+            @change="newCorrectAnswerEachPiece = $event"
             row
             mandatory
           >
             <v-radio
               label="After each piece"
-              value="eachPiece"
+              :value="true"
               color="orange darken-3"
             ></v-radio>
             <v-radio
               label="At the end of the tournament"
-              value="tournamentSummary"
+              :value="false"
               color="orange darken-3"
             ></v-radio>
           </v-radio-group>
@@ -48,8 +49,9 @@
             <v-radio label="0 p." value="0" color="orange darken-3"></v-radio>
           </v-radio-group>
 
-          <br />Limited answer time
+          <br />
           <v-switch
+            label="Limited answer time"
             :value="limitedAnswerTime"
             @change="newLimitedAnswerTime = $event === true"
             color="orange darken-3"
@@ -78,12 +80,20 @@
           >
             Save
           </v-btn>
-          <v-alert
-            :type="dbError ? 'error' : 'success'"
-            v-model="showAlert"
-            dismissible
-            >{{ dbMessage }}</v-alert
-          >
+          <v-snackbar v-model="showAlert" timeout="2000">
+            {{ dbMessage }}
+
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                :color="dbError ? 'red' : 'green'"
+                text
+                v-bind="attrs"
+                @click="showAlert = false"
+              >
+                Close
+              </v-btn>
+            </template>
+          </v-snackbar>
         </div>
       </v-col>
     </v-row>
@@ -100,7 +110,7 @@ export default {
       clientImageUrl: this.$store.state.session.user.photoURL,
       clientName: this.$store.state.session.user.displayName,
       newRandomStart: undefined,
-      newCorrectAnswer: undefined,
+      newCorrectAnswerEachPiece: undefined,
       newBadPartScoring: undefined,
       newLimitedAnswerTime: undefined,
       newTimeLimit: undefined,
@@ -118,7 +128,10 @@ export default {
           typeof this.newRandomStart === "boolean"
             ? this.newRandomStart
             : this.randomStart,
-        correctAnswer: this.newCorrectAnswer || this.correctAnswer,
+        correctAnswerEachPiece:
+          typeof this.newCorrectAnswerEachPiece === "boolean"
+            ? this.newCorrectAnswerEachPiece
+            : this.correctAnswerEachPiece,
         badPartScoring: this.newBadPartScoring || this.badPartScoring,
         limitedAnswerTime:
           typeof this.newLimitedAnswerTime === "boolean"
@@ -135,8 +148,8 @@ export default {
     randomStart() {
       return this.settings ? this.settings.randomStart : false;
     },
-    correctAnswer() {
-      return this.settings ? this.settings.correctAnswer : "eachPiece";
+    correctAnswerEachPiece() {
+      return this.settings ? this.settings.correctAnswerEachPiece : true;
     },
     badPartScoring() {
       return this.settings ? this.settings.badPartScoring : "0.5";

@@ -1,8 +1,12 @@
 <template>
-  <v-card class="mx-auto" tile>
+  <v-card class="mx-md-auto mx-lg-auto mb-10" tile>
     <v-progress-circular v-if="loading"></v-progress-circular>
-    <v-list v-else rounded>
+    <v-list v-else rounded class="justify-center">
       <v-subheader>My youtube playlists:</v-subheader>
+      <v-subheader v-if="!items || !items.length"
+        >There are no playlists in your YouTube account. <br />
+        Create some and try again.</v-subheader
+      >
       <v-list-item-group v-model="selectedItem" color="orange darken-2">
         <v-list-item
           v-for="(item, i) in items"
@@ -24,7 +28,7 @@
 <script>
 /* eslint-disable no-undef */
 import { getPlaylists, getPlaylistItems } from "@/repositories/youtube";
-import { authenticate, loadClient } from "@/repositories/google";
+import { authenticate } from "@/repositories/google";
 export default {
   props: {
     gameMode: String
@@ -39,10 +43,11 @@ export default {
   async created() {
     this.loading = true;
     if (!gapi.client) {
-      await authenticate(gapi, [
-        "https://www.googleapis.com/auth/youtube.readonly"
-      ]);
-      await loadClient(gapi, "youtube", "v3");
+      await authenticate(
+        gapi,
+        "https://www.googleapis.com/auth/youtube.readonly",
+        "youtube/v3"
+      );
     }
     this.items = await this.getPlaylists();
     this.loading = false;
@@ -62,7 +67,7 @@ export default {
       return getPlaylists(gapi);
     },
     getPlaylistItems: function(playlistId) {
-      return getPlaylistItems(gapi, playlistId, this.gameMode);
+      return getPlaylistItems(gapi, playlistId);
     }
   }
 };

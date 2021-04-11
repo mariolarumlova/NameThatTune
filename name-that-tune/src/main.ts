@@ -10,7 +10,9 @@ import vuetify from "./plugins/vuetify";
 import firebase from "firebase";
 import "@/repositories/firebase";
 import { firestorePlugin }  from "vuefire";
-
+import VueYoutube from 'vue-youtube';
+ 
+Vue.use(VueYoutube);
 Vue.use(firestorePlugin);
 Vue.config.productionTip = false;
 

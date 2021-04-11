@@ -15,7 +15,7 @@
           </div>
           <div v-else>
             <PieceChooser
-              :playlistItems="playlistItems"
+              :playlistItemsParam="playlistItems"
               @pieceChosen="setPiece($event)"
             />
             <v-btn class="ma-8" @click.prevent="clearPlaylist()"
@@ -26,6 +26,24 @@
       </v-row>
     </v-container>
     <PlaylistChooser v-else @playlistChosen="playlistItems = $event.items" />
+    <v-snackbar v-model="snackbar" timeout="2000">
+      {{
+        success
+          ? "Piece saved successfully"
+          : "Cannot save a piece. Check whether you have at least one piece part and all the youtube ids are correct."
+      }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :color="success ? 'green' : 'red'"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -33,7 +51,7 @@
 import PlaylistChooser from "@/components/core/PlaylistChooser";
 import PieceChooser from "@/components/core/PieceChooser";
 import PieceDetails from "@/components/core/PieceDetails";
-import { updateMusicalPiece } from "@/business/training";
+import { updateMusicalPiece, isMusicalPieceValid } from "@/business/training";
 export default {
   props: {
     playlistItems: Array,
@@ -44,7 +62,12 @@ export default {
     PieceChooser,
     PieceDetails
   },
-  computed: {},
+  data() {
+    return {
+      snackbar: false,
+      success: false
+    };
+  },
   methods: {
     clearPiece: function() {
       this.piece = null;
@@ -55,8 +78,17 @@ export default {
     setPiece: function(event) {
       this.piece = event;
     },
-    savePiece: function(event) {
-      updateMusicalPiece(event);
+    savePiece: async function(event) {
+      if (isMusicalPieceValid(event)) {
+        const result = await updateMusicalPiece(event);
+        this.success = result;
+      } else {
+        this.success = false;
+      }
+      this.snackbar = true;
+      if (this.success) {
+        this.clearPiece();
+      }
     }
   }
 };

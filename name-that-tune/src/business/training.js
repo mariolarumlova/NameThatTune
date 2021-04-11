@@ -102,16 +102,25 @@ const updatePieceParts = async pieceWithParts => {
   const deletedPartsIds = oldPieceParts.reduce((acc, part) => {
     return !newPiecePartsIds.includes(part.id) ? [...acc, part.id] : acc;
   }, []);
-  const deleteResults = await Promise.all(
+  await Promise.all(
     deletedPartsIds.map(partId => piecePartsTable.delete(partId))
   );
   const piecePartPromises = pieceWithParts.parts.reduce((acc, part) => {
-    if (!part.id) {
-      part.id = generateGuid();
+    const partToUpdate = {
+      id: part.id,
+      title: part.title || null,
+      musicalPieceId: part.musicalPieceId,
+      youtubeId: part.youtubeId,
+      startTimeSec: part.startTimeSec,
+      endTimeSec: part.endTimeSec,
+      index: part.index
+    };
+    if (!partToUpdate.id) {
+      partToUpdate.id = generateGuid();
     }
-    part.musicalPieceId = pieceWithParts.id;
-    part.lastModifiedAtTimestamp = now;
-    return [...acc, piecePartsTable.update(part.id, part)];
+    partToUpdate.musicalPieceId = pieceWithParts.id;
+    partToUpdate.lastModifiedAtTimestamp = now;
+    return [...acc, piecePartsTable.update(partToUpdate.id, partToUpdate)];
   }, []);
   const piecePartsResults = await Promise.all(piecePartPromises);
   return piecePartsResults.every(result => result.isSuccessful) ? true : false;
@@ -124,7 +133,7 @@ const updateMusicalPiece = async pieceWithParts => {
     lastModifiedAtTimestamp: now,
     multipart: pieceWithParts.multipart,
     title: pieceWithParts.title,
-    notes: pieceWithParts.notes
+    notes: pieceWithParts.notes ? pieceWithParts.notes : null
   };
   const musicalPieceResult = await musicalPiecesTable.update(
     pieceWithParts.id,
@@ -136,9 +145,72 @@ const updateMusicalPiece = async pieceWithParts => {
   return musicalPieceResult.isSuccessful && piecePartsUpdated ? true : false;
 };
 
+const isMusicalPieceValid = pieceWithParts => {
+  const hasParts = pieceWithParts.parts && pieceWithParts.parts.length;
+  const partsValid = hasParts
+    ? !pieceWithParts.parts.some(p => p.startTimeSec > p.endTimeSec)
+    : false;
+  return hasParts && partsValid;
+};
+
+const deletePieceParts = async pieceId => {
+  const pieceParts = await piecePartsTable.query([
+    { key: "musicalPieceId", value: pieceId }
+  ]);
+  const piecePartsIds = pieceParts.data.map(el => el.id);
+  return Promise.all(
+    piecePartsIds.map(async partId => {
+      return await piecePartsTable.delete(partId);
+    })
+  );
+};
+
+const deletePiece = async pieceId => {
+  const pieceDeletionResult = await musicalPiecesTable.delete(pieceId);
+  const piecePartsDeletionResults = await deletePieceParts(pieceId);
+  return (
+    pieceDeletionResult.isSuccessful &&
+    piecePartsDeletionResults.every(el => el.isSuccessful)
+  );
+};
+
+const deletePlaylist = async playlistId => {
+  const playlistDeleted = await playlistsTable.delete(playlistId);
+  const result = await musicalPiecesTable.query([
+    { key: "playlistId", value: playlistId }
+  ]);
+  const musicalPiecesIds = result.data.map(el => el.id);
+  const piecesDeletionResults = await Promise.all(
+    musicalPiecesIds.map(pieceId => deletePiece(pieceId))
+  );
+  return (
+    playlistDeleted.isSuccessful &&
+    piecesDeletionResults.every(el => el === true)
+  );
+};
+
+const parseDuration = durationSec => {
+  const minutes = (+durationSec - (+durationSec % 60)) / 60;
+  const seconds = +durationSec % 60;
+  return {
+    minutes: minutes,
+    seconds: seconds,
+    display: minutes + ":" + ("0" + seconds).slice(-2)
+  };
+};
+
+const minutesToSeconds = (minutes, seconds) => {
+  return +minutes * 60 + +seconds;
+};
+
 export {
   addPlaylistToDatabase,
   addPlaylistItemsToDatabase,
   getCustomPieces,
-  updateMusicalPiece
+  updateMusicalPiece,
+  isMusicalPieceValid,
+  deletePlaylist,
+  deletePiece,
+  parseDuration,
+  minutesToSeconds
 };

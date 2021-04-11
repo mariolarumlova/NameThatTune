@@ -7,21 +7,46 @@
             Tournament mode
           </div>
           <div v-if="!tournament.complete" class="text-body-1 pa-4">
+            <v-btn
+              :disabled="
+                !selected.id || (selected.multipart && !selectedPart.id)
+              "
+              @click.prevent="checkPiece()"
+              >Check</v-btn
+            >
+            <br />
+            <div
+              v-if="
+                settings.correctAnswerEachPiece == true &&
+                  tournament.totalAnswersAmount > 0
+              "
+            >
+              Result: {{ result }} <br />
+            </div>
+            <br />
             <MusicPlayer
               :key="tournament.totalAnswersAmount"
               customStyle="display: none"
               :videoDetails="currentPiece"
-              :randomStartTime="settings.randomStart"
+              :randomStartTime="settings.randomStart == true"
               :playTimeSec="
-                settings.limitedAnswerTime ? settings.timeLimit : undefined
+                settings.limitedAnswerTime == true
+                  ? `${settings.timeLimit}`
+                  : undefined
               "
+              :buttonVisible="true"
             />
-            <v-btn @click.prevent="checkPiece()">Check</v-btn>
             <br />
-            Result: {{ result }} <br />
-            Index: {{ tournament.totalAnswersAmount }} <br />
-            Tournament complete: {{ tournament.complete }} <br />
-
+            <v-progress-linear
+              background-color="orange lighten-4"
+              color="orange darken-2"
+              :value="
+                (100 * tournament.totalAnswersAmount) / playlistItems.length
+              "
+            ></v-progress-linear>
+            <br />
+            {{ playlistItems.length - tournament.totalAnswersAmount }}
+            pieces left to guess!
             <div class="halfwidth-wrapper">
               <v-select
                 :items="pieces"
@@ -42,7 +67,10 @@
           <div v-else class="text-body-1 pa-4">
             Tournament complete. Your score is
             {{ tournament.correctAnswersAmount }} out of
-            {{ playlistItems.length }}
+            {{ playlistItems.length }}. <br />
+
+            Detail results:
+            <SimpleTable :headers="finalResultsHeaders" :items="answers" />
           </div>
         </v-col>
       </v-row>
@@ -58,39 +86,43 @@
 <script>
 import PlaylistChooser from "@/components/core/PlaylistChooser";
 import MusicPlayer from "@/components/core/MusicPlayer";
+import SimpleTable from "@/components/utils/SimpleTable";
 import databaseFactory from "@/dataProvider/classes/Database";
 import settingsFactory from "@/dataProvider/dto/Settings";
 import {
-  shuffle,
   addTournamentToDatabase,
   addAnswerToDatabase,
-  updateTournament
+  getHumanReadableResult,
+  updateTournament,
+  defaultSettings
 } from "@/business/tournament";
-import { getRandomIntInclusive } from "@/business/mathUtils";
+import { getRandomIntInclusive, shuffle } from "@/business/mathUtils";
 export default {
   props: {
     piece: Object
   },
   components: {
     MusicPlayer,
-    PlaylistChooser
+    PlaylistChooser,
+    SimpleTable
   },
   async created() {
-    this.settings = (
-      await settingsFactory(databaseFactory()).getById(this.$store.state.uid)
-    ).data; //TODO Co jak ktos nie ma?
+    this.settings =
+      (await settingsFactory(databaseFactory()).getById(this.$store.state.uid))
+        .data ?? defaultSettings;
   },
   methods: {
     checkPiece: async function() {
-      const { score } = await addAnswerToDatabase(
+      const answer = await addAnswerToDatabase(
         this.tournament.id,
         this.currentPiece,
         this.selected,
         this.selectedPart,
         this.settings.badPartScoring
       );
-      this.result = score;
-      this.tournament.correctAnswersAmount += +score;
+      this.answers = [...this.answers, answer];
+      this.result = getHumanReadableResult(answer);
+      this.tournament.correctAnswersAmount += answer.score;
       this.tournament.totalAnswersAmount += 1;
       if (this.tournament.totalAnswersAmount < this.playlistItems.length) {
         this.currentPiece = this.playlistItems[
@@ -102,12 +134,16 @@ export default {
       await updateTournament(this.tournament);
     },
     parseForListview: function(parts) {
-      return parts.map(item => {
-        return {
-          text: item.title || item.index,
-          value: item
-        };
-      });
+      return parts
+        .map(item => {
+          return {
+            text: item.title || item.index,
+            value: item
+          };
+        })
+        .sort((a, b) => {
+          return a.value.index - b.value.index;
+        });
     },
     setPlaylist: async function(event) {
       this.pieces =
@@ -139,7 +175,13 @@ export default {
       result: 0,
       tournament: {},
       currentPiece: {},
-      settings: {}
+      settings: {},
+      answers: [],
+      finalResultsHeaders: [
+        { name: "Given piece", apiName: "givenPiece" },
+        { name: "Correct piece", apiName: "correctPiece" },
+        { name: "Score", apiName: "score" }
+      ]
     };
   }
 };

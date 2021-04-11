@@ -1,21 +1,21 @@
 <template>
   <v-app-bar app color="white" flat>
-    <v-avatar size="60" tile>
-      <img src="../../../public/img/icons/logo.png" />
-    </v-avatar>
-
-    <v-tabs centered class="ml-n9" color="grey darken-1" v-model="activeTab">
+    <v-tabs class="ml-n7" color="grey darken-1" v-model="activeTab" show-arrows>
       <v-tab v-for="tab in tabs" :to="tab.url" :key="tab.index">
-        {{ tab.label }}
+        <v-avatar v-if="tab.label === 'Home'" size="60" tile>
+          <img src="../../../public/img/icons/logo.png" />
+        </v-avatar>
+        <div v-else>
+          {{ tab.label }}
+        </div>
       </v-tab>
     </v-tabs>
 
     <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
         <v-avatar
-          class="hidden-sm-and-down"
           color="grey darken-1 shrink"
-          size="60"
+          size="54"
           v-bind="attrs"
           v-on="on"
         >

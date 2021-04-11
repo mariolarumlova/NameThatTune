@@ -112,3 +112,5 @@ librosa_playground.py
 
 .firebase
 *package-lock.json
+dokumenty/*
+opracowane_pytania/*

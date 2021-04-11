@@ -10,23 +10,10 @@ const musicalPiecesTable = musicalPieceFactory(database);
 const piecePartsTable = piecePartFactory(database);
 const tournamentsTable = tournamentFactory(database);
 const answersTable = answerFactory(database);
-
-const shuffle = inputArray => {
-  const array = JSON.parse(JSON.stringify(inputArray));
-  let m = array.length;
-  let t, i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = array[m];
-    array[m] = array[i];
-    array[i] = t;
-  }
-  return array;
-};
-
-const getPiecesWithParts = async playlistId => {
+const getPiecesWithParts = async (playlistId, includedInTournament) => {
   const result = await musicalPiecesTable.query([
-    { key: "playlistId", value: playlistId }
+    { key: "playlistId", value: playlistId },
+    { key: "includedInTournament", value: includedInTournament }
   ]);
   const resultWithParts = await Promise.all(
     result.data.map(async piece => {
@@ -71,7 +58,7 @@ const updateTournament = async tournament => {
 
 const getGivenPieceName = (selected, selectedPart) => {
   let name = selected.title;
-  if (selectedPart && (selectedPart.title || selectedPart.index)) {
+  if (selectedPart && selected.multipart) {
     name += " - " + (selectedPart.title || selectedPart.index);
   }
   return name;
@@ -79,12 +66,10 @@ const getGivenPieceName = (selected, selectedPart) => {
 
 const getCorrectPieceName = currentPiece => {
   let name = currentPiece.title;
-  if (
-    currentPiece.currentPart &&
-    (currentPiece.currentPart.title || currentPiece.currentPart.index)
-  ) {
+  if (currentPiece.currentPart && currentPiece.multipart) {
     name +=
-      " - " + (currentPiece.currentPart.title || currentPiece.currentPart.index);
+      " - " +
+      (currentPiece.currentPart.title || currentPiece.currentPart.index);
   }
   return name;
 };
@@ -113,11 +98,12 @@ const addAnswerToDatabase = async (
   currentPiece,
   selected,
   selectedPart,
-  badPartScoring
+  userBadPartScoring
 ) => {
   const now = Date.now();
   const givenPiece = getGivenPieceName(selected, selectedPart);
   const correctPiece = getCorrectPieceName(currentPiece);
+  const badPartScoring = +userBadPartScoring || 0.5;
   const score = calculateScore(
     currentPiece,
     selected,
@@ -138,10 +124,33 @@ const addAnswerToDatabase = async (
   return result.isSuccessful ? answer : null;
 };
 
+const getHumanReadableResult = answer => {
+  const { correctPiece, givenPiece, score } = answer;
+  switch (score) {
+    case 1:
+      return `Correct answer!`;
+    case 0.5:
+      return `Incorrect part! It's ${correctPiece}, not ${givenPiece}`;
+    case 0:
+      return `Incorrect piece! It's ${correctPiece}, not ${givenPiece}`;
+    default:
+      return `An error occured`;
+  }
+};
+
+const defaultSettings = {
+  badPartScoring: 0.5,
+  correctAnswerEachPiece: true,
+  limitedAnswerTime: true,
+  randomStart: true,
+  timeLimit: 10
+};
+
 export {
-  shuffle,
   getPiecesWithParts,
   addTournamentToDatabase,
   updateTournament,
-  addAnswerToDatabase
+  addAnswerToDatabase,
+  getHumanReadableResult,
+  defaultSettings
 };

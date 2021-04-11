@@ -7,56 +7,81 @@
         </div>
       </v-col>
     </v-row>
-    <v-container fill-height fluid v-if="!selectedItem">
-      <YoutubePlaylists
-        @youtubePlaylistChosen="youtubePlaylistChosen($event)"
-      />
-      <br />
-      <CustomPlaylists
-        :gameMode="gameMode"
-        @customPlaylistChosen="customPlaylistChosen($event)"
-      />
-    </v-container>
-    <v-container
-      fill-height
-      fluid
-      v-if="
-        selectedItem && !selectedItem.customPlaylist && !creationPageVisible
-      "
-    >
-      <v-btn
-        color="orange darken-2"
-        class="ma-2 white--text"
-        @click.prevent="createCustomPlaylist()"
-      >
-        Create a new custom playlist
-      </v-btn>
-      <CustomPlaylists
-        :key="refreshIndex"
-        :youtubeId="selectedItem.id"
-        :gameMode="gameMode"
-        @customPlaylistChosen="customPlaylistChosen($event)"
-      />
-    </v-container>
-    <v-container fill-height fluid v-if="creationPageVisible">
-      <div>
-        Choose a name for your custom playlist
-        <br />
-        <v-text-field
-          label="Title"
-          :placeholder="selectedItem.title"
-          outlined
-          v-model="selectedItem.customTitle"
-        ></v-text-field>
-        <br />
-        Choose pieces which you want to use
-      </div>
-      <PieceChooser
-        :playlistItems="selectedItem.items"
-        :multiple="true"
-        @piecesChosen="saveCustomPlaylistToDb($event)"
-      />
-    </v-container>
+    <v-row align="center" justify="space-around">
+      <v-col align="center" justify="space-around">
+        <v-container fill-height fluid v-if="!selectedItem">
+          <YoutubePlaylists
+            @youtubePlaylistChosen="youtubePlaylistChosen($event)"
+          />
+          <br />
+          <CustomPlaylists
+            :gameMode="gameMode"
+            @customPlaylistChosen="customPlaylistChosen($event)"
+          />
+        </v-container>
+        <v-container
+          class="halfwidth-wrapper"
+          fill-height
+          fluid
+          v-if="
+            selectedItem && !selectedItem.customPlaylist && !creationPageVisible
+          "
+        >
+          <v-btn
+            color="orange darken-2"
+            class="ma-2 ml-lg-16 ml-md-16 white--text"
+            @click.prevent="createCustomPlaylist()"
+          >
+            Create a new custom playlist
+          </v-btn>
+          <CustomPlaylists
+            :key="refreshIndex"
+            :youtubeId="selectedItem.id"
+            :gameMode="gameMode"
+            @customPlaylistChosen="customPlaylistChosen($event)"
+          />
+          <v-btn class="ma-8" @click.prevent="clearPlaylist()"
+            >Back to playlists</v-btn
+          >
+        </v-container>
+        <v-container
+          class="halfwidth-wrapper"
+          fill-height
+          fluid
+          v-if="creationPageVisible"
+        >
+          <div>
+            Choose a name for your custom playlist
+            <br />
+            <v-text-field
+              label="Title"
+              :placeholder="selectedItem.title"
+              outlined
+              v-model="selectedItem.customTitle"
+            ></v-text-field>
+            <br />
+            Choose pieces which you want to use
+          </div>
+          <PieceChooser
+            :playlistItemsParam="selectedItem.items"
+            :multiple="true"
+            @piecesChosen="saveCustomPlaylistToDb($event)"
+          />
+          <v-btn class="ma-8" @click.prevent="clearPlaylist()"
+            >Back to playlists</v-btn
+          >
+        </v-container>
+      </v-col>
+    </v-row>
+    <v-snackbar v-model="snackbar" timeout="2000">
+      {{ snackbarMessage }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn :color="'red'" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -86,10 +111,16 @@ export default {
       selectedItem: null,
       refreshIndex: 0,
       creationPageVisible: false,
-      customTitle: null
+      customTitle: null,
+      snackbar: false,
+      snackbarMessage: ""
     };
   },
   methods: {
+    clearPlaylist() {
+      this.creationPageVisible = false;
+      this.selectedItem = null;
+    },
     createCustomPlaylist() {
       this.creationPageVisible = true;
     },
@@ -98,19 +129,22 @@ export default {
       this.$emit("playlistChosen", event);
     },
     async saveCustomPlaylistToDb(event) {
-      const customPlaylist = await addPlaylistToDatabase(
-        this.$store.state.uid,
-        this.selectedItem
-      );
-      const items =
-        event && event.length
-          ? await addPlaylistItemsToDatabase(customPlaylist.id, event)
-          : event;
-      if (customPlaylist) {
+      if (event && event.length) {
+        const customPlaylist = await addPlaylistToDatabase(
+          this.$store.state.uid,
+          this.selectedItem
+        );
+        const items = await addPlaylistItemsToDatabase(
+          customPlaylist.id,
+          event
+        );
         this.$emit("playlistChosen", {
           ...customPlaylist,
           items: items
         });
+      } else {
+        this.snackbarMessage = "Cannot save an empty custom playlist";
+        this.snackbar = true;
       }
     },
     youtubePlaylistChosen(event) {

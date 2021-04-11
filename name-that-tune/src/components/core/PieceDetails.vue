@@ -25,12 +25,11 @@
           hide-details
         ></v-switch>
       </div>
-      {{ pieceWithParts.parts }}
       <PieceParts
         v-if="pieceWithParts.multipart"
         :piecePartsInput="pieceWithParts.parts"
-        :defaultYoutubeId="pieceWithParts.parts[0].youtubeId"
         @piecePartsChanged="pieceWithParts.parts = $event"
+        @previewChanged="selectedPart = $event"
       />
       <v-btn class="ma-8" @click.prevent="$emit('save', pieceWithParts)"
         >Save</v-btn

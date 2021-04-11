@@ -1,19 +1,29 @@
 <template>
   <v-container fill-height fluid>
-    <div class="mx-auto text-h4 pa-4" :style="customStyle">
-      <v-progress-circular v-if="loading"></v-progress-circular>
-      {{ videoDetails.title }}
-      <br />
-      <iframe
-        allow="autoplay"
-        id="ytplayer"
-        type="text/html"
-        width="640"
-        height="360"
-        :src="getVideoUrl()"
-        frameborder="0"
-      />
-    </div>
+    <v-row align="center" justify="space-around">
+      <v-col align="center" justify="space-around">
+        <div class="mx-auto text-h4 pa-4" :style="customStyle">
+          <v-progress-circular v-if="loading"></v-progress-circular>
+          {{ videoDetails.title }}
+          <br />
+          <youtube
+            :video-id="getVideoUrl()"
+            :player-vars="playerVars"
+            ref="youtube"
+            @playing="playing"
+            :fitParent="true"
+          ></youtube>
+        </div>
+        <v-btn
+          @click="playVideo"
+          color="orange darken-3"
+          :disabled="buttonDisabled"
+          v-if="buttonVisible"
+        >
+          <v-icon color="white">mdi-play-circle-outline</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -25,22 +35,20 @@ export default {
     videoDetails: Object,
     customStyle: String,
     randomStartTime: Boolean,
-    playTimeSec: String
+    playTimeSec: String,
+    buttonVisible: Boolean
   },
   data() {
     return {
-      loading: false
+      loading: false,
+      buttonDisabled: false
     };
   },
-  methods: {
-    getVideoUrl: function() {
-      const youtubeId = this.videoDetails.currentPart
-        ? this.videoDetails.currentPart.youtubeId
-        : this.videoDetails.id;
-      let url = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&disablekb=1`;
+  computed: {
+    playerVars() {
       let startTimeSec = this.videoDetails.currentPart
         ? this.videoDetails.currentPart.startTimeSec
-        : 0;
+        : this.videoDetails.startTimeSec || 0;
       if (this.randomStartTime) {
         startTimeSec = this.getStartTimeSec(
           startTimeSec,
@@ -50,15 +58,33 @@ export default {
           this.playTimeSec || 30
         );
       }
-      url += `&start=${startTimeSec}`;
       const endTime = this.playTimeSec
         ? parseInt(startTimeSec) + parseInt(this.playTimeSec)
         : this.videoDetails.currentPart
         ? this.videoDetails.currentPart.endTimeSec
-        : this.videoDetails.duration;
-      url += endTime ? `&end=${endTime}` : "";
-      console.log(url);
-      return url;
+        : this.videoDetails.endTimeSec || this.videoDetails.duration;
+      return {
+        start: startTimeSec,
+        end: endTime
+      };
+    },
+    player() {
+      return this.$refs.youtube.player;
+    }
+  },
+  methods: {
+    playVideo() {
+      this.player.playVideo();
+      this.buttonDisabled = true;
+    },
+    playing() {
+      // TODO: Add countdown
+    },
+    getVideoUrl: function() {
+      const youtubeId = this.videoDetails.currentPart
+        ? this.videoDetails.currentPart.youtubeId
+        : this.videoDetails.youtubeId || this.videoDetails.id;
+      return youtubeId;
     },
     getStartTimeSec: function(minStartTime, piecePartEndTime, answerTime) {
       const maxStartTime = piecePartEndTime - answerTime;

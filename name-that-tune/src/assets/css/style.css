@@ -2,5 +2,5 @@
     text-align: center
 }
 .halfwidth-wrapper {
-    width: 40%
+    max-width: 450px
 }
